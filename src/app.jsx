@@ -65,7 +65,14 @@ class App extends React.Component {
 
                     </div>
                     <Paper zDepth={1}>
-                        <div>{recentsIcon}{favoritesIcon}</div>
+                        <BottomNavigation >
+                            <BottomNavigationItem style={{'display' : 'blockxxx'}}
+                                label="Recents"
+                                icon={recentsIcon}
+                                // onClick={}
+                            />
+                        </BottomNavigation>
+
 
 
                     </Paper>

@@ -4,13 +4,14 @@
   "description": "",
   "main": "",
   "repository": {
-    "type":"git",
-    "url":"https://github.com/ablonevn/reader.git"
+    "type": "git",
+    "url": "https://github.com/ablonevn/reader.git"
   },
   "scripts": {
     "dev": "SET NODE_ENV=dev&& webpack-dev-server --config webpack.config.js --progress --colors",
     "watch": "webpack --watch",
-    "start": "node server/index.js"
+    "start": "node server/index.js",
+    "crawl": "node server/crawler.js"
   },
   "author": "",
   "license": "ISC",
@@ -20,6 +21,7 @@
     "express": "^4.16.2",
     "jquery": "^3.2.1",
     "material-ui": "^0.20.0",
+    "mkdirp": "^0.5.1",
     "react": "^16.2.0",
     "react-dom": "^16.2.0",
     "react-height": "^3.0.0",

@@ -27,11 +27,13 @@ class Home extends React.Component {
     //  }
     componentDidMount() {
         this.props.setTitle();
+        const click=()=>{};
+        this.props.setAppIcon({icon:"home",click:click});
         console.log("render Home", JSON.stringify(this.props.list));
-        if ((this.props.list.length == 0) && !this.props.loading) {
-            this.props.setLoading(true);
+        if ((this.props.list.length == 0)) {
+            // this.props.setLoading(true);
             cachedFetch('/sites').then((res) => this.props.setSiteList(res));
-            this.props.setLoading(false);
+            // this.props.setLoading(false);
 
         }
 
@@ -81,7 +83,7 @@ const mapDispatchToProps = (dispatch) => {
         setTitle: () => dispatch(setAppTitle("Home")),
         setSiteList: (lst) => dispatch(setSiteList(lst)),
         setAppIcon: (icon) => dispatch(setAppIcon(icon)),
-        setLoading:(state)=>dispatch({type:SET_SITE_LOADING,state:state})
+
 
         // secondAction : bindActionCreators(()=>{}, dispatch)
     }

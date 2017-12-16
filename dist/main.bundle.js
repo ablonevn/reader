@@ -29,7 +29,7 @@ exports.default = appState;
 
 /***/ }),
 
-/***/ 1869:
+/***/ 1870:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -186,7 +186,7 @@ exports.default = (0, _reactRedux.connect)(mapStateToProps, mapDispatchToProps)(
 
 /***/ }),
 
-/***/ 1870:
+/***/ 1871:
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
@@ -209,7 +209,7 @@ var _react = __webpack_require__(0);
 
 var _react2 = _interopRequireDefault(_react);
 
-var _reactRouterDom = __webpack_require__(493);
+var _reactRouterDom = __webpack_require__(494);
 
 var _materialUi = __webpack_require__(69);
 
@@ -266,13 +266,15 @@ var Home = function (_React$Component) {
             var _this2 = this;
 
             this.props.setTitle();
+            var click = function click() {};
+            this.props.setAppIcon({ icon: "home", click: click });
             console.log("render Home", JSON.stringify(this.props.list));
-            if (this.props.list.length == 0 && !this.props.loading) {
-                this.props.setLoading(true);
+            if (this.props.list.length == 0) {
+                // this.props.setLoading(true);
                 (0, _actions.cachedFetch)('/sites').then(function (res) {
                     return _this2.props.setSiteList(res);
                 });
-                this.props.setLoading(false);
+                // this.props.setLoading(false);
             }
         }
     }, {
@@ -330,9 +332,6 @@ var mapDispatchToProps = function mapDispatchToProps(dispatch) {
         },
         setAppIcon: function setAppIcon(icon) {
             return dispatch((0, _actions.setAppIcon)(icon));
-        },
-        setLoading: function setLoading(state) {
-            return dispatch({ type: _actions.SET_SITE_LOADING, state: state });
         }
 
         // secondAction : bindActionCreators(()=>{}, dispatch)
@@ -369,7 +368,7 @@ var _index = __webpack_require__(156);
 
 var _rxjs = __webpack_require__(281);
 
-var _reactHeight = __webpack_require__(1867);
+var _reactHeight = __webpack_require__(1868);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -610,14 +609,12 @@ var mapDispatchToProps = function mapDispatchToProps(dispatch) {
             return dispatch((0, _actions.setSiteDetailList)(list));
         },
         setTitle: function setTitle(data) {
-            return dispatch((0, _actions.setAppTitle)("Site detail " + data || ""));
+            return dispatch((0, _actions.setAppTitle)(data || ""));
         },
         setAppIcon: function setAppIcon(icon) {
             return dispatch((0, _actions.setAppIcon)(icon));
         },
-        setLoading: function setLoading(state) {
-            return dispatch({ type: _actions.SET_SITE_LOADING, state: state });
-        }
+        setLoading: function setLoading(state) {}
 
     };
 };
@@ -748,7 +745,7 @@ var SiteCategory = function (_React$Component) {
                         , primaryText: item.text,
                         onClick: function onClick() {
                             // context.history.push === history.push
-                            _this5.props.history.push('/content-detail/' + _this5.props.match.params.siteId + '/' + item.link);
+                            _this5.props.history.push('/content-detail/' + _this5.props.match.params.siteId + '/' + (0, _actions.encodeHex)(item.link));
                         },
                         secondaryText: item.link
                     });
@@ -817,11 +814,11 @@ var _reducers = __webpack_require__(491);
 
 var _reducers2 = _interopRequireDefault(_reducers);
 
-var _app = __webpack_require__(492);
+var _app = __webpack_require__(493);
 
 var _app2 = _interopRequireDefault(_app);
 
-__webpack_require__(1870);
+__webpack_require__(1871);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -967,6 +964,97 @@ exports.default = appData;
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
+exports.cachedFetch = cachedFetch;
+exports.setSiteList = setSiteList;
+exports.setAppTitle = setAppTitle;
+exports.setSiteDetailList = setSiteDetailList;
+exports.setAppIcon = setAppIcon;
+exports.setDocumentList = setDocumentList;
+exports.encodeHex = encodeHex;
+var counter = 0;
+
+function j() {
+    counter++;
+    return counter + "";
+}
+//
+// var _gInitialized:boolean=false;
+// export function gInit(cb) {
+//     if (!_gInitialized) {
+//         _gInitialized=true;
+//         cb();
+//     }
+// }
+
+// App
+// export const GET_TITLE = j();
+var SET_APP_TITLE = exports.SET_APP_TITLE = j();
+var SET_SITE_LIST = exports.SET_SITE_LIST = j();
+var SET_APP_ICON = exports.SET_APP_ICON = j();
+
+//sites
+
+//site detail
+var SET_DETAIL_LIST = exports.SET_DETAIL_LIST = j();
+
+// document
+var SET_DOCUMENT_LIST = exports.SET_DOCUMENT_LIST = j();
+
+var memFetch = {};
+
+function cachedFetch(url, options) {
+    // Use the URL as the cache key to sessionStorage
+    var cacheKey = url + JSON.stringify(options || "");
+    // if (memFetch[cacheKey]) {
+    //     return Promise.resolve(memFetch[cacheKey]);
+    // }
+    memFetch[cacheKey] = fetch(url, options).then(function (response) {
+        // let's only store in cache if the content-type is
+        // JSON or something non-binary
+        var ct = response.headers.get('Content-Type');
+        if (ct && ct.match(/application\/json/i)) {
+            return response.json();
+        }
+        return response;
+    });
+    return memFetch[cacheKey];
+}
+
+function setSiteList(list) {
+    return { type: SET_SITE_LIST, list: list };
+}
+
+function setAppTitle(text) {
+    return { type: SET_APP_TITLE, text: text };
+}
+
+function setSiteDetailList(list) {
+    return { type: SET_DETAIL_LIST, list: list };
+}
+function setAppIcon(info) {
+    return { type: SET_APP_ICON, info: info };
+}
+function setDocumentList(list) {
+    return { type: SET_DOCUMENT_LIST, list: list };
+}
+function encodeHex(text) {
+    var arr = text.split('').map(function (c) {
+        return c.charCodeAt(0).toString(16);
+    });
+    return arr.join("-");
+}
+
+/***/ }),
+
+/***/ 493:
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
@@ -994,7 +1082,7 @@ var _siteCategory = __webpack_require__(379);
 
 var _siteCategory2 = _interopRequireDefault(_siteCategory);
 
-var _appHeader = __webpack_require__(1869);
+var _appHeader = __webpack_require__(1870);
 
 var _appHeader2 = _interopRequireDefault(_appHeader);
 
@@ -1081,10 +1169,13 @@ var App = function (_React$Component) {
                         _materialUi.Paper,
                         { zDepth: 1 },
                         _react2.default.createElement(
-                            "div",
+                            _materialUi.BottomNavigation,
                             null,
-                            recentsIcon,
-                            favoritesIcon
+                            _react2.default.createElement(_materialUi.BottomNavigationItem, { style: { 'display': 'blockxxx' },
+                                label: "Recents",
+                                icon: recentsIcon
+                                // onClick={}
+                            })
                         )
                     )
                 )
@@ -1122,88 +1213,20 @@ exports.default = (0, _reactRedux.connect)()(App);
 
 
 Object.defineProperty(exports, "__esModule", {
-    value: true
+  value: true
 });
-exports.gInit = gInit;
-exports.cachedFetch = cachedFetch;
-exports.setSiteList = setSiteList;
-exports.setAppTitle = setAppTitle;
-exports.setSiteDetailList = setSiteDetailList;
-exports.setAppIcon = setAppIcon;
-exports.setDocumentList = setDocumentList;
-exports.encodeHex = encodeHex;
-var counter = 0;
 
-function j() {
-    counter++;
-    return counter + "";
-}
+var _actions = __webpack_require__(492);
 
-var _gInitialized = false;
-function gInit(cb) {
-    if (!_gInitialized) {
-        _gInitialized = true;
-        cb();
+Object.keys(_actions).forEach(function (key) {
+  if (key === "default" || key === "__esModule") return;
+  Object.defineProperty(exports, key, {
+    enumerable: true,
+    get: function get() {
+      return _actions[key];
     }
-}
-// App
-var GET_TITLE = exports.GET_TITLE = j();
-var SET_APP_TITLE = exports.SET_APP_TITLE = j();
-var SET_SITE_LIST = exports.SET_SITE_LIST = j();
-var SET_APP_ICON = exports.SET_APP_ICON = j();
-
-//sites
-
-//site detail
-var SET_DETAIL_LIST = exports.SET_DETAIL_LIST = j();
-var SET_SITE_LOADING = exports.SET_SITE_LOADING = j();
-
-// document
-var SET_DOCUMENT_LIST = exports.SET_DOCUMENT_LIST = j();
-
-var memFetch = {};
-
-function cachedFetch(url, options) {
-    // Use the URL as the cache key to sessionStorage
-    var cacheKey = url + JSON.stringify(options || "");
-    // if (memFetch[cacheKey]) {
-    //     return Promise.resolve(memFetch[cacheKey]);
-    // }
-    memFetch[cacheKey] = fetch(url, options).then(function (response) {
-        // let's only store in cache if the content-type is
-        // JSON or something non-binary
-        var ct = response.headers.get('Content-Type');
-        if (ct && ct.match(/application\/json/i)) {
-            return response.json();
-        }
-        return response;
-    });
-    return memFetch[cacheKey];
-}
-
-function setSiteList(list) {
-    return { type: SET_SITE_LIST, list: list };
-}
-
-function setAppTitle(text) {
-    return { type: SET_APP_TITLE, text: text };
-}
-
-function setSiteDetailList(list) {
-    return { type: SET_DETAIL_LIST, list: list };
-}
-function setAppIcon(info) {
-    return { type: SET_APP_ICON, info: info };
-}
-function setDocumentList(list) {
-    return { type: SET_DOCUMENT_LIST, list: list };
-}
-function encodeHex(text) {
-    var arr = text.split('').map(function (c) {
-        return c.charCodeAt(0).toString(16);
-    });
-    return arr.join("-");
-}
+  });
+});
 
 /***/ })
 

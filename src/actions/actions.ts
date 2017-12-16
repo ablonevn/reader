@@ -4,16 +4,17 @@ function j() {
     counter++;
     return counter + "";
 }
+//
+// var _gInitialized:boolean=false;
+// export function gInit(cb) {
+//     if (!_gInitialized) {
+//         _gInitialized=true;
+//         cb();
+//     }
+// }
 
-var _gInitialized:boolean=false;
-export function gInit(cb) {
-    if (!_gInitialized) {
-        _gInitialized=true;
-        cb();
-    }
-}
 // App
-export const GET_TITLE = j();
+// export const GET_TITLE = j();
 export const SET_APP_TITLE = j();
 export const SET_SITE_LIST = j();
 export const SET_APP_ICON=j();
@@ -24,7 +25,7 @@ export const SET_APP_ICON=j();
 
 //site detail
 export const SET_DETAIL_LIST = j();
-export const SET_SITE_LOADING=j();
+
 
 // document
 export const SET_DOCUMENT_LIST=j();

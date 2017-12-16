@@ -225,9 +225,9 @@ const mapDispatchToProps = (dispatch) => {
     return {
         setSiteList: (lst) => dispatch(setSiteList(lst)),
         setSiteDetailList: (list) => dispatch(setSiteDetailList(list)),
-        setTitle: (data) => dispatch(setAppTitle("Site detail " + data || "")),
+        setTitle: (data) => dispatch(setAppTitle(data || "")),
         setAppIcon: (icon) => dispatch(setAppIcon(icon)),
-        setLoading: (state) => dispatch({type: SET_SITE_LOADING, state: state})
+        setLoading: (state) => {}
 
     }
 };

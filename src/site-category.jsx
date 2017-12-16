@@ -1,7 +1,7 @@
 import React from 'react';
 import {connect} from "react-redux";
 
-import {cachedFetch, setAppIcon, setAppTitle, setSiteDetailList, setSiteList,setDocumentList} from "./actions";
+import {cachedFetch, setAppIcon, setAppTitle, setSiteDetailList, setSiteList,setDocumentList,encodeHex} from "./actions";
 import {Avatar, ListItem} from "material-ui";
 import {ActionInfo, FileFolder} from "material-ui/svg-icons/index";
 import {Subject} from "rxjs";
@@ -71,29 +71,12 @@ class SiteCategory extends React.Component {
                         primaryText={item.text}
                         onClick={() => {
                             // context.history.push === history.push
-                            this.props.history.push('/content-detail/' + this.props.match.params.siteId + '/' + item.link)
+                            this.props.history.push('/content-detail/' + this.props.match.params.siteId + '/' + encodeHex(item.link))
                         }}
                         secondaryText={item.link}
                     />
 
                 })}
-                {/*{this.props.lstDetail.map((item,idx)=>{*/}
-                {/*return (*/}
-                {/*<ListItem key={idx}*/}
-                {/*leftAvatar={<Avatar icon={<FileFolder />} />}*/}
-                {/*rightIcon={<ActionInfo />}*/}
-                {/*primaryText={item.text}*/}
-                {/*onClick= {() => {*/}
-                {/*// context.history.push === history.push*/}
-                {/*this.props.history.push('/site-category/'+state.lastDetail+'/'+$.param({1:item.link}).split('=')[1])*/}
-                {/*}}*/}
-                {/*secondaryText={item.link}*/}
-                {/*/>*/}
-
-                {/*)*/}
-                {/*})}*/}
-
-
             </div>
         );
     }
