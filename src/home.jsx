@@ -1,60 +1,65 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import {Link} from 'react-router-dom';
 import {Avatar, List, ListItem, Subheader} from "material-ui";
 import {ActionInfo, FileFolder} from "material-ui/svg-icons/index";
 import {connect} from "react-redux";
-import {setAppTitle, setSiteList, cachedFetch, gInit, setAppIcon} from "./actions";
+import {setAppTitle, setSiteList, cachedFetch, gInit, setAppIcon, SET_SITE_LOADING} from "./actions";
 import appState from "./app-data";
 // import {bindActionCreators} from "redux";
 
 // var first=true;
 
- class Home extends React.Component {
+class Home extends React.Component {
 
-      constructor(props,context) {
-          super(props,context);
-          // appState.title.next("Home")
-          this.props.getTitle();
+    //  constructor(props,context) {
+    //      super(props,context);
+    //      // appState.title.next("Home")
+    //      // this.props.setTitle();
+    //      // this.props.setAppIcon({icon:"home"});
+    //      // cachedFetch('/sites').then((res) =>this.props.setSiteList(res));
+    //
+    // //     // this.state = {
+    // //     //     counter : 100
+    // //     // };
+    // //
+    // //     // const {counter }=props;
+    // //     //const {firstAction, secondAction} = props;
+    //  }
+    componentDidMount() {
+        this.props.setTitle();
+        console.log("render Home", JSON.stringify(this.props.list));
+        if ((this.props.list.length == 0) && !this.props.loading) {
+            this.props.setLoading(true);
+            cachedFetch('/sites').then((res) => this.props.setSiteList(res));
+            this.props.setLoading(false);
 
-     //     // this.state = {
-     //     //     counter : 100
-     //     // };
-     //
-     //     // const {counter }=props;
-     //     //const {firstAction, secondAction} = props;
-      }
-      componentDidMount(){
-
-          // not found site list ?
-          if (this.props.list.length==0) {
-              cachedFetch('/sites').then((res) =>this.props.setSiteList(res));
-          }
-          this.props.setAppIcon({icon:"home"});
+        }
 
 
-     }
+
+    }
+
     render() {
-         let me=this;
+        let me = this;
 
         return (
             <div>
+                <List>
+                    <Subheader inset={true}>List sites</Subheader>
+                    {this.props.list.map((o) => {
+                        return <ListItem key={o.id}
+                                         leftAvatar={<Avatar icon={<FileFolder/>}/>}
+                                         rightIcon={<ActionInfo/>}
+                                         primaryText={o.name}
+                                         onClick={() => {
+                                             // context.history.push === history.push
+                                             me.props.history.push('/site/' + o.id)
+                                         }}
+                                         secondaryText={o.url}
+                        />;
+                    })}
 
-            <List>
-                <Subheader inset={true}>List sites</Subheader>
-                {this.props.list.map( (o)=> {
-                    return  <ListItem key={o.id}
-                        leftAvatar={<Avatar icon={<FileFolder />} />}
-                        rightIcon={<ActionInfo />}
-                        primaryText={o.name}
-                        onClick= {() => {
-                            // context.history.push === history.push
-                            me.props.history.push('/site/'+o.id)
-                        }}
-                        secondaryText={o.url}
-                    />;
-                })}
-
-            </List>
+                </List>
 
             </div>
         );
@@ -65,16 +70,19 @@ import appState from "./app-data";
 const mapStateToProps = (state, ownProps) => {
 // debugger;
     return {
-        list:state.app.sites.list
+        loading: state.sites.loading,
+        list: state.sites.list
     };
 };
 
 const mapDispatchToProps = (dispatch) => {
     return {
         // same effect
-        getTitle : () => dispatch(setAppTitle("Home")),
-        setSiteList:(lst)=>dispatch(setSiteList(lst)),
-        setAppIcon:(icon)=>dispatch(setAppIcon(icon))
+        setTitle: () => dispatch(setAppTitle("Home")),
+        setSiteList: (lst) => dispatch(setSiteList(lst)),
+        setAppIcon: (icon) => dispatch(setAppIcon(icon)),
+        setLoading:(state)=>dispatch({type:SET_SITE_LOADING,state:state})
+
         // secondAction : bindActionCreators(()=>{}, dispatch)
     }
 };
