@@ -11,7 +11,7 @@
     "dev": "SET NODE_ENV=dev&& webpack-dev-server --config webpack.config.js --progress --colors",
     "watch": "webpack --watch",
     "start": "node server/index.js",
-    "crawl": "node server/crawler.js"
+    "crawl": "node server/crawl.js"
   },
   "author": "",
   "license": "ISC",
@@ -32,10 +32,8 @@
     "reflect-metadata": "^0.1.10",
     "request": "^2.83.0",
     "rxjs": "^5.5.5",
-    "vue": "^2.5.9",
-    "vue-material": "^1.0.0-beta-7",
-    "vue-router": "^3.0.1",
-    "zlib": "^1.0.5"
+    "socks5-http-client": "^1.0.2",
+    "tor-request": "^1.0.6"
   },
   "devDependencies": {
     "@types/material-ui": "^0.18.5",

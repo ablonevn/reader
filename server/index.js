@@ -4,7 +4,7 @@ var request = require('request');
 var cheerio = require('cheerio');
 var zlib = require('zlib');
 //var streams = require('memory-streams');
-var gzip = zlib.createGzip();
+//var gzip = zlib.createGzip();
 let fs = require("fs");
 // var path = require('path');
 let app = require('express')();
@@ -96,29 +96,9 @@ app.use(express.static('server'));
 //app.use(express.static(__dirname, '/server/'));
 //app.use(express.static(__dirname + "/..", '/client/'));
 //app.use(express.static(__dirname + '/node_modules'));
-
-const sites=[
-    {id:2,name:'test',url:'http://adayroi.com'},
-    {id:0,name:'adayroi',url:'http://adayroi.com'},
-    // {id:1,name:'tgdd',url:'http://thegioididong.com'}
-];
-function getHtml(url){
-    return new Promise((resolve, reject) => {
-        request(url, function (error, response, body) {
-            // console.log('error:', error); // Print the error if one occurred
-            // console.log('statusCode:', response && response.statusCode); // Print the response status code if a response was received
-            // console.log('body:', body); // Print the HTML for the Google homepage.
-            if (response && response.statusCode && (response.statusCode==200)) {
-                // console.log(body);
-                resolve(body);
-            } else {
-                reject();
-            }
-        });
-    }).catch(() => {});
-
-}
-
+const comm=require('./common');
+const sites=comm.sites;
+const getHtml=comm.getHtml;
 
 app.get('/doc-list/:siteid/:url',(req,res)=>{
     // res.writeHead(200, {'Content-Type': 'application/json'});
