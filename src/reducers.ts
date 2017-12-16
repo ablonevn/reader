@@ -1,7 +1,7 @@
 import { combineReducers } from 'redux'
 import {
-    GET_TITLE, SET_SITE_LIST, SET_APP_TITLE, SET_DETAIL_LIST, SET_APP_ICON,  cachedFetch,
-    SET_SITE_LOADING
+    GET_TITLE, SET_SITE_LIST, SET_APP_TITLE, SET_DETAIL_LIST, SET_APP_ICON, cachedFetch,
+    SET_SITE_LOADING, SET_DOCUMENT_LIST
 } from './actions'
 
 let initState = {
@@ -11,9 +11,6 @@ let initState = {
         console.log("default on click")
     },
 
-    siteDetail: {
-        list: []
-    }
 };
 
 function app(state = initState, action) {
@@ -36,14 +33,6 @@ function app(state = initState, action) {
                 });
 
 
-            case SET_DETAIL_LIST:
-                return Object.assign({}, state, {
-                    siteDetail: Object.assign({}, state.siteDetail, {
-                        list: action.list
-                    })
-                });
-
-
             default:
                 return state;
         }
@@ -59,7 +48,7 @@ function sites(state = {
     switch (action.type) {
         case SET_SITE_LOADING:
             return Object.assign({}, state, {
-                loading:action.state
+                loading: action.state
             });
         case SET_SITE_LIST:
             return Object.assign({}, state, {
@@ -69,13 +58,43 @@ function sites(state = {
         default:
             return state;
     }
+}
 
+function siteDetail(state = {
+    list: []
+}, action) {
+    switch (action.type) {
+        case SET_DETAIL_LIST:
+            return Object.assign({}, state, {
+                list: action.list
+
+            });
+
+
+        default:
+            return state;
+    }
+}
+
+function doc(state = {
+    list: []
+}, action) {
+    switch (action.type) {
+        case SET_DOCUMENT_LIST:
+            return Object.assign({},state,{
+                list:action.list
+            });
+        default:
+            return state;
+    }
 }
 
 
 const appData = combineReducers({
     app,
-    sites
+    sites,
+    siteDetail,
+    doc
 });
 
 export default appData

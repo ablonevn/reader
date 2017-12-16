@@ -26,6 +26,9 @@ export const SET_APP_ICON=j();
 export const SET_DETAIL_LIST = j();
 export const SET_SITE_LOADING=j();
 
+// document
+export const SET_DOCUMENT_LIST=j();
+
 let memFetch = {};
 
 export function cachedFetch(url, options) {
@@ -60,4 +63,13 @@ export function setSiteDetailList(list) {
 }
 export function setAppIcon(info) {
     return {type: SET_APP_ICON, info};
+}
+export function setDocumentList(list) {
+    return {type: SET_DOCUMENT_LIST, list};
+}
+export function encodeHex(text) {
+    var arr = text.split('').map(function (c) {
+        return c.charCodeAt(0).toString(16);
+    });
+    return arr.join("-");
 }

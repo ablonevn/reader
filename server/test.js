@@ -13,10 +13,26 @@ function siteListItem(html){
         resolve({
             data:[{
                 text:"document 1",
-                link:"/link-doc1"
+                link:"http://adayroi.com"
             },{
                 text:"document 2",
-                link:"/link-doc2"
+                link:"http://adayroi.com"
+            }],
+            next:"", // next link
+            prev:""  // prev link
+        });
+    })
+}
+function documentList(html) {
+    return new Promise((resolve, reject) => {
+
+        resolve({
+            data:[{
+                text:"document main content 1",
+                link:"/link-content 1"
+            },{
+                text:"document main content 1",
+                link:"/link-content doc2"
             }],
             next:"", // next link
             prev:""  // prev link
@@ -24,5 +40,6 @@ function siteListItem(html){
     })
 }
 module.exports= {
-    siteListItem : siteListItem
+    siteListItem : siteListItem,
+    documentList:documentList
 };

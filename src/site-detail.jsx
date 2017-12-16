@@ -116,6 +116,7 @@ class SiteDetail extends React.Component {
                 var fo = res.filter((o) => o.id == params.id)[0];
                 // console.log('name',fo)
                 this.props.setTitle(fo.name);
+
                 this.props.setSiteList(res)
             });
             // this.props.setLoading(false);
@@ -216,7 +217,7 @@ const mapStateToProps = (state, ownProps) => {
     return {
         loading: state.sites.loading,
         listSites: state.sites.list,
-        lstDetail: state.app.siteDetail.list
+        lstDetail: state.siteDetail.list
     };
 };
 

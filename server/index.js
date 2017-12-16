@@ -98,7 +98,7 @@ app.use(express.static('server'));
 //app.use(express.static(__dirname + '/node_modules'));
 
 const sites=[
-    {id:2,name:'test',url:'http://testsite.com'},
+    {id:2,name:'test',url:'http://adayroi.com'},
     {id:0,name:'adayroi',url:'http://adayroi.com'},
     // {id:1,name:'tgdd',url:'http://thegioididong.com'}
 ];
@@ -119,6 +119,32 @@ function getHtml(url){
 
 }
 
+
+app.get('/doc-list/:siteid/:url',(req,res)=>{
+    // res.writeHead(200, {'Content-Type': 'application/json'});
+    var fo=sites.filter(o=>o.id==req.params.siteid);
+    if (fo.length) {
+        var site = require("./" + fo[0].name);
+
+        var url=req.params.url.split("-").map(o => String.fromCharCode(parseInt(o, 16))).join("");
+
+        getHtml(url).then((data) => {
+            site.documentList(data).then((rs) => res.json(rs));
+
+            // var $=cheerio.load(data);
+            // var list=[];
+            // $('.menu__cat-item a').map(function(i,o){
+            //     list[i] = {
+            //         text:$(o).text(),
+            //         link:$(o).attr("href")
+            //     };
+            //     //return $(o).text();
+            // });
+            // console.log(list);
+            // res.json(list);
+        })
+    }
+});
 
 app.get('/site-detail/:id',(req,res)=>{
     // res.writeHead(200, {'Content-Type': 'application/json'});
