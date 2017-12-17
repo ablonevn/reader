@@ -399,7 +399,7 @@ var SiteCategory = function (_React$Component) {
                         key: idx
                         // leftAvatar={<Avatar icon={<FileFolder/>}/>}
                         // rightIcon={<ActionInfo/>}
-                        , primaryText: item.text,
+                        , primaryText: item.title,
                         onClick: function onClick() {
                             // context.history.push === history.push
                             _this5.props.history.push('/content-detail/' + _this5.props.match.params.siteId + '/' + _this5.props.match.params.name + "/" + (0, _actions.encodeHex)(item.link));
@@ -656,6 +656,7 @@ var ContentDetail = function (_React$Component) {
         value: function updateTitle(lst) {
             var _this2 = this;
 
+            lst = lst || this.props.listSites;
             var fo = lst.filter(function (site) {
                 return _this2.props.match.params.siteId == site.id;
             })[0];
@@ -663,7 +664,7 @@ var ContentDetail = function (_React$Component) {
                 return String.fromCharCode(parseInt(o, 16));
             }).join("");
             this.site = fo;
-            this.props.setTitle(fo.name + " - " + n);
+            this.props.setTitle(this.title);
         }
     }, {
         key: "getContentList",
@@ -673,6 +674,8 @@ var ContentDetail = function (_React$Component) {
             (0, _actions.cachedFetch)('/doc-content/' + this.site.id + "/" + this.props.match.params.name + "/" + this.props.match.params.url).then(function (res) {
                 // debugger;
                 _this3.props.setContentList(res.data);
+                _this3.title = res.title;
+                _this3.updateTitle();
                 console.log(res.data);
             });
         }
@@ -685,6 +688,7 @@ var ContentDetail = function (_React$Component) {
                 icon: "keyboard_arrow_left",
                 click: this.props.history.goBack
             });
+            this.title = "";
             if (this.props.listSites.length == 0) {
                 (0, _actions.cachedFetch)('/sites').then(function (res) {
                     // debugger;
@@ -694,7 +698,7 @@ var ContentDetail = function (_React$Component) {
                 });
             } else {
                 // debugger;
-                this.updateTitle(this.props.listSites);
+                this.updateTitle();
                 this.getContentList();
             }
         }
@@ -708,7 +712,7 @@ var ContentDetail = function (_React$Component) {
                 this.props.contentList.map(function (o, idx) {
                     return _react2.default.createElement(
                         "p",
-                        null,
+                        { key: idx },
                         o
                     );
                 })

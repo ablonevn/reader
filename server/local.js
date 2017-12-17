@@ -77,6 +77,7 @@ function documentContent(name,url){
                 lst=$('.chapter-c').html().split("<br>").filter(r=>r!="");
                 lst=lst.map(o=> cheerio.load(decode(o)).text());
                 resolve({
+                    title:fo.title,
                     data:lst
                 })
 

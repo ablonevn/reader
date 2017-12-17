@@ -22,16 +22,19 @@ class ContentDetail extends React.Component {
     //
     // }
     updateTitle(lst) {
+        lst=lst||this.props.listSites;
         var fo = lst.filter((site) => this.props.match.params.siteId == site.id)[0];
         var n = this.props.match.params.name.split("-").map(o => String.fromCharCode(parseInt(o, 16))).join("");
         this.site=fo;
-        this.props.setTitle(fo.name + " - " + n);
+        this.props.setTitle(this.title);
     }
     getContentList() {
 
         cachedFetch('/doc-content/'+this.site.id+"/"+this.props.match.params.name+"/"+this.props.match.params.url).then((res) => {
             // debugger;
             this.props.setContentList(res.data);
+            this.title=res.title;
+            this.updateTitle();
             console.log(res.data);
         });
     }
@@ -41,6 +44,7 @@ class ContentDetail extends React.Component {
             icon:"keyboard_arrow_left",
             click:this.props.history.goBack
         });
+        this.title="";
         if (this.props.listSites.length == 0) {
             cachedFetch('/sites').then((res) => {
                 // debugger;
@@ -50,7 +54,7 @@ this.getContentList();
             });
         } else {
             // debugger;
-            this.updateTitle(this.props.listSites);
+            this.updateTitle();
             this.getContentList();
         }
 
@@ -64,7 +68,7 @@ this.getContentList();
         return (
             <div>
                 {this.props.contentList.map((o,idx)=>{
-                    return <p>{o}</p>
+                    return <p key={idx}>{o}</p>
                 })}
             </div>
         );

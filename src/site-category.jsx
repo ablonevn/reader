@@ -68,7 +68,7 @@ class SiteCategory extends React.Component {
                         key={idx}
                         // leftAvatar={<Avatar icon={<FileFolder/>}/>}
                         // rightIcon={<ActionInfo/>}
-                        primaryText={item.text}
+                        primaryText={item.title}
                         onClick={() => {
                             // context.history.push === history.push
                             this.props.history.push('/content-detail/' + this.props.match.params.siteId + '/' +this.props.match.params.name+"/"+ encodeHex(item.link))
