@@ -53,6 +53,7 @@ class SiteCategory extends React.Component {
             this.updateTitle(this.props.listSites);
             this.getDocumentList();
         }
+        console.log($(this.el).height());
 
 
     }
@@ -61,7 +62,7 @@ class SiteCategory extends React.Component {
 
 
         return (
-            <div>
+            <div style={{'height':'100vh'}} ref={el=>this.el=el}>
                 {this.props.docList.map((item,idx)=>{
                     return <ListItem
 

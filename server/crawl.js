@@ -11,38 +11,65 @@ var outDir=root+"/"+distDir;
 mkdirp(outDir);
 var tr=require('./'+config.driver);
 var list=[];
+comm.usingTor();
+// process.on('unhandledRejection', error => {
+//     // Won't execute
+//     console.log('unhandledRejection', error.test);
+// });
+
+new Promise(fileListingDone=> {
 
 
-new Promise((resolve,reject)=>{
-    function downloadListChapters(url) {
-        console.log("Downloading ...",url)
-        comm.getHtml(url).then(function(html){
-            tr.documentList(html).then(function(res){
-                if (res.list.length) {
-                    list=list.concat(res.list);
-                }
-                if (res.next) {
-                    // resolve(list);
+    if (!fs.existsSync(outDir + '/chapters.json')) {
 
-                    downloadListChapters(res.next);
-                } else {
-                    resolve(list);
-                }
-                // console.log(res);
 
-            })
+        new Promise((resolve, reject) => {
+            function downloadListChapters(url) {
+                console.log("Downloading ...", url)
+                comm.getHtml(url).then(function (html) {
+                    tr.documentList(html).then(function (res) {
+                        if (res.list.length) {
+                            list = list.concat(res.list);
+                        }
+                        if (res.next) {
+                            // resolve(list);
 
-        })
+                            downloadListChapters(res.next);
+                        } else {
+                            resolve(list);
+                        }
+                        // console.log(res);
 
+                    })
+
+                })
+
+            }
+
+            downloadListChapters(url);
+
+        }).then(res => {
+
+            var json = JSON.stringify(res);
+            fs.writeFileSync(outDir + '/chapters.json', json);
+            fileListingDone();
+        });
+
+    } else {
+        fileListingDone();
     }
-    downloadListChapters(url);
 
-}).then(res=>{
 
-    var json = JSON.stringify(res);
-    fs.writeFileSync(outDir+'/chapters.json', json);
+}).then(()=>{
+    var fileList=require(outDir + '/chapters.json');
+    var data=outDir+"/data";
+    mkdirp(data);
+    function doDownload(idx) {
+        if (idx>fileList.length-1) return ;
+        var item=fileList[idx];
+        console.log("download content "+item.link);
+        tr.documentContent(distDir,item.link).then(()=>doDownload(idx+1));
+    }
+    doDownload(0);
+
 });
-
-
-
-

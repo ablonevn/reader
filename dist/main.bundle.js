@@ -384,6 +384,7 @@ var SiteCategory = function (_React$Component) {
                 this.updateTitle(this.props.listSites);
                 this.getDocumentList();
             }
+            console.log($(this.el).height());
         }
     }, {
         key: "render",
@@ -392,7 +393,9 @@ var SiteCategory = function (_React$Component) {
 
             return _react2.default.createElement(
                 "div",
-                null,
+                { style: { 'height': '100vh' }, ref: function ref(el) {
+                        return _this5.el = el;
+                    } },
                 this.props.docList.map(function (item, idx) {
                     return _react2.default.createElement(_materialUi.ListItem, {
 
@@ -1188,19 +1191,6 @@ var App = function (_React$Component) {
                         _react2.default.createElement(_reactRouter.Route, { path: "/site/:id", component: _siteDetail2.default }),
                         _react2.default.createElement(_reactRouter.Route, { path: "/site-category/:siteId/:name/:url", component: _siteCategory2.default }),
                         _react2.default.createElement(_reactRouter.Route, { path: "/content-detail/:siteId/:name/:url", component: _contentDetail2.default })
-                    ),
-                    _react2.default.createElement(
-                        _materialUi.Paper,
-                        { zDepth: 1 },
-                        _react2.default.createElement(
-                            _materialUi.BottomNavigation,
-                            null,
-                            _react2.default.createElement(_materialUi.BottomNavigationItem, { style: { 'display': 'blockxxx' },
-                                label: "Recents",
-                                icon: recentsIcon
-                                // onClick={}
-                            })
-                        )
                     )
                 )
             );

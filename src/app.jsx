@@ -66,18 +66,7 @@ class App extends React.Component {
                         <Route path="/content-detail/:siteId/:name/:url" component={ContentDetail}/>
 
                     </div>
-                    <Paper zDepth={1}>
-                        <BottomNavigation >
-                            <BottomNavigationItem style={{'display' : 'blockxxx'}}
-                                label="Recents"
-                                icon={recentsIcon}
-                                // onClick={}
-                            />
-                        </BottomNavigation>
 
-
-
-                    </Paper>
                 </div>
 
             </Router>
