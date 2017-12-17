@@ -6,7 +6,8 @@ import createBrowserHistory from 'history/createBrowserHistory';
 import {setSiteList} from './actions'
 import SiteDetail from './site-detail';
 import SiteCategory from './site-category';
-import AppHeader from './app-header'
+import AppHeader from './app-header';
+import ContentDetail from './content-detail';
 
 
 
@@ -62,6 +63,7 @@ class App extends React.Component {
                         <Route exact path="/" component={Home}/>
                         <Route path="/site/:id" component={SiteDetail}/>
                         <Route path="/site-category/:siteId/:name/:url" component={SiteCategory}/>
+                        <Route path="/content-detail/:siteId/:name/:url" component={ContentDetail}/>
 
                     </div>
                     <Paper zDepth={1}>

@@ -58,7 +58,7 @@ class AppHeader extends React.Component {
             <AppBar
                 title={this.props.title}
 
-                iconElementLeft={<IconButton></IconButton>}
+                iconElementLeft={<IconButton onClick={this.props.menuClick}><FontIcon className={'material-icons'}>{this.props.icon}</FontIcon></IconButton>}
                 iconElementRight={<FlatButton label="Save" />}
             />
 
@@ -69,9 +69,9 @@ class AppHeader extends React.Component {
 const mapStateToProps = (state, ownProps) => {
     return {
         // siteLoaded:state.sites.loaded,
-        // menuClick:state.app.click,
+        menuClick:state.app.click,
         title:state.app.title,
-        // icon:state.app.icon,
+        icon:state.app.icon,
     };
 };
 

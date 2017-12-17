@@ -1,7 +1,8 @@
 
 const sites=[
-    {id:2,name:'test',url:'http://adayroi.com'},
-    {id:0,name:'adayroi',url:'http://adayroi.com'},
+    {id:0,name:'local',url:''},
+    {id:1,name:'adayroi',url:'http://adayroi.com'},
+    {id:2,name:'test',url:''},
     // {id:1,name:'tgdd',url:'http://thegioididong.com'}
 ];
 var usingTor=true;
@@ -25,7 +26,11 @@ function ops(options){
 
 function getHtml(url){
     return new Promise((resolve, reject) => {
-        var rq=doRequest();
+
+        if ((url||"")=="") {
+            resolve("");
+            return;
+        }
         request(ops({
             url: url,
 

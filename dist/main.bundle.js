@@ -211,7 +211,7 @@ var SiteDetail = function (_React$Component) {
     }, {
         key: "norm",
         value: function norm(text) {
-            var arr = text.split('').map(function (c) {
+            var arr = ((text || "") + "").split('').map(function (c) {
                 return c.charCodeAt(0).toString(16);
             });
             return arr.join("-");
@@ -234,7 +234,6 @@ var SiteDetail = function (_React$Component) {
 
                         key: idx,
                         leftAvatar: _react2.default.createElement(_materialUi.Avatar, { icon: _react2.default.createElement(_index.FileFolder, null) }),
-                        rightIcon: _react2.default.createElement(_index.ActionInfo, null),
                         primaryText: item.text,
                         onClick: function onClick() {
                             // context.history.push === history.push
@@ -403,7 +402,7 @@ var SiteCategory = function (_React$Component) {
                         , primaryText: item.text,
                         onClick: function onClick() {
                             // context.history.push === history.push
-                            _this5.props.history.push('/content-detail/' + _this5.props.match.params.siteId + '/' + (0, _actions.encodeHex)(item.link));
+                            _this5.props.history.push('/content-detail/' + _this5.props.match.params.siteId + '/' + _this5.props.match.params.name + "/" + (0, _actions.encodeHex)(item.link));
                         },
                         secondaryText: item.link
                     });
@@ -550,7 +549,15 @@ var AppHeader = function (_React$Component) {
             return _react2.default.createElement(_materialUi.AppBar, {
                 title: this.props.title,
 
-                iconElementLeft: _react2.default.createElement(_materialUi.IconButton, null),
+                iconElementLeft: _react2.default.createElement(
+                    _materialUi.IconButton,
+                    { onClick: this.props.menuClick },
+                    _react2.default.createElement(
+                        _materialUi.FontIcon,
+                        { className: 'material-icons' },
+                        this.props.icon
+                    )
+                ),
                 iconElementRight: _react2.default.createElement(_materialUi.FlatButton, { label: "Save" })
             });
         }
@@ -564,9 +571,9 @@ var AppHeader = function (_React$Component) {
 var mapStateToProps = function mapStateToProps(state, ownProps) {
     return {
         // siteLoaded:state.sites.loaded,
-        // menuClick:state.app.click,
-        title: state.app.title
-        // icon:state.app.icon,
+        menuClick: state.app.click,
+        title: state.app.title,
+        icon: state.app.icon
     };
 };
 
@@ -583,6 +590,167 @@ exports.default = (0, _reactRedux.connect)(mapStateToProps, mapDispatchToProps)(
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
+
+/***/ }),
+
+/***/ 1875:
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _react = __webpack_require__(0);
+
+var _react2 = _interopRequireDefault(_react);
+
+var _reactRedux = __webpack_require__(65);
+
+var _actions = __webpack_require__(66);
+
+var _materialUi = __webpack_require__(92);
+
+var _index = __webpack_require__(155);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+// import {Subject} from "rxjs";
+
+var state = {
+
+    lastDetail: -1
+};
+
+// let loaded=[];
+
+var ContentDetail = function (_React$Component) {
+    _inherits(ContentDetail, _React$Component);
+
+    function ContentDetail() {
+        _classCallCheck(this, ContentDetail);
+
+        return _possibleConstructorReturn(this, (ContentDetail.__proto__ || Object.getPrototypeOf(ContentDetail)).apply(this, arguments));
+    }
+
+    _createClass(ContentDetail, [{
+        key: "updateTitle",
+
+
+        // constructor(props) {
+        //     super(props);
+        //     // this.title=new Subject();
+        //     // this.title.subscribe((text)=>this.props.setTitle(text))
+        //
+        // }
+        value: function updateTitle(lst) {
+            var _this2 = this;
+
+            var fo = lst.filter(function (site) {
+                return _this2.props.match.params.siteId == site.id;
+            })[0];
+            var n = this.props.match.params.name.split("-").map(function (o) {
+                return String.fromCharCode(parseInt(o, 16));
+            }).join("");
+            this.site = fo;
+            this.props.setTitle(fo.name + " - " + n);
+        }
+    }, {
+        key: "getContentList",
+        value: function getContentList() {
+            var _this3 = this;
+
+            (0, _actions.cachedFetch)('/doc-content/' + this.site.id + "/" + this.props.match.params.name + "/" + this.props.match.params.url).then(function (res) {
+                // debugger;
+                _this3.props.setContentList(res.data);
+                console.log(res.data);
+            });
+        }
+    }, {
+        key: "componentDidMount",
+        value: function componentDidMount() {
+            var _this4 = this;
+
+            this.props.setAppIcon({
+                icon: "keyboard_arrow_left",
+                click: this.props.history.goBack
+            });
+            if (this.props.listSites.length == 0) {
+                (0, _actions.cachedFetch)('/sites').then(function (res) {
+                    // debugger;
+                    _this4.props.setSiteList(res);
+                    _this4.updateTitle(res);
+                    _this4.getContentList();
+                });
+            } else {
+                // debugger;
+                this.updateTitle(this.props.listSites);
+                this.getContentList();
+            }
+        }
+    }, {
+        key: "render",
+        value: function render() {
+
+            return _react2.default.createElement(
+                "div",
+                null,
+                this.props.contentList.map(function (o, idx) {
+                    return _react2.default.createElement(
+                        "p",
+                        null,
+                        o
+                    );
+                })
+            );
+        }
+    }]);
+
+    return ContentDetail;
+}(_react2.default.Component);
+
+var mapStateToProps = function mapStateToProps(state, ownProps) {
+    return {
+        listSites: state.sites.list,
+        contentList: state.content.list
+        //docList:state.doc.list
+        // lstDetail:state.app.siteDetail.list
+    };
+};
+
+var mapDispatchToProps = function mapDispatchToProps(dispatch) {
+    return {
+        setSiteList: function setSiteList(lst) {
+            return dispatch((0, _actions.setSiteList)(lst));
+        },
+        setDocList: function setDocList(lst) {
+            return dispatch((0, _actions.setDocumentList)(lst));
+        },
+        // setSiteDetailList:(list)=>dispatch(setSiteDetailList(list)),
+        setTitle: function setTitle(data) {
+            return dispatch((0, _actions.setAppTitle)("" + data || ""));
+        },
+        setAppIcon: function setAppIcon(icon) {
+            return dispatch((0, _actions.setAppIcon)(icon));
+        },
+        setContentList: function setContentList(lst) {
+            return dispatch((0, _actions.setContentList)(lst));
+        }
+
+    };
+};
+
+exports.default = (0, _reactRedux.connect)(mapStateToProps, mapDispatchToProps)(ContentDetail);
 
 /***/ }),
 
@@ -703,10 +871,6 @@ function app() {
                 if (r.click) p.click = r.click;
 
                 return Object.assign({}, state, p);
-            case _actions.GET_TITLE:
-                return Object.assign({}, state, {
-                    title: "List site"
-                });
 
             default:
                 return state;
@@ -723,10 +887,7 @@ function sites() {
     var action = arguments[1];
 
     switch (action.type) {
-        case _actions.SET_SITE_LOADING:
-            return Object.assign({}, state, {
-                loading: action.state
-            });
+
         case _actions.SET_SITE_LIST:
             return Object.assign({}, state, {
 
@@ -771,11 +932,27 @@ function doc() {
     }
 }
 
+function content() {
+    var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {
+        list: []
+    };
+    var action = arguments[1];
+
+    switch (action.type) {
+        case _actions.SET_CONTENT_LIST:
+            return Object.assign({}, state, {
+                list: action.list
+            });
+        default:
+            return state;
+    }
+}
 var appData = (0, _redux.combineReducers)({
     app: app,
     sites: sites,
     siteDetail: siteDetail,
-    doc: doc
+    doc: doc,
+    content: content
 });
 
 exports.default = appData;
@@ -797,7 +974,9 @@ exports.setAppTitle = setAppTitle;
 exports.setSiteDetailList = setSiteDetailList;
 exports.setAppIcon = setAppIcon;
 exports.setDocumentList = setDocumentList;
+exports.setContentList = setContentList;
 exports.encodeHex = encodeHex;
+exports.decodeHex = decodeHex;
 var counter = 0;
 
 function j() {
@@ -826,6 +1005,7 @@ var SET_DETAIL_LIST = exports.SET_DETAIL_LIST = j();
 
 // document
 var SET_DOCUMENT_LIST = exports.SET_DOCUMENT_LIST = j();
+var SET_CONTENT_LIST = exports.SET_CONTENT_LIST = j();
 
 var memFetch = {};
 
@@ -864,11 +1044,19 @@ function setAppIcon(info) {
 function setDocumentList(list) {
     return { type: SET_DOCUMENT_LIST, list: list };
 }
+function setContentList(list) {
+    return { type: SET_CONTENT_LIST, list: list };
+}
 function encodeHex(text) {
     var arr = text.split('').map(function (c) {
         return c.charCodeAt(0).toString(16);
     });
     return arr.join("-");
+}
+function decodeHex(text) {
+    return text.split("-").map(function (o) {
+        return String.fromCharCode(parseInt(o, 16));
+    }).join("");
 }
 
 /***/ }),
@@ -912,6 +1100,10 @@ var _siteCategory2 = _interopRequireDefault(_siteCategory);
 var _appHeader = __webpack_require__(1870);
 
 var _appHeader2 = _interopRequireDefault(_appHeader);
+
+var _contentDetail = __webpack_require__(1875);
+
+var _contentDetail2 = _interopRequireDefault(_contentDetail);
 
 var _reactRedux = __webpack_require__(65);
 
@@ -990,7 +1182,8 @@ var App = function (_React$Component) {
                         { style: { flex: 1, overflowY: 'scroll' } },
                         _react2.default.createElement(_reactRouter.Route, { exact: true, path: "/", component: _home2.default }),
                         _react2.default.createElement(_reactRouter.Route, { path: "/site/:id", component: _siteDetail2.default }),
-                        _react2.default.createElement(_reactRouter.Route, { path: "/site-category/:siteId/:name/:url", component: _siteCategory2.default })
+                        _react2.default.createElement(_reactRouter.Route, { path: "/site-category/:siteId/:name/:url", component: _siteCategory2.default }),
+                        _react2.default.createElement(_reactRouter.Route, { path: "/content-detail/:siteId/:name/:url", component: _contentDetail2.default })
                     ),
                     _react2.default.createElement(
                         _materialUi.Paper,

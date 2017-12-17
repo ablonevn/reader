@@ -15,6 +15,7 @@ let clientListNames = [];
 let prod = true;
 app.use(express.static('dist'));
 app.use(express.static('server'));
+var root=path.resolve(__dirname+"/../data");
 //app.use('/dist', express.static(path.join(__dirname, 'dist')));
 // app.use(express.static(__dirname + '/dist'));
 // let proxyFiles = ['/polyfills.bundle.js','/vendor.bundle.js', '/main.bundle.js', '/styles.css'];
@@ -99,6 +100,39 @@ app.use(express.static('server'));
 const comm=require('./common');
 const sites=comm.sites;
 const getHtml=comm.getHtml;
+app.get('/doc-content/:siteid/:name/:url',(req,res)=>{
+    // res.writeHead(200, {'Content-Type': 'application/json'});
+    var fo=sites.filter(o=>o.id==req.params.siteid);
+    if (fo.length) {
+        var site = require("./" + fo[0].name);
+
+
+        var url=req.params.url.split("-").map(o => String.fromCharCode(parseInt(o, 16))).join("");
+        var name=req.params.name.split("-").map(o => String.fromCharCode(parseInt(o, 16))).join("");
+        if (req.params.siteid==0) {
+
+            site.documentContent(name,url).then((rs) => res.json(rs));
+            return;
+        }
+
+        getHtml(url).then((data) => {
+            site.documentContent(data).then((rs) => res.json(rs));
+
+            // var $=cheerio.load(data);
+            // var list=[];
+            // $('.menu__cat-item a').map(function(i,o){
+            //     list[i] = {
+            //         text:$(o).text(),
+            //         link:$(o).attr("href")
+            //     };
+            //     //return $(o).text();
+            // });
+            // console.log(list);
+            // res.json(list);
+        })
+    }
+});
+
 
 app.get('/doc-list/:siteid/:url',(req,res)=>{
     // res.writeHead(200, {'Content-Type': 'application/json'});
@@ -106,7 +140,12 @@ app.get('/doc-list/:siteid/:url',(req,res)=>{
     if (fo.length) {
         var site = require("./" + fo[0].name);
 
+
         var url=req.params.url.split("-").map(o => String.fromCharCode(parseInt(o, 16))).join("");
+        if (req.params.siteid==0) {
+            site.documentList(url).then(rs=>res.json(rs));
+            return;
+        }
 
         getHtml(url).then((data) => {
             site.documentList(data).then((rs) => res.json(rs));
@@ -127,10 +166,18 @@ app.get('/doc-list/:siteid/:url',(req,res)=>{
 });
 
 app.get('/site-detail/:id',(req,res)=>{
+
+
     // res.writeHead(200, {'Content-Type': 'application/json'});
     var fo=sites.filter(o=>o.id==req.params.id);
     if (fo.length) {
         var site=require("./"+fo[0].name);
+        if (req.params.id==0) {
+            site.siteListItem().then(rs=>{
+                res.send(rs);
+            });
+            return;
+        }
         getHtml(fo[0].url).then((data)=>{
             site.siteListItem(data).then((rs)=>res.json(rs));
 
@@ -151,7 +198,9 @@ app.get('/site-detail/:id',(req,res)=>{
 
 app.get('/sites',(req,res)=>{
     // res.writeHead(200, {'Content-Type': 'application/json'});
-   res.send(sites);
+
+    res.send(sites);
+
 });
 
 app.get('/api/get/:url', function (req, res) {

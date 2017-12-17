@@ -1,14 +1,15 @@
 var comm=require('./common');
 var mkdirp=require("mkdirp");
+var config=require('./config');
 var path=require("path");
 var root=path.resolve( __dirname+'/../data');
-var distDir="gia-thien";
-var url='http://truyenfull.vn/gia-thien/';
+var distDir=config.target;
+var url=config.url;
 var fs=require("fs");
 var index=[];
 var outDir=root+"/"+distDir;
 mkdirp(outDir);
-var tr=require('./truyenfull');
+var tr=require('./'+config.driver);
 var list=[];
 
 

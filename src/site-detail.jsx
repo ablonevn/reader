@@ -172,7 +172,7 @@ class SiteDetail extends React.Component {
     }
 
     norm(text) {
-        var arr = text.split('').map(function (c) {
+        var arr = ((text||"")+"").split('').map(function (c) {
             return c.charCodeAt(0).toString(16);
         });
         return arr.join("-");
@@ -193,7 +193,6 @@ class SiteDetail extends React.Component {
 
                                 key={idx}
                                 leftAvatar={<Avatar icon={<FileFolder/>}/>}
-                                rightIcon={<ActionInfo/>}
                                 primaryText={item.text}
                                 onClick={() => {
                                     // context.history.push === history.push

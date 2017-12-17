@@ -1,10 +1,10 @@
 import React from 'react';
 import {connect} from "react-redux";
 
-import {cachedFetch, setAppIcon, setAppTitle, setSiteDetailList, setSiteList,setDocumentList,encodeHex} from "./actions";
+import {cachedFetch, setAppIcon, setAppTitle, setSiteDetailList, setSiteList,setDocumentList,encodeHex,setContentList} from "./actions";
 import {Avatar, ListItem} from "material-ui";
 import {ActionInfo, FileFolder} from "material-ui/svg-icons/index";
-import {Subject} from "rxjs";
+// import {Subject} from "rxjs";
 
 let state = {
 
@@ -12,7 +12,7 @@ let state = {
 };
 
 // let loaded=[];
-class SiteCategory extends React.Component {
+class ContentDetail extends React.Component {
 
 
     // constructor(props) {
@@ -27,11 +27,11 @@ class SiteCategory extends React.Component {
         this.site=fo;
         this.props.setTitle(fo.name + " - " + n);
     }
-    getDocumentList() {
+    getContentList() {
 
-        cachedFetch('/doc-list/'+this.site.id+"/"+this.props.match.params.url).then((res) => {
+        cachedFetch('/doc-content/'+this.site.id+"/"+this.props.match.params.name+"/"+this.props.match.params.url).then((res) => {
             // debugger;
-            this.props.setDocList(res.data);
+            this.props.setContentList(res.data);
             console.log(res.data);
         });
     }
@@ -46,13 +46,14 @@ class SiteCategory extends React.Component {
                 // debugger;
                 this.props.setSiteList(res);
                 this.updateTitle(res);
-                this.getDocumentList();
+this.getContentList();
             });
         } else {
             // debugger;
             this.updateTitle(this.props.listSites);
-            this.getDocumentList();
+            this.getContentList();
         }
+
 
 
     }
@@ -62,20 +63,8 @@ class SiteCategory extends React.Component {
 
         return (
             <div>
-                {this.props.docList.map((item,idx)=>{
-                    return <ListItem
-
-                        key={idx}
-                        // leftAvatar={<Avatar icon={<FileFolder/>}/>}
-                        // rightIcon={<ActionInfo/>}
-                        primaryText={item.text}
-                        onClick={() => {
-                            // context.history.push === history.push
-                            this.props.history.push('/content-detail/' + this.props.match.params.siteId + '/' +this.props.match.params.name+"/"+ encodeHex(item.link))
-                        }}
-                        secondaryText={item.link}
-                    />
-
+                {this.props.contentList.map((o,idx)=>{
+                    return <p>{o}</p>
                 })}
             </div>
         );
@@ -86,7 +75,8 @@ class SiteCategory extends React.Component {
 const mapStateToProps = (state, ownProps) => {
     return {
         listSites: state.sites.list,
-        docList:state.doc.list
+        contentList:state.content.list
+        //docList:state.doc.list
         // lstDetail:state.app.siteDetail.list
     };
 };
@@ -98,8 +88,9 @@ const mapDispatchToProps = (dispatch) => {
         // setSiteDetailList:(list)=>dispatch(setSiteDetailList(list)),
         setTitle: (data) => dispatch(setAppTitle("" + data || "")),
         setAppIcon: (icon) => dispatch(setAppIcon(icon)),
+        setContentList:(lst)=>dispatch(setContentList(lst))
 
     }
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(SiteCategory);
+export default connect(mapStateToProps, mapDispatchToProps)(ContentDetail);

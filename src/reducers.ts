@@ -1,7 +1,7 @@
 import { combineReducers } from 'redux'
 import {
-    GET_TITLE, SET_SITE_LIST, SET_APP_TITLE, SET_DETAIL_LIST, SET_APP_ICON, cachedFetch,
-    SET_SITE_LOADING, SET_DOCUMENT_LIST
+ SET_SITE_LIST, SET_APP_TITLE, SET_DETAIL_LIST, SET_APP_ICON, cachedFetch,
+     SET_DOCUMENT_LIST,SET_CONTENT_LIST
 } from './actions'
 
 let initState = {
@@ -27,10 +27,6 @@ function app(state = initState, action) {
                 if (r.click) p.click = r.click;
 
                 return Object.assign({}, state, p);
-            case GET_TITLE:
-                return Object.assign({}, state, {
-                    title: "List site"
-                });
 
 
             default:
@@ -46,10 +42,7 @@ function sites(state = {
     list: []
 }, action) {
     switch (action.type) {
-        case SET_SITE_LOADING:
-            return Object.assign({}, state, {
-                loading: action.state
-            });
+
         case SET_SITE_LIST:
             return Object.assign({}, state, {
 
@@ -89,12 +82,24 @@ function doc(state = {
     }
 }
 
-
+function content(state = {
+    list: []
+}, action) {
+    switch (action.type) {
+        case SET_CONTENT_LIST:
+            return Object.assign({},state,{
+                list:action.list
+            });
+        default:
+            return state;
+    }
+}
 const appData = combineReducers({
     app,
     sites,
     siteDetail,
-    doc
+    doc,
+    content
 });
 
 export default appData
