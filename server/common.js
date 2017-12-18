@@ -1,5 +1,5 @@
-const socksPort= '40050';
-//const socksPort= '9050';
+//const socksPort= '40050';
+const socksPort= '9050';
 const sites = [
     {id: 0, name: 'local', url: ''},
     {id: 1, name: 'adayroi', url: 'http://adayroi.com'},
