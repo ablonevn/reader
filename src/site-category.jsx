@@ -137,12 +137,9 @@ class SiteCategory extends React.Component {
                 </div>
                 <Toolbar>
                     <ToolbarGroup firstChild={true}>
-
+                        <RaisedButton label="Prev" onClick={()=>this.doPrev()} primary={true}/>
                     </ToolbarGroup>
                     <ToolbarGroup>
-                        <ToolbarTitle text="Options"/>
-                        <FontIcon className="muidocs-icon-custom-sort"/>
-                        <RaisedButton label="Prev" onClick={()=>this.doPrev()} primary={true}/>
 
                         <RaisedButton label="Next" onClick={()=>this.doNext()} primary={true}/>
 
