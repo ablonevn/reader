@@ -1,5 +1,6 @@
 import React from 'react';
 import {connect} from "react-redux";
+import {decodeHex} from './actions'
 
 import {
     cachedFetch,
@@ -72,8 +73,21 @@ class ContentDetail extends React.Component {
         this.next = null;
         this.prev = null;
         this.mprops = this.mprops || this.props;
+        var url='/doc-content/' + this.site.id + "/" + this.mprops.match.params.name + "/" + this.mprops.match.params.url;
+        fetch('/save',{
+            method: 'post',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                id:this.site.id,
+                url:'/content-detail/' + this.site.id + "/" + this.mprops.match.params.name + "/" + this.mprops.match.params.url,
+                name: decodeHex(this.mprops.match.params.name)
+            })
+        }).then(r=>r);
 
-        cachedFetch('/doc-content/' + this.site.id + "/" + this.mprops.match.params.name + "/" + this.mprops.match.params.url).then((res) => {
+        cachedFetch(url).then((res) => {
             // debugger;
             this.props.setContentList(res.data);
             this.next = res.next;

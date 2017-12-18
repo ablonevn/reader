@@ -17,6 +17,7 @@
   "license": "ISC",
   "dependencies": {
     "@types/reflect-metadata": "0.0.5",
+
     "cheerio": "^1.0.0-rc.2",
     "express": "^4.16.2",
     "html-entities": "^1.2.1",

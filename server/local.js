@@ -16,7 +16,10 @@ function siteListItem() {
             var k = -1;
 
             for (var i = 0; i < items.length; i++) {
-                ls.push({id: k--, text: items[i],link:items[i]});
+                if (items[i]!="read.json") {
+                    ls.push({id: k--, text: items[i],link:items[i]});
+                }
+
             }
             resolve({
                 data:ls,

@@ -49,7 +49,18 @@ class Home extends React.Component {
                 <List>
                     <Subheader inset={true}>List sites</Subheader>
                     {this.props.list.map((o) => {
-                        return <ListItem key={o.id}
+                        {if (o.reading){
+                            return <ListItem key={o.id}
+                                      leftAvatar={<Avatar icon={<FileFolder/>}/>}
+                                      rightIcon={<ActionInfo/>}
+                                      primaryText={o.name}
+                                      onClick={() => {
+                                          // context.history.push === history.push
+                                          me.props.history.push(o.url)
+                                      }}
+                                      secondaryText={o.url}/>
+                        } else {
+                            return <ListItem key={o.id}
                                          leftAvatar={<Avatar icon={<FileFolder/>}/>}
                                          rightIcon={<ActionInfo/>}
                                          primaryText={o.name}
@@ -58,7 +69,7 @@ class Home extends React.Component {
                                              me.props.history.push('/site/' + o.id)
                                          }}
                                          secondaryText={o.url}
-                        />;
+                        />}};
                     })}
 
                 </List>

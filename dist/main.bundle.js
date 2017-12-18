@@ -233,7 +233,7 @@ var ContentDetail = function (_React$Component) {
     }
 
     _createClass(ContentDetail, [{
-        key: "resetState",
+        key: 'resetState',
         value: function resetState() {
             state = Object.assign({}, state, {
 
@@ -245,7 +245,7 @@ var ContentDetail = function (_React$Component) {
             });
         }
     }, {
-        key: "updateTitle",
+        key: 'updateTitle',
         value: function updateTitle(lst) {
             var _this2 = this;
 
@@ -260,7 +260,7 @@ var ContentDetail = function (_React$Component) {
             this.props.setTitle(this.title);
         }
     }, {
-        key: "componentWillReceiveProps",
+        key: 'componentWillReceiveProps',
         value: function componentWillReceiveProps(newProps) {
             this.mprops = newProps;
             if (newProps.location && this.oldLocaltion != newProps.location.pathname) {
@@ -272,15 +272,30 @@ var ContentDetail = function (_React$Component) {
             }
         }
     }, {
-        key: "getContentList",
+        key: 'getContentList',
         value: function getContentList() {
             var _this3 = this;
 
             this.next = null;
             this.prev = null;
             this.mprops = this.mprops || this.props;
+            var url = '/doc-content/' + this.site.id + "/" + this.mprops.match.params.name + "/" + this.mprops.match.params.url;
+            fetch('/save', {
+                method: 'post',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    id: this.site.id,
+                    url: '/content-detail/' + this.site.id + "/" + this.mprops.match.params.name + "/" + this.mprops.match.params.url,
+                    name: (0, _actions.decodeHex)(this.mprops.match.params.name)
+                })
+            }).then(function (r) {
+                return r;
+            });
 
-            (0, _actions.cachedFetch)('/doc-content/' + this.site.id + "/" + this.mprops.match.params.name + "/" + this.mprops.match.params.url).then(function (res) {
+            (0, _actions.cachedFetch)(url).then(function (res) {
                 // debugger;
                 _this3.props.setContentList(res.data);
                 _this3.next = res.next;
@@ -291,7 +306,7 @@ var ContentDetail = function (_React$Component) {
             });
         }
     }, {
-        key: "doNext",
+        key: 'doNext',
         value: function doNext() {
             console.log("limit item", state.limit);
             if (state.startPos + state.limit < this.props.contentList.length) {
@@ -306,7 +321,7 @@ var ContentDetail = function (_React$Component) {
             }
         }
     }, {
-        key: "doPrev",
+        key: 'doPrev',
         value: function doPrev() {
             //console.log("limit item",state.limit);
             if (state.startPos - state.limit >= 0) {
@@ -321,7 +336,7 @@ var ContentDetail = function (_React$Component) {
             }
         }
     }, {
-        key: "componentDidMount",
+        key: 'componentDidMount',
         value: function componentDidMount() {
             var _this4 = this;
 
@@ -348,28 +363,28 @@ var ContentDetail = function (_React$Component) {
             this.setState(Object.assign({}, state));
         }
     }, {
-        key: "renderItem",
+        key: 'renderItem',
         value: function renderItem(item, idx, limit) {
             state.limit = limit;
 
             return _react2.default.createElement(
-                "div",
+                'div',
                 { key: idx },
                 item
             );
         }
     }, {
-        key: "render",
+        key: 'render',
         value: function render() {
             var _this5 = this;
 
             return _react2.default.createElement(
-                "div",
+                'div',
                 { ref: function ref(el) {
                         return _this5.el = el;
                     } },
                 _react2.default.createElement(
-                    "div",
+                    'div',
                     { style: { padding: '10px', height: state.height } },
                     _react2.default.createElement(_paging2.default, { startPos: state.startPos, height: state.height, rows: this.props.contentList,
                         renderItem: this.renderItem })
@@ -380,14 +395,14 @@ var ContentDetail = function (_React$Component) {
                     _react2.default.createElement(
                         _materialUi.ToolbarGroup,
                         { firstChild: true },
-                        _react2.default.createElement(_materialUi.RaisedButton, { label: "Prev", onClick: function onClick() {
+                        _react2.default.createElement(_materialUi.RaisedButton, { label: 'Prev', onClick: function onClick() {
                                 return _this5.doPrev();
                             }, primary: true })
                     ),
                     _react2.default.createElement(
                         _materialUi.ToolbarGroup,
                         null,
-                        _react2.default.createElement(_materialUi.RaisedButton, { label: "Next", onClick: function onClick() {
+                        _react2.default.createElement(_materialUi.RaisedButton, { label: 'Next', onClick: function onClick() {
                                 return _this5.doNext();
                             }, primary: true })
                     )
@@ -542,16 +557,30 @@ var Home = function (_React$Component) {
                         'List sites'
                     ),
                     this.props.list.map(function (o) {
-                        return _react2.default.createElement(_materialUi.ListItem, { key: o.id,
-                            leftAvatar: _react2.default.createElement(_materialUi.Avatar, { icon: _react2.default.createElement(_index.FileFolder, null) }),
-                            rightIcon: _react2.default.createElement(_index.ActionInfo, null),
-                            primaryText: o.name,
-                            onClick: function onClick() {
-                                // context.history.push === history.push
-                                me.props.history.push('/site/' + o.id);
-                            },
-                            secondaryText: o.url
-                        });
+                        {
+                            if (o.reading) {
+                                return _react2.default.createElement(_materialUi.ListItem, { key: o.id,
+                                    leftAvatar: _react2.default.createElement(_materialUi.Avatar, { icon: _react2.default.createElement(_index.FileFolder, null) }),
+                                    rightIcon: _react2.default.createElement(_index.ActionInfo, null),
+                                    primaryText: o.name,
+                                    onClick: function onClick() {
+                                        // context.history.push === history.push
+                                        me.props.history.push(o.url);
+                                    },
+                                    secondaryText: o.url });
+                            } else {
+                                return _react2.default.createElement(_materialUi.ListItem, { key: o.id,
+                                    leftAvatar: _react2.default.createElement(_materialUi.Avatar, { icon: _react2.default.createElement(_index.FileFolder, null) }),
+                                    rightIcon: _react2.default.createElement(_index.ActionInfo, null),
+                                    primaryText: o.name,
+                                    onClick: function onClick() {
+                                        // context.history.push === history.push
+                                        me.props.history.push('/site/' + o.id);
+                                    },
+                                    secondaryText: o.url
+                                });
+                            }
+                        };
                     })
                 )
             );

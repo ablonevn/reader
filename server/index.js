@@ -9,12 +9,35 @@ let http = require('http').Server(app);
 let path=require('path');
 let clientListNames = [];
 let prod = true;
-app.use(express.static('dist'));
-app.use(express.static('server'));
 let root=path.resolve(__dirname+"/../data");
 const comm=require('./common');
+// var bodyParser = require('body-parser');
 const sites=comm.sites;
 const getHtml=comm.getHtml;
+
+app.use(express.static('dist'));
+app.use(express.static('server'));
+app.use(express.json());       // to support JSON-encoded bodies
+app.use(express.urlencoded()); // to support URL-encoded bodies
+// app.use(bodyParser.json());
+app.post('/save', function(req, res) {
+
+    var id = parseInt(req.body.id)+1000,
+        url = req.body.url,
+        name=req.body.name;
+    var lst=[];
+    if (fs.existsSync(root+"/read.json")) {
+        lst=JSON.parse( fs.readFileSync(root+"/read.json")+"");
+    }
+    var fo=lst.filter(o=>o.id==id);
+    if (fo.length) {
+        fo[0].url=url;
+    } else {
+        lst.push({id,url,name,reading:true});
+    }
+    fs.writeFileSync(root+"/read.json",JSON.stringify(lst));
+
+});
 app.get('/doc-content/:siteid/:name/:url',(req,res)=>{
     // res.writeHead(200, {'Content-Type': 'application/json'});
     let fo=sites.filter(o=>o.id==req.params.siteid);
@@ -113,8 +136,11 @@ app.get('/site-detail/:id',(req,res)=>{
 
 app.get('/sites',(req,res)=>{
     // res.writeHead(200, {'Content-Type': 'application/json'});
-
-    res.send(sites);
+    var lst=[];
+    if (fs.existsSync(root+"/read.json")) {
+        lst=JSON.parse( fs.readFileSync(root+"/read.json")+"");
+    }
+    res.send([].concat(sites).concat(lst));
 
 });
 
