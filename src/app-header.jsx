@@ -57,7 +57,6 @@ class AppHeader extends React.Component {
         return (
             <AppBar
                 title={this.props.title}
-
                 iconElementLeft={<IconButton onClick={this.props.menuClick}><FontIcon className={'material-icons'}>{this.props.icon}</FontIcon></IconButton>}
                 iconElementRight={<FlatButton label="Save" />}
             />

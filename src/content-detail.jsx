@@ -1,13 +1,27 @@
 import React from 'react';
 import {connect} from "react-redux";
 
-import {cachedFetch, setAppIcon, setAppTitle, setSiteDetailList, setSiteList,setDocumentList,encodeHex,setContentList} from "./actions";
-import {Avatar, ListItem} from "material-ui";
+import {
+    cachedFetch,
+    setAppIcon,
+    setAppTitle,
+    setSiteDetailList,
+    setSiteList,
+    setDocumentList,
+    encodeHex,
+    setContentList
+} from "./actions";
+import {Avatar, ListItem, RaisedButton, Toolbar, ToolbarGroup} from "material-ui";
 import {ActionInfo, FileFolder} from "material-ui/svg-icons/index";
 // import {Subject} from "rxjs";
+import Paging from './paging';
 
 let state = {
-
+    height: 0,
+    startPos: 0,
+    limit: 1,
+    items: [],
+    fetchItem: false,
     lastDetail: -1
 };
 
@@ -15,50 +29,114 @@ let state = {
 class ContentDetail extends React.Component {
 
 
-    // constructor(props) {
-    //     super(props);
-    //     // this.title=new Subject();
-    //     // this.title.subscribe((text)=>this.props.setTitle(text))
-    //
-    // }
+    constructor(props) {
+        super(props);
+        this.resetState();
+        state.height = 0;
+
+    }
+
+    resetState() {
+        state = Object.assign({}, state, {
+
+            startPos: 0,
+            limit: 1,
+            items: [],
+            fetchItem: false,
+
+        });
+    }
+
     updateTitle(lst) {
-        lst=lst||this.props.listSites;
+        lst = lst || this.props.listSites;
         var fo = lst.filter((site) => this.props.match.params.siteId == site.id)[0];
         var n = this.props.match.params.name.split("-").map(o => String.fromCharCode(parseInt(o, 16))).join("");
-        this.site=fo;
+        this.site = fo;
         this.props.setTitle(this.title);
     }
-    getContentList() {
 
-        cachedFetch('/doc-content/'+this.site.id+"/"+this.props.match.params.name+"/"+this.props.match.params.url).then((res) => {
+    componentWillReceiveProps(newProps) {
+        this.mprops = newProps;
+        if (newProps.location && (this.oldLocaltion != newProps.location.pathname)) {
+
+            this.oldLocaltion = newProps.location.pathname;
+            this.resetState();
+            this.getContentList();
+            this.setState(Object.assign({}, state));
+        }
+
+
+    }
+
+    getContentList() {
+        this.next = null;
+        this.prev = null;
+        this.mprops = this.mprops || this.props;
+
+        cachedFetch('/doc-content/' + this.site.id + "/" + this.mprops.match.params.name + "/" + this.mprops.match.params.url).then((res) => {
             // debugger;
             this.props.setContentList(res.data);
-            this.title=res.title;
+            this.next = res.next;
+            this.prev = res.prev;
+            this.title = res.title;
             this.updateTitle();
-            console.log(res.data);
+            // console.log(res.data);
         });
+    }
+
+    doNext() {
+        console.log("limit item", state.limit);
+        if (state.startPos + state.limit < this.props.contentList.length) {
+            state.startPos = state.startPos + state.limit;
+            this.setState(Object.assign({}, state));
+        } else {
+            // debugger;
+            if (this.next) {
+                this.props.history.replace('/content-detail/' + this.site.id + "/" + this.props.match.params.name + "/" + encodeHex(this.next));
+                // this.getContentList();
+            }
+        }
+    }
+
+    doPrev() {
+        //console.log("limit item",state.limit);
+        if (state.startPos - state.limit >= 0) {
+            state.startPos = state.startPos - state.limit;
+            this.setState(Object.assign({}, state));
+        }
     }
 
     componentDidMount() {
         this.props.setAppIcon({
-            icon:"keyboard_arrow_left",
-            click:this.props.history.goBack
+            icon: "keyboard_arrow_left",
+            click: this.props.history.goBack
         });
-        this.title="";
+        this.oldLocaltion = this.props.history.location.pathname;
+        this.title = "";
         if (this.props.listSites.length == 0) {
             cachedFetch('/sites').then((res) => {
                 // debugger;
                 this.props.setSiteList(res);
                 this.updateTitle(res);
-this.getContentList();
+                this.getContentList();
             });
         } else {
             // debugger;
             this.updateTitle();
             this.getContentList();
         }
+        state.height = $(this.el).parent().height() - 56 - 20;
+        console.log(state.height);
+        this.setState(Object.assign({}, state));
 
 
+    }
+
+    renderItem(item, idx, limit) {
+        state.limit = limit;
+
+
+        return <div key={idx}>{item}</div>
 
     }
 
@@ -66,10 +144,20 @@ this.getContentList();
 
 
         return (
-            <div>
-                {this.props.contentList.map((o,idx)=>{
-                    return <p key={idx}>{o}</p>
-                })}
+            <div ref={el => this.el = el}>
+                <div style={{padding: '10px', height: state.height}}>
+                    <Paging startPos={state.startPos} height={state.height} rows={this.props.contentList}
+                            renderItem={this.renderItem}/>
+                </div>
+                <Toolbar>
+                    <ToolbarGroup firstChild={true}>
+                        <RaisedButton label="Prev" onClick={() => this.doPrev()} primary={true}/>
+                    </ToolbarGroup>
+                    <ToolbarGroup>
+                        <RaisedButton label="Next" onClick={() => this.doNext()} primary={true}/>
+
+                    </ToolbarGroup>
+                </Toolbar>
             </div>
         );
     }
@@ -79,7 +167,7 @@ this.getContentList();
 const mapStateToProps = (state, ownProps) => {
     return {
         listSites: state.sites.list,
-        contentList:state.content.list
+        contentList: state.content.list
         //docList:state.doc.list
         // lstDetail:state.app.siteDetail.list
     };
@@ -88,11 +176,11 @@ const mapStateToProps = (state, ownProps) => {
 const mapDispatchToProps = (dispatch) => {
     return {
         setSiteList: (lst) => dispatch(setSiteList(lst)),
-        setDocList:(lst)=>dispatch(setDocumentList(lst)),
+        setDocList: (lst) => dispatch(setDocumentList(lst)),
         // setSiteDetailList:(list)=>dispatch(setSiteDetailList(list)),
         setTitle: (data) => dispatch(setAppTitle("" + data || "")),
         setAppIcon: (icon) => dispatch(setAppIcon(icon)),
-        setContentList:(lst)=>dispatch(setContentList(lst))
+        setContentList: (lst) => dispatch(setContentList(lst))
 
     }
 };

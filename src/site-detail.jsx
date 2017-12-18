@@ -21,10 +21,10 @@ class SiteDetail extends React.Component {
         super(props);
         // this.isLast=false;
         // this.iconDone=false;
-        // this.state = {
-        //     limit: 1,
-        //     height: 0,
-        // };
+        this.state = {
+            limit: 1,
+            height: 0,
+        };
         // this.siteName=new Subject();
         // this.siteName.subscribe((text)=>{
         //     this.props.setTitle(text);
@@ -166,7 +166,7 @@ class SiteDetail extends React.Component {
     goBack(props) {
 
         // console.log("click click");
-        state.inst.props.history.goBack();
+        // state.inst.props.history.goBack();
 
 
     }

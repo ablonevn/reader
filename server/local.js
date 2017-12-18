@@ -36,7 +36,7 @@ function documentList(url) {
     var dir=spl[0];
     return new Promise(resolve=>{
         resolve({
-            data:require(root+"/"+dir+"/chapters.json").slice(page,10),
+            data:require(root+"/"+dir+"/chapters.json"),
             next:dir+"@"+(page+1),
             prev:dir +"@"+(page-1)
         });
@@ -49,8 +49,10 @@ function documentContent(name,url){
         var dataDir=root+"/"+name+"/data";
         mkdirp(dataDir);
         var fo;
-        require(root+"/"+name+"/chapters.json").filter((v,idx)=>{
-            if (v.link==url) {
+        var chapters=require(root+"/"+name+"/chapters.json");
+
+        chapters.filter((v,idx)=>{
+            if (v.link===url) {
                 fo=v;
                 fo.idx=idx;
                 return true;
@@ -59,29 +61,41 @@ function documentContent(name,url){
         });
         // luon luon tim thay
         if (fo) {
-            new Promise(setHtmlData=>{
+            new Promise((setHtmlData,dataError)=>{
                 if (fs.existsSync(dataDir+"/"+fo.idx)) {
                     setHtmlData(fs.readFileSync(dataDir+"/"+fo.idx)+"");
                 } else {
-                    comm.getHtml(url).then(html=>{
-                        fs.writeFileSync(dataDir+"/"+fo.idx,html);
-                        setHtmlData(html)
+                    comm.getHtml(url,true).then(html=>{
+                        if (html) {
+                            fs.writeFileSync(dataDir+"/"+fo.idx,html);
+                            setHtmlData(html)
+                        } else {
+                            dataError("Loi khi download "+url);
+                        }
 
-                    })
+
+                    }).catch(comm.error)
 
                 }
 
             }).then(html=>{
-                var lst=[];
-                var $=cheerio.load(html);
-                lst=$('.chapter-c').html().split("<br>").filter(r=>r!="");
-                lst=lst.map(o=> cheerio.load(decode(o)).text());
-                resolve({
-                    title:fo.title,
-                    data:lst
-                })
+                var driver=require(root+"/"+name+"/config.json").driver;
+                var tr=require("./"+driver);
+                tr.documentContent(name,url).then(r=>{
+                    r.next="";
+                    r.prev="";
+                    if (chapters.length-1>fo.idx) {
+                        r.next=chapters[fo.idx+1].link;
+                    }
+                    if (fo.idx>0) {
+                        r.prev=chapters[fo.idx-1].link;
+                    }
 
-            })
+                    resolve(r);
+                }).catch(comm.error);
+
+
+            }).catch(comm.error)
 
         } else {
 

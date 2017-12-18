@@ -1,125 +1,40 @@
 
 let express = require("express");
-var request = require('request');
-var cheerio = require('cheerio');
-var zlib = require('zlib');
-//var streams = require('memory-streams');
-//var gzip = zlib.createGzip();
+let request = require('request');
+let cheerio = require('cheerio');
+let zlib = require('zlib');
 let fs = require("fs");
-// var path = require('path');
 let app = require('express')();
 let http = require('http').Server(app);
 let path=require('path');
-// let io = require('socket.io')(http);
 let clientListNames = [];
 let prod = true;
 app.use(express.static('dist'));
 app.use(express.static('server'));
-var root=path.resolve(__dirname+"/../data");
-//app.use('/dist', express.static(path.join(__dirname, 'dist')));
-// app.use(express.static(__dirname + '/dist'));
-// let proxyFiles = ['/polyfills.bundle.js','/vendor.bundle.js', '/main.bundle.js', '/styles.css'];
-// if (!prod) {
-//
-//     proxyFiles.forEach((url) => {
-//
-//         app.get(url, (req, res) => {
-//                 try {
-//                     var nurl = 'http://localhost:3000' + req.url;
-//                     let writer = new streams.WritableStream();
-//                     var ops = request({
-//                         url: nurl,
-//                         method: req.query.method
-//                     })
-//                         .on('response', function (response) {
-//                             console.log(response.statusCode); // 200
-//                             // console.log(response.body) // 'image/png'
-//                         }).pipe(res);//.pipe(writer);
-//                 } catch (ex) {
-//
-//                 }
-//
-//                 // ops.on('close', function() {
-//                 //
-//                 //     // Output the content as a string
-//                 //     console.log(writer.toString());
-//                 //
-//                 //     // Output the content as a Buffer
-//                 //     console.log(writer.toBuffer());
-//                 // });
-//                 // if (url.indexOf(".js")>=0) {
-//                 //     res.writeHead(200, {'Content-Type': 'application/javascript', 'Content-Encoding': 'gzip'});
-//                 //     ops.pipe(gzip).pipe(res);
-//                 // } else {
-//                 //     ops.pipe(res);
-//                 // }
-//
-//             }
-//         );
-//
-//         // app.get(url, requestProxy({
-//         //
-//         //     // cacheMaxAge: 60,
-//         //     url: "http://localhost:3000"+url,
-//         //     // query: {
-//         //     //     secret_key: process.env.SOMEAPI_SECRET_KEY
-//         //     // },
-//         //     // headers: {
-//         //     //     'X-Custom-Header': process.env.SOMEAPI_CUSTOM_HEADER
-//         //     // }
-//         // }));
-//     });
-//
-// } else {
-//     proxyFiles.forEach((url) => {
-//
-//         app.get(url, (req, res) => {
-//                 try {
-//                     // if (url.indexOf(".css")>0) {
-//                     //     res.writeHead(200, {'Content-Type': 'text/css'});
-//                     // }
-//
-//                     let data = fs.readFileSync(__dirname + '/../dist/'+url);
-//                     res.send(data + "");
-//                     res.end();
-//                 } catch (ex) {
-//                     console.log(ex);
-//                 }
-//
-//
-//             }
-//         );
-//
-//
-//     });
-//
-// }
-//app.use(express.static(__dirname, '/server/'));
-//app.use(express.static(__dirname + "/..", '/client/'));
-//app.use(express.static(__dirname + '/node_modules'));
+let root=path.resolve(__dirname+"/../data");
 const comm=require('./common');
 const sites=comm.sites;
 const getHtml=comm.getHtml;
 app.get('/doc-content/:siteid/:name/:url',(req,res)=>{
     // res.writeHead(200, {'Content-Type': 'application/json'});
-    var fo=sites.filter(o=>o.id==req.params.siteid);
+    let fo=sites.filter(o=>o.id==req.params.siteid);
     if (fo.length) {
-        var site = require("./" + fo[0].name);
+        let site = require("./" + fo[0].name);
 
 
-        var url=req.params.url.split("-").map(o => String.fromCharCode(parseInt(o, 16))).join("");
-        var name=req.params.name.split("-").map(o => String.fromCharCode(parseInt(o, 16))).join("");
+        let url=req.params.url.split("-").map(o => String.fromCharCode(parseInt(o, 16))).join("");
+        let name=req.params.name.split("-").map(o => String.fromCharCode(parseInt(o, 16))).join("");
         if (req.params.siteid==0) {
 
-            site.documentContent(name,url).then((rs) => res.json(rs));
+            site.documentContent(name,url).then((rs) => res.json(rs)).catch(comm.error);
             return;
         }
 
         getHtml(url).then((data) => {
-            site.documentContent(data).then((rs) => res.json(rs));
+            site.documentContent(data).then((rs) => res.json(rs)).catch(comm.error);
 
-            // var $=cheerio.load(data);
-            // var list=[];
+            // let $=cheerio.load(data);
+            // let list=[];
             // $('.menu__cat-item a').map(function(i,o){
             //     list[i] = {
             //         text:$(o).text(),
@@ -129,29 +44,29 @@ app.get('/doc-content/:siteid/:name/:url',(req,res)=>{
             // });
             // console.log(list);
             // res.json(list);
-        })
+        }).catch(comm.error)
     }
 });
 
 
 app.get('/doc-list/:siteid/:url',(req,res)=>{
     // res.writeHead(200, {'Content-Type': 'application/json'});
-    var fo=sites.filter(o=>o.id==req.params.siteid);
+    let fo=sites.filter(o=>o.id==req.params.siteid);
     if (fo.length) {
-        var site = require("./" + fo[0].name);
+        let site = require("./" + fo[0].name);
 
 
-        var url=req.params.url.split("-").map(o => String.fromCharCode(parseInt(o, 16))).join("");
+        let url=req.params.url.split("-").map(o => String.fromCharCode(parseInt(o, 16))).join("");
         if (req.params.siteid==0) {
-            site.documentList(url).then(rs=>res.json(rs));
+            site.documentList(url).then(rs=>res.json(rs)).catch(comm.error);
             return;
         }
 
         getHtml(url).then((data) => {
-            site.documentList(data).then((rs) => res.json(rs));
+            site.documentList(data).then((rs) => res.json(rs)).catch(comm.error);
 
-            // var $=cheerio.load(data);
-            // var list=[];
+            // let $=cheerio.load(data);
+            // let list=[];
             // $('.menu__cat-item a').map(function(i,o){
             //     list[i] = {
             //         text:$(o).text(),
@@ -161,7 +76,7 @@ app.get('/doc-list/:siteid/:url',(req,res)=>{
             // });
             // console.log(list);
             // res.json(list);
-        })
+        }).catch(comm.error)
     }
 });
 
@@ -169,9 +84,9 @@ app.get('/site-detail/:id',(req,res)=>{
 
 
     // res.writeHead(200, {'Content-Type': 'application/json'});
-    var fo=sites.filter(o=>o.id==req.params.id);
+    let fo=sites.filter(o=>o.id==req.params.id);
     if (fo.length) {
-        var site=require("./"+fo[0].name);
+        let site=require("./"+fo[0].name);
         if (req.params.id==0) {
             site.siteListItem().then(rs=>{
                 res.send(rs);
@@ -179,10 +94,10 @@ app.get('/site-detail/:id',(req,res)=>{
             return;
         }
         getHtml(fo[0].url).then((data)=>{
-            site.siteListItem(data).then((rs)=>res.json(rs));
+            site.siteListItem(data).then((rs)=>res.json(rs)).catch(comm.error);
 
-            // var $=cheerio.load(data);
-            // var list=[];
+            // let $=cheerio.load(data);
+            // let list=[];
             // $('.menu__cat-item a').map(function(i,o){
             //     list[i] = {
             //         text:$(o).text(),

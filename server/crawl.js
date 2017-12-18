@@ -1,14 +1,14 @@
 var comm=require('./common');
-var mkdirp=require("mkdirp");
+//var mkdirp=require("mkdirp");
 var config=require('./config');
-var path=require("path");
-var root=path.resolve( __dirname+'/../data');
+// var path=require("path");
+var root=comm.rootData;
 var distDir=config.target;
 var url=config.url;
 var fs=require("fs");
 var index=[];
 var outDir=root+"/"+distDir;
-mkdirp(outDir);
+comm.mkdirp(outDir);
 var tr=require('./'+config.driver);
 var list=[];
 comm.usingTor();
@@ -16,6 +16,11 @@ comm.usingTor();
 //     // Won't execute
 //     console.log('unhandledRejection', error.test);
 // });
+
+if (!fs.existsSync(outDir + '/config.json')) {
+    fs.writeFileSync(outDir + '/config.json',JSON.stringify(config))
+}
+
 
 new Promise(fileListingDone=> {
 
@@ -26,7 +31,7 @@ new Promise(fileListingDone=> {
         new Promise((resolve, reject) => {
             function downloadListChapters(url) {
                 console.log("Downloading ...", url)
-                comm.getHtml(url).then(function (html) {
+                comm.getHtml(url,true).then(function (html) {
                     tr.documentList(html).then(function (res) {
                         if (res.list.length) {
                             list = list.concat(res.list);
@@ -53,7 +58,7 @@ new Promise(fileListingDone=> {
             var json = JSON.stringify(res);
             fs.writeFileSync(outDir + '/chapters.json', json);
             fileListingDone();
-        });
+        }).catch(comm.error);
 
     } else {
         fileListingDone();
@@ -63,13 +68,13 @@ new Promise(fileListingDone=> {
 }).then(()=>{
     var fileList=require(outDir + '/chapters.json');
     var data=outDir+"/data";
-    mkdirp(data);
+    comm.mkdirp(data);
     function doDownload(idx) {
         if (idx>fileList.length-1) return ;
         var item=fileList[idx];
         console.log("download content "+item.link);
-        tr.documentContent(distDir,item.link).then(()=>doDownload(idx+1));
+        tr.documentContent(distDir,item.link,true).then(()=>doDownload(idx+1)).catch(comm.error);
     }
     doDownload(0);
 
-});
+}).catch(comm.error);
