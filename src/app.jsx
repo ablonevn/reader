@@ -22,7 +22,7 @@ import appState from "./app-data";
 
 const recentsIcon = <FontIcon className="material-icons">restore</FontIcon>;
 const favoritesIcon = <FontIcon className="material-icons">favorite</FontIcon>;
-
+import {indigo700,grey600,darkBlack,white} from 'material-ui/styles/colors';
 // @autoState()
 class App extends React.Component {
 
@@ -56,10 +56,10 @@ class App extends React.Component {
         // console.log('app title:',me.props.list)
         return (
             <Router key={Math.random()} history={createBrowserHistory()}>
-                <div style={{display: 'flex', flexDirection: 'column', height: '100vh'}}>
+                <div style={{display: 'flex',lineHeight:'150%', flexDirection: 'column', height: '100vh'}}>
 
                     <AppHeader/>
-                    <div style={{flex: 1, overflowY: 'scroll'}}>
+                    <div style={{flex: 1, overflowY: 'scroll',backgroundColor:darkBlack,color:white}}>
                         <Route exact path="/" component={Home}/>
                         <Route path="/site/:id" component={SiteDetail}/>
                         <Route path="/site-category/:siteId/:name/:url" component={SiteCategory}/>

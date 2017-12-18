@@ -385,7 +385,9 @@ var ContentDetail = function (_React$Component) {
                     } },
                 _react2.default.createElement(
                     'div',
-                    { style: { padding: '10px', height: state.height } },
+                    { style: { padding: '10px', height: state.height }, onClick: function onClick(evt) {
+                            return console.log(evt);
+                        } },
                     _react2.default.createElement(_paging2.default, { startPos: state.startPos, height: state.height, rows: this.props.contentList,
                         renderItem: this.renderItem })
                 ),
@@ -401,7 +403,7 @@ var ContentDetail = function (_React$Component) {
                     ),
                     _react2.default.createElement(
                         _materialUi.ToolbarGroup,
-                        null,
+                        { lastChild: true },
                         _react2.default.createElement(_materialUi.RaisedButton, { label: 'Next', onClick: function onClick() {
                                 return _this5.doNext();
                             }, primary: true })
@@ -1306,6 +1308,14 @@ var _MuiThemeProvider2 = _interopRequireDefault(_MuiThemeProvider);
 
 var _reactRedux = __webpack_require__(41);
 
+var _darkBaseTheme = __webpack_require__(1877);
+
+var _darkBaseTheme2 = _interopRequireDefault(_darkBaseTheme);
+
+var _getMuiTheme = __webpack_require__(428);
+
+var _getMuiTheme2 = _interopRequireDefault(_getMuiTheme);
+
 var _redux = __webpack_require__(135);
 
 var _reducers = __webpack_require__(493);
@@ -1316,15 +1326,31 @@ var _app = __webpack_require__(495);
 
 var _app2 = _interopRequireDefault(_app);
 
+var _colors = __webpack_require__(130);
+
 __webpack_require__(1873);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var muiTheme = {
+    palette: {
+        primary1Color: _colors.indigo700,
+        primary2Color: _colors.indigo700,
+        primary3Color: _colors.white,
+        textColor: _colors.white,
+        secondaryTextColor: _colors.white,
+        alternateTextColor: _colors.white
+    },
+    appBar: {
+        //height: 50,
+    }
+};
 
 var store = (0, _redux.createStore)(_reducers2.default);
 
 _reactDom2.default.render(_react2.default.createElement(
     _MuiThemeProvider2.default,
-    null,
+    { muiTheme: (0, _getMuiTheme2.default)(muiTheme) },
     _react2.default.createElement(
         _reactRedux.Provider,
         { store: store },
@@ -1640,6 +1666,8 @@ var _appData = __webpack_require__(157);
 
 var _appData2 = _interopRequireDefault(_appData);
 
+var _colors = __webpack_require__(130);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -1660,7 +1688,6 @@ var favoritesIcon = _react2.default.createElement(
 );
 
 // @autoState()
-
 var App = function (_React$Component) {
     _inherits(App, _React$Component);
 
@@ -1702,11 +1729,11 @@ var App = function (_React$Component) {
                 { key: Math.random(), history: (0, _createBrowserHistory2.default)() },
                 _react2.default.createElement(
                     "div",
-                    { style: { display: 'flex', flexDirection: 'column', height: '100vh' } },
+                    { style: { display: 'flex', lineHeight: '150%', flexDirection: 'column', height: '100vh' } },
                     _react2.default.createElement(_appHeader2.default, null),
                     _react2.default.createElement(
                         "div",
-                        { style: { flex: 1, overflowY: 'scroll' } },
+                        { style: { flex: 1, overflowY: 'scroll', backgroundColor: _colors.darkBlack, color: _colors.white } },
                         _react2.default.createElement(_reactRouter.Route, { exact: true, path: "/", component: _home2.default }),
                         _react2.default.createElement(_reactRouter.Route, { path: "/site/:id", component: _siteDetail2.default }),
                         _react2.default.createElement(_reactRouter.Route, { path: "/site-category/:siteId/:name/:url", component: _siteCategory2.default }),
