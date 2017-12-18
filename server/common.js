@@ -14,6 +14,8 @@ const request = require('request');
 // var torRequest=require('socks5-http-client').request;
 const Agent = require('socks5-http-client/lib/Agent');
 const Entities = require('html-entities').AllHtmlEntities;
+const path=require('path');
+const mkdirp=require("mkdirp");
 
 const entities = new Entities();
 const decode = entities.decode;
@@ -39,14 +41,15 @@ function getHtml(url,usingTor) {
         if ((url || "") == "") {
             resolve("");
         } else {
-            request(ops({
-                    url: url,
-                    headers: {
-                        'Connection': 'keep-alive',
-                        'Referer': 'https://www.google.com.vn/',
-                        'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/62.0.3202.94 Safari/537.36'
-                    }
-                },usingTor)
+            var opt=ops({
+                url: url,
+                headers: {
+                    'Connection': 'keep-alive',
+                    'Referer': 'https://www.google.com.vn/',
+                    'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/62.0.3202.94 Safari/537.36'
+                }
+            },usingTor);
+            request(opt
                 , function (error, response, body) {
                     // console.log('error:', error); // Print the error if one occurred
                     // console.log('statusCode:', response && response.statusCode); // Print the response status code if a response was received
@@ -80,7 +83,7 @@ function buildContent(callback) {
 
 
                 dataDir = root + "/" + name + "/data";
-                require("mkdirp")(dataDir);
+                mkdirp(dataDir);
 
                 require(root + "/" + name + "/chapters.json").filter((v, idx) => {
                     if (v.link === url) {
@@ -148,8 +151,8 @@ module.exports = {
     sites: sites,
     decode: decode,
     error: error,
-    mkdirp:require("mkdirp"),
-    path:require("path"),
+    mkdirp:mkdirp,
+    path:path,
     rootData:rootData,
     buildContent:buildContent
 };
