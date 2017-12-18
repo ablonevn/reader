@@ -29,13 +29,18 @@ app.post('/save', function(req, res) {
     if (fs.existsSync(root+"/read.json")) {
         lst=JSON.parse( fs.readFileSync(root+"/read.json")+"");
     }
-    var fo=lst.filter(o=>o.id==id);
+    var fo=lst.filter(o=>o.name==name);
     if (fo.length) {
         fo[0].url=url;
     } else {
         lst.push({id,url,name,reading:true});
     }
+    lst=lst.map((o,idx)=>{
+        return Object.assign({},o,{id:idx+1000});
+
+    });
     fs.writeFileSync(root+"/read.json",JSON.stringify(lst));
+    res.json({status:0})
 
 });
 app.get('/doc-content/:siteid/:name/:url',(req,res)=>{
@@ -135,12 +140,12 @@ app.get('/site-detail/:id',(req,res)=>{
 });
 
 app.get('/sites',(req,res)=>{
-    // res.writeHead(200, {'Content-Type': 'application/json'});
+    // res.writeHead(200, { 'Cache-Control': 'no-cache'});
     var lst=[];
     if (fs.existsSync(root+"/read.json")) {
         lst=JSON.parse( fs.readFileSync(root+"/read.json")+"");
     }
-    res.send([].concat(sites).concat(lst));
+    res.json([].concat(sites).concat(lst));
 
 });
 

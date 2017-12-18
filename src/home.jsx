@@ -30,12 +30,12 @@ class Home extends React.Component {
         const click=()=>{};
         this.props.setAppIcon({icon:"home",click:click});
         console.log("render Home", JSON.stringify(this.props.list));
-        if ((this.props.list.length == 0)) {
+        // if ((this.props.list.length == 0)) {
             // this.props.setLoading(true);
-            cachedFetch('/sites').then((res) => this.props.setSiteList(res));
+            fetch('/sites').then(res=>res.json()).then((res) => this.props.setSiteList(res));
             // this.props.setLoading(false);
 
-        }
+        // }
 
 
 

@@ -532,13 +532,17 @@ var Home = function (_React$Component) {
             var click = function click() {};
             this.props.setAppIcon({ icon: "home", click: click });
             console.log("render Home", JSON.stringify(this.props.list));
-            if (this.props.list.length == 0) {
-                // this.props.setLoading(true);
-                (0, _actions.cachedFetch)('/sites').then(function (res) {
-                    return _this2.props.setSiteList(res);
-                });
-                // this.props.setLoading(false);
-            }
+            // if ((this.props.list.length == 0)) {
+            // this.props.setLoading(true);
+            fetch('/sites').then(function (res) {
+                return res.json();
+            }).then(function (res) {
+                return _this2.props.setSiteList(res);
+            });
+            // this.props.setLoading(false);
+
+            // }
+
         }
     }, {
         key: 'render',
