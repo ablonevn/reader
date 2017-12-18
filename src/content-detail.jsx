@@ -165,7 +165,7 @@ class ContentDetail extends React.Component {
 
         return (
             <div ref={el => this.el = el}>
-                <div style={{padding: '10px', height: state.height}} >
+                <div style={{padding: '10px', height: state.height}}>
                     <Paging startPos={state.startPos} height={state.height} rows={this.props.contentList}
                             renderItem={this.renderItem}/>
                 </div>
