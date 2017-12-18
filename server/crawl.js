@@ -69,7 +69,29 @@ new Promise(fileListingDone=> {
         if (idx>fileList.length-1) return ;
         var item=fileList[idx];
         console.log("download content "+item.link);
-        tr.documentContent(distDir,item.link,true).then(()=>doDownload(idx+1)).catch(comm.error);
+        if (fs.existsSync(outDir+"/data/"+idx)) {
+            setTimeout(()=>{
+                doDownload(idx+1)
+
+            },0)
+
+        } else {
+
+            tr.documentContent(distDir,item.link,true).then(()=>{
+                setTimeout(()=>{
+                    doDownload(idx+1)
+
+                },1000)
+
+            },()=>{
+                setTimeout(()=>{
+                    doDownload(idx)
+
+                },1000)
+
+            }).catch(comm.error);
+        }
+
     }
     doDownload(0);
 

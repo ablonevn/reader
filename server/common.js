@@ -21,7 +21,7 @@ const entities = new Entities();
 const decode = entities.decode;
 
 function ops(options,usingTor) {
-
+    usingTor=false;
     if (usingTor) {
         options = Object.assign({}, options, {
             agentClass: Agent,

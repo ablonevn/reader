@@ -103,6 +103,12 @@ class ContentDetail extends React.Component {
         if (state.startPos - state.limit >= 0) {
             state.startPos = state.startPos - state.limit;
             this.setState(Object.assign({}, state));
+        }else {
+            // debugger;
+            if (this.prev) {
+                this.props.history.replace('/content-detail/' + this.site.id + "/" + this.props.match.params.name + "/" + encodeHex(this.prev));
+                // this.getContentList();
+            }
         }
     }
 
