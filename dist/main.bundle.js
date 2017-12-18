@@ -1057,15 +1057,16 @@ var SiteCategory = function (_React$Component) {
                 _react2.default.createElement(
                     _materialUi.Toolbar,
                     null,
-                    _react2.default.createElement(_materialUi.ToolbarGroup, { firstChild: true }),
+                    _react2.default.createElement(
+                        _materialUi.ToolbarGroup,
+                        { firstChild: true },
+                        _react2.default.createElement(_materialUi.RaisedButton, { label: "Prev", onClick: function onClick() {
+                                return _this5.doPrev();
+                            }, primary: true })
+                    ),
                     _react2.default.createElement(
                         _materialUi.ToolbarGroup,
                         null,
-                        _react2.default.createElement(_materialUi.ToolbarTitle, { text: "Options" }),
-                        _react2.default.createElement(_materialUi.FontIcon, { className: "muidocs-icon-custom-sort" }),
-                        _react2.default.createElement(_materialUi.RaisedButton, { label: "Prev", onClick: function onClick() {
-                                return _this5.doPrev();
-                            }, primary: true }),
                         _react2.default.createElement(_materialUi.RaisedButton, { label: "Next", onClick: function onClick() {
                                 return _this5.doNext();
                             }, primary: true })
