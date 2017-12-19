@@ -222,7 +222,7 @@ class ContentDetail extends React.Component {
             this.updateTitle();
             this.getContentList();
         }
-        state.height = $(this.el).parent().height() - 56 - 20;
+        state.height = $(this.el).parent().height() - 20;
         state.limit = parseInt(state.height / this.getTextHeight('hg'));
         // console.log(state.height);
         this.setState(Object.assign({}, state));
@@ -257,15 +257,15 @@ class ContentDetail extends React.Component {
                     <Paging startPos={state.startPos} height={state.height} rows={state.mapItems}
                             renderItem={this.renderItem} limit={state.limit}/>
                 </div>
-                <Toolbar>
-                    <ToolbarGroup firstChild={true}>
-                        <RaisedButton label="Prev" onClick={() => this.doPrev()} primary={true}/>
-                    </ToolbarGroup>
-                    <ToolbarGroup lastChild={true}>
-                        <RaisedButton label="Next" onClick={() => this.doNext()} primary={true}/>
+                {/*<Toolbar>*/}
+                    {/*<ToolbarGroup firstChild={true}>*/}
+                        {/*<RaisedButton label="Prev" onClick={() => this.doPrev()} primary={true}/>*/}
+                    {/*</ToolbarGroup>*/}
+                    {/*<ToolbarGroup lastChild={true}>*/}
+                        {/*<RaisedButton label="Next" onClick={() => this.doNext()} primary={true}/>*/}
 
-                    </ToolbarGroup>
-                </Toolbar>
+                    {/*</ToolbarGroup>*/}
+                {/*</Toolbar>*/}
             </div>
         );
     }
