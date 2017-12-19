@@ -113,7 +113,7 @@ class ContentDetail extends React.Component {
             this.setState(Object.assign({}, state));
         }
         if (this.mprops.contentList.length) {
-            if (this.isFirst || changed) {
+            //if (this.isFirst || changed) {
                 // console.log(this.isFirst,changed);
 
                 this.isFirst=false;
@@ -132,7 +132,7 @@ class ContentDetail extends React.Component {
                     state.mapItems=[].concat.apply([],newRows);
                     this.setState(Object.assign( {},state));
 
-            }
+            //}
 
         }
 
@@ -171,30 +171,34 @@ class ContentDetail extends React.Component {
 
     doNext() {
         // console.log("limit item", state.limit);
-        if (state.startPos + state.limit < this.props.contentList.length) {
+        if (state.startPos + state.limit < state.mapItems.length) {
             state.startPos = state.startPos + state.limit;
-            this.setState(Object.assign({}, state));
+
         } else {
             // debugger;
             if (this.next) {
-                this.props.history.replace('/content-detail/' + this.site.id + "/" + this.props.match.params.name + "/" + encodeHex(this.next));
+                this.props.history.replace('/content-detail/' + this.site.id + "/" + this.mprops.match.params.name + "/" + encodeHex(this.next));
+                this.resetState();
                 // this.getContentList();
             }
         }
+        this.setState(Object.assign({}, state));
     }
 
     doPrev() {
         //console.log("limit item",state.limit);
         if (state.startPos - state.limit >= 0) {
             state.startPos = state.startPos - state.limit;
-            this.setState(Object.assign({}, state));
+            // this.setState(Object.assign({}, state));
         }else {
             // debugger;
             if (this.prev) {
-                this.props.history.replace('/content-detail/' + this.site.id + "/" + this.props.match.params.name + "/" + encodeHex(this.prev));
+                this.props.history.replace('/content-detail/' + this.site.id + "/" + this.mprops.match.params.name + "/" + encodeHex(this.prev));
+                this.resetState();
                 // this.getContentList();
             }
         }
+        this.setState(Object.assign({}, state));
     }
 
     componentDidMount() {

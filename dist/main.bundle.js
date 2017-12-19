@@ -215,15 +215,6 @@ var state = {
     fetchItem: false,
     lastDetail: -1
 };
-var heightRow = new Promise(function (resolve) {
-    return $(function () {
-
-        $('body').append('<div id="doc-sample" class="doc-content" style="padding: 10px;display: block;line-height: 150%">Agh</div>');
-        resolve({ el: $('#doc-sample'), h: $('#doc-sample').height() + 1 });
-    });
-}).catch(function (err) {
-    return console.log(err);
-});
 var canvas = document.createElement("canvas");
 
 // let loaded=[];
@@ -250,7 +241,7 @@ var ContentDetail = function (_React$Component) {
             state = Object.assign({}, state, {
 
                 startPos: 0,
-                limit: 1,
+                // limit: 1,
                 items: [],
                 fetchItem: false,
                 mapItems: []
@@ -283,13 +274,23 @@ var ContentDetail = function (_React$Component) {
             return metrics.width;
         }
     }, {
+        key: 'getTextHeight',
+        value: function getTextHeight(text, font) {
+            // re-use canvas object for better performance
+
+            var context = canvas.getContext("2d");
+            context.font = font || "normal 16px Roboto";
+            var metrics = context.measureText(text);
+            return 24;
+        }
+    }, {
         key: 'getFitLine',
-        value: function getFitLine(sample, h, arr) {
+        value: function getFitLine(arr) {
             var _this3 = this;
 
             var lst = [];
             var lstr = [];
-            var w = $(window).width() - 40;
+            var w = $(window).width() - 20 - 10;
             arr.filter(function (r) {
                 return r != "";
             }).map(function (r) {
@@ -303,15 +304,6 @@ var ContentDetail = function (_React$Component) {
                     lst.push(lstr.join(" "));
                     lstr = [r];
                 }
-                // sample.text();
-                // if (lstr.length<=2) {
-                //     // h=$(sample).height();
-                //
-                // }
-                // //console.log($(sample).width(),"==========",$(window).width());
-                // if (sample.height()>h) {
-                //
-                // }
             });
             if (lstr.length) {
                 lst.push(lstr.join(" "));
@@ -335,26 +327,25 @@ var ContentDetail = function (_React$Component) {
                 this.setState(Object.assign({}, state));
             }
             if (this.mprops.contentList.length) {
-                if (this.isFirst || changed) {
-                    // console.log(this.isFirst,changed);
+                //if (this.isFirst || changed) {
+                // console.log(this.isFirst,changed);
 
-                    this.isFirst = false;
-                    heightRow.then(function (rsa) {
+                this.isFirst = false;
 
-                        var newRows = _this4.mprops.contentList.map(function (row) {
-                            var lst = [];
-                            var strs = (row || "").replace(/[\r\n\t]/gi, "").split(' ');
-                            if (strs.length) {
-                                // debugger;
-                                lst = _this4.getFitLine(rsa.el, rsa.h, strs);
-                            }
-                            return lst;
-                        });
+                var newRows = this.mprops.contentList.map(function (row) {
+                    var lst = [];
+                    var strs = (row || "").replace(/[\r\n\t]/gi, "").split(' ');
+                    if (strs.length) {
                         // debugger;
-                        state.mapItems = [].concat.apply([], newRows);
-                        _this4.setState(Object.assign({}, state));
-                    });
-                }
+                        lst = _this4.getFitLine(strs);
+                    }
+                    return lst;
+                });
+                // debugger;
+                state.mapItems = [].concat.apply([], newRows);
+                this.setState(Object.assign({}, state));
+
+                //}
             }
         }
     }, {
@@ -394,17 +385,18 @@ var ContentDetail = function (_React$Component) {
     }, {
         key: 'doNext',
         value: function doNext() {
-            console.log("limit item", state.limit);
-            if (state.startPos + state.limit < this.props.contentList.length) {
+            // console.log("limit item", state.limit);
+            if (state.startPos + state.limit < state.mapItems.length) {
                 state.startPos = state.startPos + state.limit;
-                this.setState(Object.assign({}, state));
             } else {
                 // debugger;
                 if (this.next) {
-                    this.props.history.replace('/content-detail/' + this.site.id + "/" + this.props.match.params.name + "/" + (0, _actions.encodeHex)(this.next));
+                    this.props.history.replace('/content-detail/' + this.site.id + "/" + this.mprops.match.params.name + "/" + (0, _actions.encodeHex)(this.next));
+                    this.resetState();
                     // this.getContentList();
                 }
             }
+            this.setState(Object.assign({}, state));
         }
     }, {
         key: 'doPrev',
@@ -412,14 +404,16 @@ var ContentDetail = function (_React$Component) {
             //console.log("limit item",state.limit);
             if (state.startPos - state.limit >= 0) {
                 state.startPos = state.startPos - state.limit;
-                this.setState(Object.assign({}, state));
+                // this.setState(Object.assign({}, state));
             } else {
                 // debugger;
                 if (this.prev) {
-                    this.props.history.replace('/content-detail/' + this.site.id + "/" + this.props.match.params.name + "/" + (0, _actions.encodeHex)(this.prev));
+                    this.props.history.replace('/content-detail/' + this.site.id + "/" + this.mprops.match.params.name + "/" + (0, _actions.encodeHex)(this.prev));
+                    this.resetState();
                     // this.getContentList();
                 }
             }
+            this.setState(Object.assign({}, state));
         }
     }, {
         key: 'componentDidMount',
@@ -445,17 +439,17 @@ var ContentDetail = function (_React$Component) {
                 this.getContentList();
             }
             state.height = $(this.el).parent().height() - 56 - 20;
+            state.limit = parseInt(state.height / this.getTextHeight('hg'));
             // console.log(state.height);
             this.setState(Object.assign({}, state));
         }
     }, {
         key: 'renderItem',
         value: function renderItem(item, idx, limit) {
-            state.limit = limit;
 
             return _react2.default.createElement(
                 'div',
-                { key: idx },
+                { key: state.startPos + idx },
                 item
             );
         }
@@ -473,7 +467,7 @@ var ContentDetail = function (_React$Component) {
                     'div',
                     { style: { padding: '10px 0px 10px 10px', height: state.height } },
                     _react2.default.createElement(_paging2.default, { startPos: state.startPos, height: state.height, rows: state.mapItems,
-                        renderItem: this.renderItem })
+                        renderItem: this.renderItem, limit: state.limit })
                 ),
                 _react2.default.createElement(
                     _materialUi.Toolbar,
@@ -1294,6 +1288,11 @@ var Paging = function (_React$Component) {
     _createClass(Paging, [{
         key: "addMoreRow",
         value: function addMoreRow(height) {
+
+            if (this.props.limit) {
+
+                return;
+            }
             if (height > this.props.height) {
                 // console.log("last ",state.limit);
                 state = Object.assign({}, state, { fetchItem: false, limit: state.limit - 1, items: state.rows.slice(state.startPos, state.startPos + state.limit - 1) });
@@ -1316,10 +1315,11 @@ var Paging = function (_React$Component) {
     }, {
         key: "componentWillReceiveProps",
         value: function componentWillReceiveProps(nextProps) {
-            state.rows = nextProps.rows;
+            state.rows = [].concat(nextProps.rows);
             state.startPos = nextProps.startPos;
 
-            state.limit = 1;
+            state.limit = nextProps.limit || 1;
+            // console.log(state.limit);
             state.items = state.rows.slice(state.startPos, state.startPos + state.limit);
             // if (state.startPos>0) {
             //     debugger;
