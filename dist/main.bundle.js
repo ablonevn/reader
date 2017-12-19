@@ -178,6 +178,7 @@ exports.default = (0, _reactRedux.connect)(mapStateToProps, mapDispatchToProps)(
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
+exports.ContentDetail = undefined;
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
@@ -188,10 +189,6 @@ var _react2 = _interopRequireDefault(_react);
 var _reactRedux = __webpack_require__(41);
 
 var _actions = __webpack_require__(42);
-
-var _materialUi = __webpack_require__(60);
-
-var _index = __webpack_require__(98);
 
 var _paging = __webpack_require__(383);
 
@@ -204,8 +201,6 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-// import {Subject} from "rxjs";
-
 
 var state = {
     height: 0,
@@ -217,9 +212,7 @@ var state = {
 };
 var canvas = document.createElement("canvas");
 
-// let loaded=[];
-
-var ContentDetail = function (_React$Component) {
+var ContentDetail = exports.ContentDetail = function (_React$Component) {
     _inherits(ContentDetail, _React$Component);
 
     function ContentDetail(props) {
@@ -330,7 +323,8 @@ var ContentDetail = function (_React$Component) {
                 //if (this.isFirst || changed) {
                 // console.log(this.isFirst,changed);
 
-                this.isFirst = false;
+                // this.isFirst = false;
+
 
                 var newRows = this.mprops.contentList.map(function (row) {
                     var lst = [];
@@ -438,7 +432,8 @@ var ContentDetail = function (_React$Component) {
                 this.updateTitle();
                 this.getContentList();
             }
-            state.height = $(this.el).parent().height() - 20;
+            var padding = 20;
+            state.height = $(this.el).parent().height() - padding;
             state.limit = parseInt(state.height / this.getTextHeight('hg'));
             // console.log(state.height);
             this.setState(Object.assign({}, state));
