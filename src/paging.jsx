@@ -32,6 +32,11 @@ constructor(props){
 }
 
     addMoreRow(height){
+
+        if (this.props.limit) {
+
+            return;
+        }
         if (height>this.props.height) {
             // console.log("last ",state.limit);
             state=Object.assign({},state,{fetchItem:false,limit:state.limit-1,items:state.rows.slice(state.startPos, state.startPos+state.limit-1)});
@@ -52,10 +57,11 @@ constructor(props){
         }
     }
     componentWillReceiveProps(nextProps) {
-        state.rows=nextProps.rows;
+        state.rows=[].concat(nextProps.rows);
         state.startPos=nextProps.startPos;
 
-        state.limit=1;
+        state.limit=nextProps.limit||1;
+        // console.log(state.limit);
         state.items=state.rows.slice(state.startPos,state.startPos+state.limit);
         // if (state.startPos>0) {
         //     debugger;

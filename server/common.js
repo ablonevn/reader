@@ -126,7 +126,21 @@ function buildContent(callback) {
                 }
             }).then(html => {
                 if (html) {
-                    callback(fo,html,resolve);
+                    var blk=[];
+                    if (fs.existsSync(__dirname+'/blacklist.json')) {
+                        var qs=fs.readFileSync(__dirname+'/blacklist.json')+"";
+                        blk=eval(qs);
+                    }
+                    new Promise(resolveLines=>callback(fo,html,resolveLines)).then(res=>{
+                        if (blk.length) {
+                            res.data=res.data.map(str=>{
+                                blk.map(patt=>str=str.replace(patt,""));
+                                return str;
+                            });
+                        }
+
+                        resolve(res);
+                    }).catch(error);
                 }
             }).catch(error)
 

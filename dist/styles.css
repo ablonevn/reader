@@ -25,10 +25,14 @@
 html, body {
   padding: 0px;
   margin: 0px;
-  font-family: "Roboto"; }
+  font-family: "Roboto";
+  overflow: hidden; }
+
+.doc-content {
+  position: fixed;
+  top: -3000px; }
 
 .md-app {
-  border: 1px solid rgba(0, 0, 0, 0.12);
   height: 100vh; }
 
 .md-drawer {
