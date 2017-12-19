@@ -12,9 +12,6 @@ import {
     encodeHex,
     setContentList
 } from "./actions";
-import {Avatar, ListItem, RaisedButton, Toolbar, ToolbarGroup} from "material-ui";
-import {ActionInfo, FileFolder} from "material-ui/svg-icons/index";
-// import {Subject} from "rxjs";
 import Paging from './paging';
 
 let state = {
@@ -27,8 +24,8 @@ let state = {
 };
 var canvas = document.createElement("canvas");
 
-// let loaded=[];
-class ContentDetail extends React.Component {
+
+export class ContentDetail extends React.Component {
 
 
     constructor(props) {
@@ -119,7 +116,7 @@ class ContentDetail extends React.Component {
             //if (this.isFirst || changed) {
             // console.log(this.isFirst,changed);
 
-            this.isFirst = false;
+            // this.isFirst = false;
 
 
             var newRows = this.mprops.contentList.map(row => {
@@ -222,7 +219,8 @@ class ContentDetail extends React.Component {
             this.updateTitle();
             this.getContentList();
         }
-        state.height = $(this.el).parent().height() - 20;
+        let padding=20;
+        state.height = $(this.el).parent().height() - padding;
         state.limit = parseInt(state.height / this.getTextHeight('hg'));
         // console.log(state.height);
         this.setState(Object.assign({}, state));
@@ -292,5 +290,6 @@ const mapDispatchToProps = (dispatch) => {
 
     }
 };
+
 
 export default connect(mapStateToProps, mapDispatchToProps)(ContentDetail);
