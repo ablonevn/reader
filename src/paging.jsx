@@ -60,14 +60,14 @@ constructor(props){
         // if (state.startPos>0) {
         //     debugger;
         // }
-        console.log("items",state.rows);
+        // console.log("items",state.rows);
         if (state.items.length==0) {
             state.fetchItem=false;
         } else {
             state.fetchItem=true;
         }
         this.setState(Object.assign({},state));
-        console.log("props change ",state.items);
+        // console.log("props change ",state.items);
     }
 
     componentDidMount(){

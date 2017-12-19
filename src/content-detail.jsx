@@ -25,6 +25,12 @@ let state = {
     fetchItem: false,
     lastDetail: -1
 };
+var heightRow=new Promise(resolve => $(function(){
+
+    $('body').append('<div id="doc-sample" class="doc-content" style="padding: 10px;display: block;line-height: 150%">Agh</div>');
+    resolve({el:$('#doc-sample'),h:$('#doc-sample').height()+1});
+})).catch((err)=>console.log(err));
+var canvas =  document.createElement("canvas");
 
 // let loaded=[];
 class ContentDetail extends React.Component {
@@ -34,6 +40,8 @@ class ContentDetail extends React.Component {
         super(props);
         this.resetState();
         state.height = 0;
+        state.changed=false;
+        this.isFirst=true;
 
     }
 
@@ -44,6 +52,7 @@ class ContentDetail extends React.Component {
             limit: 1,
             items: [],
             fetchItem: false,
+            mapItems:[]
 
         });
     }
@@ -55,16 +64,83 @@ class ContentDetail extends React.Component {
         this.site = fo;
         this.props.setTitle(this.title);
     }
+    getTextWidth(text, font) {
+        // re-use canvas object for better performance
+
+        var context = canvas.getContext("2d");
+        context.font = font || "normal 16px Roboto";
+        var metrics = context.measureText(text);
+        return metrics.width;
+    }
+    getFitLine(sample,h,arr) {
+        var lst=[];
+        var lstr=[];
+        var w=$(window).width()-40;
+        arr.filter(r=>r!="")
+            .map(r=>{
+            lstr.push(r);
+            var text=lstr.join(" ");
+            if (this.getTextWidth(text)>=w) {
+                // debugger;
+                lstr.pop();
+                // sample.text(lstr.join(" "));
+                // debugger;
+                lst.push(lstr.join(" "));
+                lstr=[r];
+            }
+            // sample.text();
+            // if (lstr.length<=2) {
+            //     // h=$(sample).height();
+            //
+            // }
+            // //console.log($(sample).width(),"==========",$(window).width());
+            // if (sample.height()>h) {
+            //
+            // }
+        });
+        if (lstr.length) {
+            lst.push(lstr.join(" "));
+        }
+        return lst;
+
+    }
 
     componentWillReceiveProps(newProps) {
         this.mprops = newProps;
+        var changed=false;
+        // debugger;
         if (newProps.location && (this.oldLocaltion != newProps.location.pathname)) {
 
             this.oldLocaltion = newProps.location.pathname;
             this.resetState();
             this.getContentList();
+            changed=true;
             this.setState(Object.assign({}, state));
         }
+        if (this.mprops.contentList.length) {
+            if (this.isFirst || changed) {
+                // console.log(this.isFirst,changed);
+
+                this.isFirst=false;
+                heightRow.then((rsa)=>{
+
+                    var newRows=this.mprops.contentList.map(row=>{
+                        var lst=[];
+                        var strs=(row||"").replace(/[\r\n\t]/gi,"").split(' ');
+                        if (strs.length) {
+                            // debugger;
+                            lst=this.getFitLine(rsa.el,rsa.h,strs);
+                        }
+                        return lst;
+                    });
+                    // debugger;
+                    state.mapItems=[].concat.apply([],newRows);
+                    this.setState(Object.assign( {},state));
+                })
+            }
+
+        }
+
 
 
     }
@@ -146,7 +222,7 @@ class ContentDetail extends React.Component {
             this.getContentList();
         }
         state.height = $(this.el).parent().height() - 56 - 20;
-        console.log(state.height);
+        // console.log(state.height);
         this.setState(Object.assign({}, state));
 
 
@@ -165,8 +241,8 @@ class ContentDetail extends React.Component {
 
         return (
             <div ref={el => this.el = el}>
-                <div style={{padding: '10px', height: state.height}}>
-                    <Paging startPos={state.startPos} height={state.height} rows={this.props.contentList}
+                <div style={{padding: '10px 0px 10px 10px', height: state.height}}>
+                    <Paging startPos={state.startPos} height={state.height} rows={state.mapItems}
                             renderItem={this.renderItem}/>
                 </div>
                 <Toolbar>

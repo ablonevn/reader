@@ -29,7 +29,7 @@ exports.default = appState;
 
 /***/ }),
 
-/***/ 1871:
+/***/ 1872:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -41,7 +41,7 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _home = __webpack_require__(209);
+var _home = __webpack_require__(211);
 
 var _home2 = _interopRequireDefault(_home);
 
@@ -49,7 +49,7 @@ var _react = __webpack_require__(0);
 
 var _react2 = _interopRequireDefault(_react);
 
-var _reactRouter = __webpack_require__(279);
+var _reactRouter = __webpack_require__(281);
 
 var _createBrowserHistory = __webpack_require__(137);
 
@@ -57,17 +57,17 @@ var _createBrowserHistory2 = _interopRequireDefault(_createBrowserHistory);
 
 var _actions = __webpack_require__(42);
 
-var _siteDetail = __webpack_require__(280);
+var _siteDetail = __webpack_require__(282);
 
 var _siteDetail2 = _interopRequireDefault(_siteDetail);
 
-var _siteCategory = __webpack_require__(380);
+var _siteCategory = __webpack_require__(382);
 
 var _siteCategory2 = _interopRequireDefault(_siteCategory);
 
 var _reactRedux = __webpack_require__(41);
 
-var _materialUi = __webpack_require__(59);
+var _materialUi = __webpack_require__(60);
 
 var _appData = __webpack_require__(157);
 
@@ -169,7 +169,7 @@ exports.default = (0, _reactRedux.connect)(mapStateToProps, mapDispatchToProps)(
 
 /***/ }),
 
-/***/ 1872:
+/***/ 1873:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -189,11 +189,11 @@ var _reactRedux = __webpack_require__(41);
 
 var _actions = __webpack_require__(42);
 
-var _materialUi = __webpack_require__(59);
+var _materialUi = __webpack_require__(60);
 
-var _index = __webpack_require__(97);
+var _index = __webpack_require__(98);
 
-var _paging = __webpack_require__(381);
+var _paging = __webpack_require__(383);
 
 var _paging2 = _interopRequireDefault(_paging);
 
@@ -215,6 +215,16 @@ var state = {
     fetchItem: false,
     lastDetail: -1
 };
+var heightRow = new Promise(function (resolve) {
+    return $(function () {
+
+        $('body').append('<div id="doc-sample" class="doc-content" style="padding: 10px;display: block;line-height: 150%">Agh</div>');
+        resolve({ el: $('#doc-sample'), h: $('#doc-sample').height() + 1 });
+    });
+}).catch(function (err) {
+    return console.log(err);
+});
+var canvas = document.createElement("canvas");
 
 // let loaded=[];
 
@@ -228,6 +238,8 @@ var ContentDetail = function (_React$Component) {
 
         _this.resetState();
         state.height = 0;
+        state.changed = false;
+        _this.isFirst = true;
 
         return _this;
     }
@@ -240,7 +252,8 @@ var ContentDetail = function (_React$Component) {
                 startPos: 0,
                 limit: 1,
                 items: [],
-                fetchItem: false
+                fetchItem: false,
+                mapItems: []
 
             });
         }
@@ -260,21 +273,94 @@ var ContentDetail = function (_React$Component) {
             this.props.setTitle(this.title);
         }
     }, {
+        key: 'getTextWidth',
+        value: function getTextWidth(text, font) {
+            // re-use canvas object for better performance
+
+            var context = canvas.getContext("2d");
+            context.font = font || "normal 16px Roboto";
+            var metrics = context.measureText(text);
+            return metrics.width;
+        }
+    }, {
+        key: 'getFitLine',
+        value: function getFitLine(sample, h, arr) {
+            var _this3 = this;
+
+            var lst = [];
+            var lstr = [];
+            var w = $(window).width() - 40;
+            arr.filter(function (r) {
+                return r != "";
+            }).map(function (r) {
+                lstr.push(r);
+                var text = lstr.join(" ");
+                if (_this3.getTextWidth(text) >= w) {
+                    // debugger;
+                    lstr.pop();
+                    // sample.text(lstr.join(" "));
+                    // debugger;
+                    lst.push(lstr.join(" "));
+                    lstr = [r];
+                }
+                // sample.text();
+                // if (lstr.length<=2) {
+                //     // h=$(sample).height();
+                //
+                // }
+                // //console.log($(sample).width(),"==========",$(window).width());
+                // if (sample.height()>h) {
+                //
+                // }
+            });
+            if (lstr.length) {
+                lst.push(lstr.join(" "));
+            }
+            return lst;
+        }
+    }, {
         key: 'componentWillReceiveProps',
         value: function componentWillReceiveProps(newProps) {
+            var _this4 = this;
+
             this.mprops = newProps;
+            var changed = false;
+            // debugger;
             if (newProps.location && this.oldLocaltion != newProps.location.pathname) {
 
                 this.oldLocaltion = newProps.location.pathname;
                 this.resetState();
                 this.getContentList();
+                changed = true;
                 this.setState(Object.assign({}, state));
+            }
+            if (this.mprops.contentList.length) {
+                if (this.isFirst || changed) {
+                    // console.log(this.isFirst,changed);
+
+                    this.isFirst = false;
+                    heightRow.then(function (rsa) {
+
+                        var newRows = _this4.mprops.contentList.map(function (row) {
+                            var lst = [];
+                            var strs = (row || "").replace(/[\r\n\t]/gi, "").split(' ');
+                            if (strs.length) {
+                                // debugger;
+                                lst = _this4.getFitLine(rsa.el, rsa.h, strs);
+                            }
+                            return lst;
+                        });
+                        // debugger;
+                        state.mapItems = [].concat.apply([], newRows);
+                        _this4.setState(Object.assign({}, state));
+                    });
+                }
             }
         }
     }, {
         key: 'getContentList',
         value: function getContentList() {
-            var _this3 = this;
+            var _this5 = this;
 
             this.next = null;
             this.prev = null;
@@ -297,11 +383,11 @@ var ContentDetail = function (_React$Component) {
 
             (0, _actions.cachedFetch)(url).then(function (res) {
                 // debugger;
-                _this3.props.setContentList(res.data);
-                _this3.next = res.next;
-                _this3.prev = res.prev;
-                _this3.title = res.title;
-                _this3.updateTitle();
+                _this5.props.setContentList(res.data);
+                _this5.next = res.next;
+                _this5.prev = res.prev;
+                _this5.title = res.title;
+                _this5.updateTitle();
                 // console.log(res.data);
             });
         }
@@ -338,7 +424,7 @@ var ContentDetail = function (_React$Component) {
     }, {
         key: 'componentDidMount',
         value: function componentDidMount() {
-            var _this4 = this;
+            var _this6 = this;
 
             this.props.setAppIcon({
                 icon: "keyboard_arrow_left",
@@ -349,9 +435,9 @@ var ContentDetail = function (_React$Component) {
             if (this.props.listSites.length == 0) {
                 (0, _actions.cachedFetch)('/sites').then(function (res) {
                     // debugger;
-                    _this4.props.setSiteList(res);
-                    _this4.updateTitle(res);
-                    _this4.getContentList();
+                    _this6.props.setSiteList(res);
+                    _this6.updateTitle(res);
+                    _this6.getContentList();
                 });
             } else {
                 // debugger;
@@ -359,7 +445,7 @@ var ContentDetail = function (_React$Component) {
                 this.getContentList();
             }
             state.height = $(this.el).parent().height() - 56 - 20;
-            console.log(state.height);
+            // console.log(state.height);
             this.setState(Object.assign({}, state));
         }
     }, {
@@ -376,19 +462,17 @@ var ContentDetail = function (_React$Component) {
     }, {
         key: 'render',
         value: function render() {
-            var _this5 = this;
+            var _this7 = this;
 
             return _react2.default.createElement(
                 'div',
                 { ref: function ref(el) {
-                        return _this5.el = el;
+                        return _this7.el = el;
                     } },
                 _react2.default.createElement(
                     'div',
-                    { style: { padding: '10px', height: state.height }, onClick: function onClick(evt) {
-                            return console.log(evt);
-                        } },
-                    _react2.default.createElement(_paging2.default, { startPos: state.startPos, height: state.height, rows: this.props.contentList,
+                    { style: { padding: '10px 0px 10px 10px', height: state.height } },
+                    _react2.default.createElement(_paging2.default, { startPos: state.startPos, height: state.height, rows: state.mapItems,
                         renderItem: this.renderItem })
                 ),
                 _react2.default.createElement(
@@ -398,14 +482,14 @@ var ContentDetail = function (_React$Component) {
                         _materialUi.ToolbarGroup,
                         { firstChild: true },
                         _react2.default.createElement(_materialUi.RaisedButton, { label: 'Prev', onClick: function onClick() {
-                                return _this5.doPrev();
+                                return _this7.doPrev();
                             }, primary: true })
                     ),
                     _react2.default.createElement(
                         _materialUi.ToolbarGroup,
                         { lastChild: true },
                         _react2.default.createElement(_materialUi.RaisedButton, { label: 'Next', onClick: function onClick() {
-                                return _this5.doNext();
+                                return _this7.doNext();
                             }, primary: true })
                     )
                 )
@@ -451,14 +535,14 @@ exports.default = (0, _reactRedux.connect)(mapStateToProps, mapDispatchToProps)(
 
 /***/ }),
 
-/***/ 1873:
+/***/ 1874:
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
 
 /***/ }),
 
-/***/ 209:
+/***/ 211:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -474,11 +558,11 @@ var _react = __webpack_require__(0);
 
 var _react2 = _interopRequireDefault(_react);
 
-var _reactRouterDom = __webpack_require__(496);
+var _reactRouterDom = __webpack_require__(497);
 
-var _materialUi = __webpack_require__(59);
+var _materialUi = __webpack_require__(60);
 
-var _index = __webpack_require__(97);
+var _index = __webpack_require__(98);
 
 var _reactRedux = __webpack_require__(41);
 
@@ -625,7 +709,7 @@ exports.default = (0, _reactRedux.connect)(mapStateToProps, mapDispatchToProps)(
 
 /***/ }),
 
-/***/ 280:
+/***/ 282:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -645,13 +729,13 @@ var _reactRedux = __webpack_require__(41);
 
 var _actions = __webpack_require__(42);
 
-var _materialUi = __webpack_require__(59);
+var _materialUi = __webpack_require__(60);
 
-var _index = __webpack_require__(97);
+var _index = __webpack_require__(98);
 
-var _rxjs = __webpack_require__(281);
+var _rxjs = __webpack_require__(283);
 
-var _reactHeight = __webpack_require__(379);
+var _reactHeight = __webpack_require__(381);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -910,7 +994,7 @@ exports.default = (0, _reactRedux.connect)(mapStateToProps, mapDispatchToProps)(
 
 /***/ }),
 
-/***/ 380:
+/***/ 382:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -930,13 +1014,13 @@ var _reactRedux = __webpack_require__(41);
 
 var _actions = __webpack_require__(42);
 
-var _materialUi = __webpack_require__(59);
+var _materialUi = __webpack_require__(60);
 
-var _index = __webpack_require__(97);
+var _index = __webpack_require__(98);
 
-var _rxjs = __webpack_require__(281);
+var _rxjs = __webpack_require__(283);
 
-var _paging = __webpack_require__(381);
+var _paging = __webpack_require__(383);
 
 var _paging2 = _interopRequireDefault(_paging);
 
@@ -1145,7 +1229,7 @@ exports.default = (0, _reactRedux.connect)(mapStateToProps, mapDispatchToProps)(
 
 /***/ }),
 
-/***/ 381:
+/***/ 383:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1163,7 +1247,7 @@ var _react2 = _interopRequireDefault(_react);
 
 var _reactRedux = __webpack_require__(41);
 
-var _reactHeight = __webpack_require__(379);
+var _reactHeight = __webpack_require__(381);
 
 var _actions = __webpack_require__(42);
 
@@ -1240,14 +1324,14 @@ var Paging = function (_React$Component) {
             // if (state.startPos>0) {
             //     debugger;
             // }
-            console.log("items", state.rows);
+            // console.log("items",state.rows);
             if (state.items.length == 0) {
                 state.fetchItem = false;
             } else {
                 state.fetchItem = true;
             }
             this.setState(Object.assign({}, state));
-            console.log("props change ", state.items);
+            // console.log("props change ",state.items);
         }
     }, {
         key: "componentDidMount",
@@ -1288,7 +1372,7 @@ exports.default = (0, _reactRedux.connect)(mapStateToProps, mapDispatchToProps)(
 
 /***/ }),
 
-/***/ 382:
+/***/ 384:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1308,27 +1392,27 @@ var _MuiThemeProvider2 = _interopRequireDefault(_MuiThemeProvider);
 
 var _reactRedux = __webpack_require__(41);
 
-var _darkBaseTheme = __webpack_require__(1877);
+var _darkBaseTheme = __webpack_require__(493);
 
 var _darkBaseTheme2 = _interopRequireDefault(_darkBaseTheme);
 
-var _getMuiTheme = __webpack_require__(428);
+var _getMuiTheme = __webpack_require__(192);
 
 var _getMuiTheme2 = _interopRequireDefault(_getMuiTheme);
 
 var _redux = __webpack_require__(135);
 
-var _reducers = __webpack_require__(493);
+var _reducers = __webpack_require__(494);
 
 var _reducers2 = _interopRequireDefault(_reducers);
 
-var _app = __webpack_require__(495);
+var _app = __webpack_require__(496);
 
 var _app2 = _interopRequireDefault(_app);
 
-var _colors = __webpack_require__(130);
+var _colors = __webpack_require__(58);
 
-__webpack_require__(1873);
+__webpack_require__(1874);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -1370,7 +1454,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _actions = __webpack_require__(494);
+var _actions = __webpack_require__(495);
 
 Object.keys(_actions).forEach(function (key) {
   if (key === "default" || key === "__esModule") return;
@@ -1384,7 +1468,7 @@ Object.keys(_actions).forEach(function (key) {
 
 /***/ }),
 
-/***/ 493:
+/***/ 494:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1512,7 +1596,7 @@ exports.default = appData;
 
 /***/ }),
 
-/***/ 494:
+/***/ 495:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1614,7 +1698,7 @@ function decodeHex(text) {
 
 /***/ }),
 
-/***/ 495:
+/***/ 496:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1626,7 +1710,7 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _home = __webpack_require__(209);
+var _home = __webpack_require__(211);
 
 var _home2 = _interopRequireDefault(_home);
 
@@ -1634,7 +1718,7 @@ var _react = __webpack_require__(0);
 
 var _react2 = _interopRequireDefault(_react);
 
-var _reactRouter = __webpack_require__(279);
+var _reactRouter = __webpack_require__(281);
 
 var _createBrowserHistory = __webpack_require__(137);
 
@@ -1642,31 +1726,31 @@ var _createBrowserHistory2 = _interopRequireDefault(_createBrowserHistory);
 
 var _actions = __webpack_require__(42);
 
-var _siteDetail = __webpack_require__(280);
+var _siteDetail = __webpack_require__(282);
 
 var _siteDetail2 = _interopRequireDefault(_siteDetail);
 
-var _siteCategory = __webpack_require__(380);
+var _siteCategory = __webpack_require__(382);
 
 var _siteCategory2 = _interopRequireDefault(_siteCategory);
 
-var _appHeader = __webpack_require__(1871);
+var _appHeader = __webpack_require__(1872);
 
 var _appHeader2 = _interopRequireDefault(_appHeader);
 
-var _contentDetail = __webpack_require__(1872);
+var _contentDetail = __webpack_require__(1873);
 
 var _contentDetail2 = _interopRequireDefault(_contentDetail);
 
 var _reactRedux = __webpack_require__(41);
 
-var _materialUi = __webpack_require__(59);
+var _materialUi = __webpack_require__(60);
 
 var _appData = __webpack_require__(157);
 
 var _appData2 = _interopRequireDefault(_appData);
 
-var _colors = __webpack_require__(130);
+var _colors = __webpack_require__(58);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -1767,4 +1851,4 @@ exports.default = (0, _reactRedux.connect)()(App);
 
 /***/ })
 
-},[382]);
+},[384]);
