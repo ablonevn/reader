@@ -25,7 +25,7 @@ let state = {
     fetchItem: false,
     lastDetail: -1
 };
-var canvas =  document.createElement("canvas");
+var canvas = document.createElement("canvas");
 
 // let loaded=[];
 class ContentDetail extends React.Component {
@@ -35,8 +35,8 @@ class ContentDetail extends React.Component {
         super(props);
         this.resetState();
         state.height = 0;
-        state.changed=false;
-        this.isFirst=true;
+        state.changed = false;
+        this.isFirst = true;
 
     }
 
@@ -47,7 +47,7 @@ class ContentDetail extends React.Component {
             // limit: 1,
             items: [],
             fetchItem: false,
-            mapItems:[]
+            mapItems: []
 
         });
     }
@@ -59,6 +59,7 @@ class ContentDetail extends React.Component {
         this.site = fo;
         this.props.setTitle(this.title);
     }
+
     getTextWidth(text, font) {
         // re-use canvas object for better performance
 
@@ -67,6 +68,7 @@ class ContentDetail extends React.Component {
         var metrics = context.measureText(text);
         return metrics.width;
     }
+
     getTextHeight(text, font) {
         // re-use canvas object for better performance
 
@@ -75,24 +77,25 @@ class ContentDetail extends React.Component {
         var metrics = context.measureText(text);
         return 24;
     }
-    getFitLine(arr) {
-        var lst=[];
-        var lstr=[];
-        var w=$(window).width()-20-10;
-        arr.filter(r=>r!="")
-            .map(r=>{
-            lstr.push(r);
-            var text=lstr.join(" ");
-            if (this.getTextWidth(text)>=w) {
-                // debugger;
-                lstr.pop();
-                // sample.text(lstr.join(" "));
-                // debugger;
-                lst.push(lstr.join(" "));
-                lstr=[r];
-            }
 
-        });
+    getFitLine(arr) {
+        var lst = [];
+        var lstr = [];
+        var w = $(window).width() - 20 - 10;
+        arr.filter(r => r != "")
+            .map(r => {
+                lstr.push(r);
+                var text = lstr.join(" ");
+                if (this.getTextWidth(text) >= w) {
+                    // debugger;
+                    lstr.pop();
+                    // sample.text(lstr.join(" "));
+                    // debugger;
+                    lst.push(lstr.join(" "));
+                    lstr = [r];
+                }
+
+            });
         if (lstr.length) {
             lst.push(lstr.join(" "));
         }
@@ -102,40 +105,39 @@ class ContentDetail extends React.Component {
 
     componentWillReceiveProps(newProps) {
         this.mprops = newProps;
-        var changed=false;
+        var changed = false;
         // debugger;
         if (newProps.location && (this.oldLocaltion != newProps.location.pathname)) {
 
             this.oldLocaltion = newProps.location.pathname;
             this.resetState();
             this.getContentList();
-            changed=true;
+            changed = true;
             this.setState(Object.assign({}, state));
         }
         if (this.mprops.contentList.length) {
             //if (this.isFirst || changed) {
-                // console.log(this.isFirst,changed);
+            // console.log(this.isFirst,changed);
 
-                this.isFirst=false;
+            this.isFirst = false;
 
 
-                    var newRows=this.mprops.contentList.map(row=>{
-                        var lst=[];
-                        var strs=(row||"").replace(/[\r\n\t]/gi,"").split(' ');
-                        if (strs.length) {
-                            // debugger;
-                            lst=this.getFitLine(strs);
-                        }
-                        return lst;
-                    });
+            var newRows = this.mprops.contentList.map(row => {
+                var lst = [];
+                var strs = (row || "").replace(/[\r\n\t]/gi, "").split(' ');
+                if (strs.length) {
                     // debugger;
-                    state.mapItems=[].concat.apply([],newRows);
-                    this.setState(Object.assign( {},state));
+                    lst = this.getFitLine(strs);
+                }
+                return lst;
+            });
+            // debugger;
+            state.mapItems = [].concat.apply([], newRows);
+            this.setState(Object.assign({}, state));
 
             //}
 
         }
-
 
 
     }
@@ -144,19 +146,19 @@ class ContentDetail extends React.Component {
         this.next = null;
         this.prev = null;
         this.mprops = this.mprops || this.props;
-        var url='/doc-content/' + this.site.id + "/" + this.mprops.match.params.name + "/" + this.mprops.match.params.url;
-        fetch('/save',{
+        var url = '/doc-content/' + this.site.id + "/" + this.mprops.match.params.name + "/" + this.mprops.match.params.url;
+        fetch('/save', {
             method: 'post',
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-                id:this.site.id,
-                url:'/content-detail/' + this.site.id + "/" + this.mprops.match.params.name + "/" + this.mprops.match.params.url,
+                id: this.site.id,
+                url: '/content-detail/' + this.site.id + "/" + this.mprops.match.params.name + "/" + this.mprops.match.params.url,
                 name: decodeHex(this.mprops.match.params.name)
             })
-        }).then(r=>r);
+        }).then(r => r);
 
         cachedFetch(url).then((res) => {
             // debugger;
@@ -190,7 +192,7 @@ class ContentDetail extends React.Component {
         if (state.startPos - state.limit >= 0) {
             state.startPos = state.startPos - state.limit;
             // this.setState(Object.assign({}, state));
-        }else {
+        } else {
             // debugger;
             if (this.prev) {
                 this.props.history.replace('/content-detail/' + this.site.id + "/" + this.mprops.match.params.name + "/" + encodeHex(this.prev));
@@ -221,7 +223,7 @@ class ContentDetail extends React.Component {
             this.getContentList();
         }
         state.height = $(this.el).parent().height() - 56 - 20;
-        state.limit = parseInt(state.height/this.getTextHeight('hg'));
+        state.limit = parseInt(state.height / this.getTextHeight('hg'));
         // console.log(state.height);
         this.setState(Object.assign({}, state));
 
@@ -231,9 +233,19 @@ class ContentDetail extends React.Component {
     renderItem(item, idx, limit) {
 
 
+        return <div key={state.startPos + idx}>{item}</div>
 
-        return <div key={state.startPos+idx}>{item}</div>
+    }
 
+    onClick(event) {
+        event.persist();
+        // debugger;
+        if (event.clientX > $(window).width() / 2) {
+            this.doNext();
+        } else {
+            this.doPrev();
+        }
+        // console.log(event.clientX,event.clientY);
     }
 
     render() {
@@ -241,7 +253,7 @@ class ContentDetail extends React.Component {
 
         return (
             <div ref={el => this.el = el}>
-                <div style={{padding: '10px 0px 10px 10px', height: state.height}}>
+                <div style={{padding: '10px 0px 10px 10px', height: state.height}} onClick={evt => this.onClick(evt)}>
                     <Paging startPos={state.startPos} height={state.height} rows={state.mapItems}
                             renderItem={this.renderItem} limit={state.limit}/>
                 </div>

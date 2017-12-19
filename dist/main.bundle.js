@@ -454,6 +454,18 @@ var ContentDetail = function (_React$Component) {
             );
         }
     }, {
+        key: 'onClick',
+        value: function onClick(event) {
+            event.persist();
+            // debugger;
+            if (event.clientX > $(window).width() / 2) {
+                this.doNext();
+            } else {
+                this.doPrev();
+            }
+            // console.log(event.clientX,event.clientY);
+        }
+    }, {
         key: 'render',
         value: function render() {
             var _this7 = this;
@@ -465,7 +477,9 @@ var ContentDetail = function (_React$Component) {
                     } },
                 _react2.default.createElement(
                     'div',
-                    { style: { padding: '10px 0px 10px 10px', height: state.height } },
+                    { style: { padding: '10px 0px 10px 10px', height: state.height }, onClick: function onClick(evt) {
+                            return _this7.onClick(evt);
+                        } },
                     _react2.default.createElement(_paging2.default, { startPos: state.startPos, height: state.height, rows: state.mapItems,
                         renderItem: this.renderItem, limit: state.limit })
                 ),
