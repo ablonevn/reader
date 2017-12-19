@@ -438,7 +438,7 @@ var ContentDetail = function (_React$Component) {
                 this.updateTitle();
                 this.getContentList();
             }
-            state.height = $(this.el).parent().height() - 56 - 20;
+            state.height = $(this.el).parent().height() - 20;
             state.limit = parseInt(state.height / this.getTextHeight('hg'));
             // console.log(state.height);
             this.setState(Object.assign({}, state));
@@ -482,24 +482,6 @@ var ContentDetail = function (_React$Component) {
                         } },
                     _react2.default.createElement(_paging2.default, { startPos: state.startPos, height: state.height, rows: state.mapItems,
                         renderItem: this.renderItem, limit: state.limit })
-                ),
-                _react2.default.createElement(
-                    _materialUi.Toolbar,
-                    null,
-                    _react2.default.createElement(
-                        _materialUi.ToolbarGroup,
-                        { firstChild: true },
-                        _react2.default.createElement(_materialUi.RaisedButton, { label: 'Prev', onClick: function onClick() {
-                                return _this7.doPrev();
-                            }, primary: true })
-                    ),
-                    _react2.default.createElement(
-                        _materialUi.ToolbarGroup,
-                        { lastChild: true },
-                        _react2.default.createElement(_materialUi.RaisedButton, { label: 'Next', onClick: function onClick() {
-                                return _this7.doNext();
-                            }, primary: true })
-                    )
                 )
             );
         }
