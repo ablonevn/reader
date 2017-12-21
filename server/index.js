@@ -15,10 +15,11 @@ const comm=require('./common');
 const sites=comm.sites;
 const getHtml=comm.getHtml;
 
+app.use(express.static('fonts'));
 app.use(express.static('dist'));
 app.use(express.static('server'));
 app.use(express.json());       // to support JSON-encoded bodies
-app.use(express.urlencoded()); // to support URL-encoded bodies
+app.use(express.urlencoded({ extended: true })); // to support URL-encoded bodies
 // app.use(bodyParser.json());
 app.post('/save', function(req, res) {
 
