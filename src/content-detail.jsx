@@ -33,6 +33,7 @@ export class ContentDetail extends React.Component {
         this.resetState();
         state.height = 0;
         state.changed = false;
+        state.lastRows="";
         this.isFirst = true;
 
     }
@@ -61,7 +62,7 @@ export class ContentDetail extends React.Component {
         // re-use canvas object for better performance
 
         var context = canvas.getContext("2d");
-        context.font = font || "normal 16px Roboto";
+        context.font = font || "normal 16px 'Segoe UI'";
         var metrics = context.measureText(text);
         return metrics.width;
     }
@@ -70,7 +71,7 @@ export class ContentDetail extends React.Component {
         // re-use canvas object for better performance
 
         var context = canvas.getContext("2d");
-        context.font = font || "normal 16px Roboto";
+        context.font = font || "normal 16px 'Segoe UI'";
         var metrics = context.measureText(text);
         return 24;
     }
@@ -79,7 +80,7 @@ export class ContentDetail extends React.Component {
         var lst = [];
         var lstr = [];
         var w = $(window).width() - 20 - 10;
-        arr.filter(r => r != "")
+        arr.filter(r => (r||"") !== "")
             .map(r => {
                 lstr.push(r);
                 var text = lstr.join(" ");
@@ -99,6 +100,19 @@ export class ContentDetail extends React.Component {
         return lst;
 
     }
+    buildRow(list) {
+        var newRows = list.map(row => {
+            var lst = [];
+            var strs = (row || "").replace(/[\r\n\t]/gi, "").split(' ');
+            if (strs.length) {
+                // debugger;
+                lst = this.getFitLine(strs);
+            }
+            return lst;
+        });
+        // debugger;
+        state.mapItems = [].concat.apply([], newRows);
+    }
 
     componentWillReceiveProps(newProps) {
         this.mprops = newProps;
@@ -112,25 +126,26 @@ export class ContentDetail extends React.Component {
             changed = true;
             this.setState(Object.assign({}, state));
         }
-        if (this.mprops.contentList.length) {
+        var js=JSON.stringify(this.mprops.contentList);
+        if (this.mprops.contentList.length && (js!==state.lastRows) ) {
+            state.lastRows=js;
+
             //if (this.isFirst || changed) {
             // console.log(this.isFirst,changed);
 
             // this.isFirst = false;
 
 
-            var newRows = this.mprops.contentList.map(row => {
-                var lst = [];
-                var strs = (row || "").replace(/[\r\n\t]/gi, "").split(' ');
-                if (strs.length) {
-                    // debugger;
-                    lst = this.getFitLine(strs);
-                }
-                return lst;
-            });
-            // debugger;
-            state.mapItems = [].concat.apply([], newRows);
+            this.buildRow(this.mprops.contentList);
+
+            if (this.isPrev) {
+                this.isPrev=false;
+                var pages=parseInt((state.mapItems.length+state.limit-1)/state.limit);
+                state.startPos=(pages-1)*state.limit;
+            }
             this.setState(Object.assign({}, state));
+            // console.log("update ",state.mapItems.length);
+
 
             //}
 
@@ -138,10 +153,7 @@ export class ContentDetail extends React.Component {
 
 
     }
-
-    getContentList() {
-        this.next = null;
-        this.prev = null;
+    getContent(){
         this.mprops = this.mprops || this.props;
         var url = '/doc-content/' + this.site.id + "/" + this.mprops.match.params.name + "/" + this.mprops.match.params.url;
         fetch('/save', {
@@ -157,47 +169,104 @@ export class ContentDetail extends React.Component {
             })
         }).then(r => r);
 
-        cachedFetch(url).then((res) => {
+        return cachedFetch(url).then((res) => {
             // debugger;
-            this.props.setContentList(res.data);
+
             this.next = res.next;
             this.prev = res.prev;
             this.title = res.title;
             this.updateTitle();
             // console.log(res.data);
+            return res;
         });
+    }
+
+
+    getContentList() {
+        //if (this.isFirst) {
+            this.next = null;
+            this.prev = null;
+            this.getContent().then((res)=>this.props.setContentList(res.data));
+            // this.isFirst = false;
+        //}
+
+
+        // this.mprops = this.mprops || this.props;
+        // var url = '/doc-content/' + this.site.id + "/" + this.mprops.match.params.name + "/" + this.mprops.match.params.url;
+        // fetch('/save', {
+        //     method: 'post',
+        //     headers: {
+        //         'Accept': 'application/json',
+        //         'Content-Type': 'application/json'
+        //     },
+        //     body: JSON.stringify({
+        //         id: this.site.id,
+        //         url: '/content-detail/' + this.site.id + "/" + this.mprops.match.params.name + "/" + this.mprops.match.params.url,
+        //         name: decodeHex(this.mprops.match.params.name)
+        //     })
+        // }).then(r => r);
+        //
+        // cachedFetch(url).then((res) => {
+        //     // debugger;
+        //     this.props.setContentList(res.data);
+        //     this.next = res.next;
+        //     this.prev = res.prev;
+        //     this.title = res.title;
+        //     this.updateTitle();
+        //     // console.log(res.data);
+        // });
     }
 
     doNext() {
         // console.log("limit item", state.limit);
         if (state.startPos + state.limit < state.mapItems.length) {
             state.startPos = state.startPos + state.limit;
-
+            // console.log(state.startPos);
+            this.setState(Object.assign({}, state));
         } else {
             // debugger;
             if (this.next) {
+                // this.isPrev=false;
                 this.props.history.replace('/content-detail/' + this.site.id + "/" + this.mprops.match.params.name + "/" + encodeHex(this.next));
                 this.resetState();
+                this.getContent().then(res=>{
+                    this.buildRow(res.data);
+                    // this.setState(Object.assign({}, state));
+                })
                 // this.getContentList();
             }
         }
-        this.setState(Object.assign({}, state));
+
     }
 
     doPrev() {
         //console.log("limit item",state.limit);
         if (state.startPos - state.limit >= 0) {
             state.startPos = state.startPos - state.limit;
-            // this.setState(Object.assign({}, state));
+            this.setState(Object.assign({}, state));
         } else {
             // debugger;
             if (this.prev) {
+                this.isPrev=true;
                 this.props.history.replace('/content-detail/' + this.site.id + "/" + this.mprops.match.params.name + "/" + encodeHex(this.prev));
-                this.resetState();
+                // this.resetState();
+                // this.lockUpdate=true;
+                // this.getContent().then(res=>{
+                //
+                //     this.buildRow(res.data);
+                //     var pages=parseInt((state.mapItems.length)/state.limit);
+                //
+                //
+                //     state.startPos=(pages-1)*state.limit;
+                //     console.log("prev set item",pages,state.mapItems.length,state.startPos);
+                //     // this.lockUpdate=false;
+                //     // this.setState(Object.assign({}, state));
+                // });
+                //calc last page
                 // this.getContentList();
             }
         }
-        this.setState(Object.assign({}, state));
+
     }
 
     componentDidMount() {
@@ -247,25 +316,30 @@ export class ContentDetail extends React.Component {
     }
 
     render() {
+        var paging=<div/>;
+        if (state.mapItems && state.mapItems.length) {
+            // console.log("render changed",state.mapItems,state.startPos , state.limit);
+            var items=state.mapItems.slice(state.startPos, state.startPos + state.limit);
+            paging=
+                <div style={{padding: '10px 0px 10px 10px', height: state.height}} onClick={evt => this.onClick(evt)}>
+                    {items.map((item,idx)=><div key={state.startPos + idx}>{item}</div>)}
 
+            </div>;
 
+        } else {
+            // console.log("render blank");
+            // return (<div ref={el => this.el = el}></div>)
+            //<Paging startPos={state.startPos} height={state.height} rows={state.mapItems}
+            //renderItem={this.renderItem} limit={state.limit}/>
+        }
         return (
             <div ref={el => this.el = el}>
-                <div style={{padding: '10px 0px 10px 10px', height: state.height}} onClick={evt => this.onClick(evt)}>
-                    <Paging startPos={state.startPos} height={state.height} rows={state.mapItems}
-                            renderItem={this.renderItem} limit={state.limit}/>
-                </div>
-                {/*<Toolbar>*/}
-                    {/*<ToolbarGroup firstChild={true}>*/}
-                        {/*<RaisedButton label="Prev" onClick={() => this.doPrev()} primary={true}/>*/}
-                    {/*</ToolbarGroup>*/}
-                    {/*<ToolbarGroup lastChild={true}>*/}
-                        {/*<RaisedButton label="Next" onClick={() => this.doNext()} primary={true}/>*/}
-
-                    {/*</ToolbarGroup>*/}
-                {/*</Toolbar>*/}
+                {paging}
             </div>
         );
+
+
+
     }
 }
 

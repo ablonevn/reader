@@ -25,12 +25,8 @@
 html, body {
   padding: 0px;
   margin: 0px;
-  font-family: "Roboto";
+  font-family: 'Segoe UI',"Roboto";
   overflow: hidden; }
-
-.doc-content {
-  position: fixed;
-  top: -3000px; }
 
 .md-app {
   height: 100vh; }
