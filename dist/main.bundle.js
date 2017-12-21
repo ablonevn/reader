@@ -1748,9 +1748,9 @@ var memFetch = {};
 function cachedFetch(url, options) {
     // Use the URL as the cache key to sessionStorage
     var cacheKey = url + JSON.stringify(options || "");
-    // if (memFetch[cacheKey]) {
-    //     return Promise.resolve(memFetch[cacheKey]);
-    // }
+    if (memFetch[cacheKey]) {
+        return Promise.resolve(memFetch[cacheKey]);
+    }
     memFetch[cacheKey] = fetch(url, options).then(function (response) {
         // let's only store in cache if the content-type is
         // JSON or something non-binary
