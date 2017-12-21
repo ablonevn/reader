@@ -36,9 +36,9 @@ let memFetch = {};
 export function cachedFetch(url, options) {
     // Use the URL as the cache key to sessionStorage
     let cacheKey = url + JSON.stringify(options || "");
-    // if (memFetch[cacheKey]) {
-    //     return Promise.resolve(memFetch[cacheKey]);
-    // }
+    if (memFetch[cacheKey]) {
+        return Promise.resolve(memFetch[cacheKey]);
+    }
     memFetch[cacheKey]=fetch(url, options).then(response => {
         // let's only store in cache if the content-type is
         // JSON or something non-binary
