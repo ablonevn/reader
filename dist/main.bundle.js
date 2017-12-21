@@ -198,10 +198,6 @@ var _reactRedux = __webpack_require__(41);
 
 var _actions = __webpack_require__(42);
 
-var _paging = __webpack_require__(383);
-
-var _paging2 = _interopRequireDefault(_paging);
-
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
