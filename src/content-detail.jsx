@@ -1,18 +1,9 @@
 import React from 'react';
 import {connect} from "react-redux";
-import {decodeHex} from './actions'
-
 import {
-    cachedFetch,
-    setAppIcon,
-    setAppTitle,
-    setSiteDetailList,
-    setSiteList,
-    setDocumentList,
-    encodeHex,
-    setContentList
-} from "./actions";
-import Paging from './paging';
+    cachedFetch, decodeHex, encodeHex, setAppIcon, setAppTitle, setContentList, setDocumentList,
+    setSiteList
+} from './actions'
 
 let state = {
     height: 0,
@@ -128,6 +119,7 @@ export class ContentDetail extends React.Component {
         }
         var js=JSON.stringify(this.mprops.contentList);
         if (this.mprops.contentList.length && (js!==state.lastRows) ) {
+            // console.log("props changed");
             state.lastRows=js;
 
             //if (this.isFirst || changed) {
@@ -153,7 +145,9 @@ export class ContentDetail extends React.Component {
 
 
     }
+
     getContent(){
+        console.log("get content called");
         this.mprops = this.mprops || this.props;
         var url = '/doc-content/' + this.site.id + "/" + this.mprops.match.params.name + "/" + this.mprops.match.params.url;
         fetch('/save', {
@@ -175,6 +169,8 @@ export class ContentDetail extends React.Component {
             this.next = res.next;
             this.prev = res.prev;
             this.title = res.title;
+            if (res.next) cachedFetch('/doc-content/' + this.site.id + "/" + this.mprops.match.params.name + "/"+encodeHex(res.next)); // cache next page
+            if (res.prev) cachedFetch('/doc-content/' + this.site.id + "/" + this.mprops.match.params.name + "/"+encodeHex(res.prev)); // cache prev page
             this.updateTitle();
             // console.log(res.data);
             return res;
@@ -228,11 +224,11 @@ export class ContentDetail extends React.Component {
             if (this.next) {
                 // this.isPrev=false;
                 this.props.history.replace('/content-detail/' + this.site.id + "/" + this.mprops.match.params.name + "/" + encodeHex(this.next));
-                this.resetState();
-                this.getContent().then(res=>{
-                    this.buildRow(res.data);
-                    // this.setState(Object.assign({}, state));
-                })
+                // this.resetState();
+                // this.getContent().then(res=>{
+                //     this.buildRow(res.data);
+                //     // this.setState(Object.assign({}, state));
+                // })
                 // this.getContentList();
             }
         }

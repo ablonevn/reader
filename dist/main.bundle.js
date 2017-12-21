@@ -345,6 +345,7 @@ var ContentDetail = exports.ContentDetail = function (_React$Component) {
             }
             var js = JSON.stringify(this.mprops.contentList);
             if (this.mprops.contentList.length && js !== state.lastRows) {
+                // console.log("props changed");
                 state.lastRows = js;
 
                 //if (this.isFirst || changed) {
@@ -372,6 +373,7 @@ var ContentDetail = exports.ContentDetail = function (_React$Component) {
         value: function getContent() {
             var _this5 = this;
 
+            console.log("get content called");
             this.mprops = this.mprops || this.props;
             var url = '/doc-content/' + this.site.id + "/" + this.mprops.match.params.name + "/" + this.mprops.match.params.url;
             fetch('/save', {
@@ -395,6 +397,8 @@ var ContentDetail = exports.ContentDetail = function (_React$Component) {
                 _this5.next = res.next;
                 _this5.prev = res.prev;
                 _this5.title = res.title;
+                if (res.next) (0, _actions.cachedFetch)('/doc-content/' + _this5.site.id + "/" + _this5.mprops.match.params.name + "/" + (0, _actions.encodeHex)(res.next)); // cache next page
+                if (res.prev) (0, _actions.cachedFetch)('/doc-content/' + _this5.site.id + "/" + _this5.mprops.match.params.name + "/" + (0, _actions.encodeHex)(res.prev)); // cache prev page
                 _this5.updateTitle();
                 // console.log(res.data);
                 return res;
@@ -443,8 +447,6 @@ var ContentDetail = exports.ContentDetail = function (_React$Component) {
     }, {
         key: 'doNext',
         value: function doNext() {
-            var _this7 = this;
-
             // console.log("limit item", state.limit);
             if (state.startPos + state.limit < state.mapItems.length) {
                 state.startPos = state.startPos + state.limit;
@@ -455,11 +457,11 @@ var ContentDetail = exports.ContentDetail = function (_React$Component) {
                 if (this.next) {
                     // this.isPrev=false;
                     this.props.history.replace('/content-detail/' + this.site.id + "/" + this.mprops.match.params.name + "/" + (0, _actions.encodeHex)(this.next));
-                    this.resetState();
-                    this.getContent().then(function (res) {
-                        _this7.buildRow(res.data);
-                        // this.setState(Object.assign({}, state));
-                    });
+                    // this.resetState();
+                    // this.getContent().then(res=>{
+                    //     this.buildRow(res.data);
+                    //     // this.setState(Object.assign({}, state));
+                    // })
                     // this.getContentList();
                 }
             }
@@ -497,7 +499,7 @@ var ContentDetail = exports.ContentDetail = function (_React$Component) {
     }, {
         key: 'componentDidMount',
         value: function componentDidMount() {
-            var _this8 = this;
+            var _this7 = this;
 
             this.props.setAppIcon({
                 icon: "keyboard_arrow_left",
@@ -508,9 +510,9 @@ var ContentDetail = exports.ContentDetail = function (_React$Component) {
             if (this.props.listSites.length == 0) {
                 (0, _actions.cachedFetch)('/sites').then(function (res) {
                     // debugger;
-                    _this8.props.setSiteList(res);
-                    _this8.updateTitle(res);
-                    _this8.getContentList();
+                    _this7.props.setSiteList(res);
+                    _this7.updateTitle(res);
+                    _this7.getContentList();
                 });
             } else {
                 // debugger;
@@ -548,7 +550,7 @@ var ContentDetail = exports.ContentDetail = function (_React$Component) {
     }, {
         key: 'render',
         value: function render() {
-            var _this9 = this;
+            var _this8 = this;
 
             var paging = _react2.default.createElement('div', null);
             if (state.mapItems && state.mapItems.length) {
@@ -557,7 +559,7 @@ var ContentDetail = exports.ContentDetail = function (_React$Component) {
                 paging = _react2.default.createElement(
                     'div',
                     { style: { padding: '10px 0px 10px 10px', height: state.height }, onClick: function onClick(evt) {
-                            return _this9.onClick(evt);
+                            return _this8.onClick(evt);
                         } },
                     items.map(function (item, idx) {
                         return _react2.default.createElement(
@@ -576,7 +578,7 @@ var ContentDetail = exports.ContentDetail = function (_React$Component) {
             return _react2.default.createElement(
                 'div',
                 { ref: function ref(el) {
-                        return _this9.el = el;
+                        return _this8.el = el;
                     } },
                 paging
             );
