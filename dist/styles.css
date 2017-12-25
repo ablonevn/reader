@@ -1,3 +1,62 @@
+@font-face {
+  font-family: 'Material Icons';
+  font-style: normal;
+  font-weight: 400;
+  src: url(/MaterialIcons-Regular.e79bfd88537def476913f3ed52f4f4b3.eot); /* For IE6-8 */
+  src: local('Material Icons'),
+       local('MaterialIcons-Regular'),
+       url(/MaterialIcons-Regular.570eb83859dc23dd0eec423a49e147fe.woff2) format('woff2'),
+       url(/MaterialIcons-Regular.012cf6a10129e2275d79d6adac7f3b02.woff) format('woff'),
+       url(/MaterialIcons-Regular.a37b0c01c0baf1888ca812cc0508f6e2.ttf) format('truetype');
+}
+@font-face {
+  font-family: 'Segoe UI';
+  src: url(/SegoeUI.6bc5199f56d65fac7a13757e63cf8283.eot);
+  src: url(/SegoeUI.6bc5199f56d65fac7a13757e63cf8283.eot?#iefix) format('embedded-opentype'),
+  url(/SegoeUI.8c7638f9b2d07d4c9931a6d7ac897890.woff2) format('woff2'),
+  url(/SegoeUI.a29ccf288688825eab53a9f4fa277331.woff) format('woff'),
+  url(/SegoeUI.889b410ecd782c7b4a3983b4fdb6ea62.ttf) format('truetype'),
+  url(/SegoeUI.f249ff588dfd97a33025c48c10c6c47a.svg#SegoeUI) format('svg');
+  font-weight: normal;
+  font-style: normal;
+}
+@font-face {
+  font-family: 'Roboto';
+  src: url(/Roboto-Regular.9c72ed4687aa17d7b6c062b72b9744c2.eot);
+  src: url(/Roboto-Regular.9c72ed4687aa17d7b6c062b72b9744c2.eot?#iefix) format('embedded-opentype'),
+  url(/Roboto-Regular.b804c7b5895579f00b939568e17adc6c.woff2) format('woff2'),
+  url(/Roboto-Regular.829c06072c396e292f04995406e4304c.woff) format('woff'),
+  url(/Roboto-Regular.8e84c83a38638805d77780205a08a9af.ttf) format('truetype'),
+  url(/Roboto-Regular.1056b7016703cc7f9166a7a82df10ed2.svg#Roboto-Regular) format('svg');
+  font-weight: normal;
+  font-style: normal;
+}
+
+
+.material-icons {
+  font-family: 'Material Icons';
+  font-weight: normal;
+  font-style: normal;
+  font-size: 24px;  /* Preferred icon size */
+  display: inline-block;
+  line-height: 1;
+  text-transform: none;
+  letter-spacing: normal;
+  word-wrap: normal;
+  white-space: nowrap;
+  direction: ltr;
+
+  /* Support for all WebKit browsers. */
+  -webkit-font-smoothing: antialiased;
+  /* Support for Safari and Chrome. */
+  text-rendering: optimizeLegibility;
+
+  /* Support for Firefox. */
+  -moz-osx-font-smoothing: grayscale;
+
+  /* Support for IE. */
+  font-feature-settings: 'liga';
+}
 /* this file will be extracted to main dist folder and is imported in index.html */
 /* This file is for setting global styles  */
 .material-icons {

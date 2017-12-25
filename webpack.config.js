@@ -204,7 +204,11 @@ module.exports = {
             loader: 'raw-loader'
         }, {
             test: /\.(png|jpe?g|gif|svg|woff|woff2|ttf|eot|ico)/,
-            loader: 'file-loader?name=[name].[hash].[ext]'
+            loader: 'file-loader',
+            options: {
+                name: '[name].[hash].[ext]',
+                publicPath: '/'
+            }
         },
             // the url-loader uses DataUrls.
             // the file-loader emits files.

@@ -29,6 +29,164 @@ exports.default = appState;
 
 /***/ }),
 
+/***/ 1871:
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _react = __webpack_require__(0);
+
+var _react2 = _interopRequireDefault(_react);
+
+var _reactRedux = __webpack_require__(41);
+
+var _reactHeight = __webpack_require__(381);
+
+var _actions = __webpack_require__(42);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var state = {
+    height: 0,
+    startPos: 0,
+    limit: 1,
+    items: [],
+    fetchItem: false,
+    lastDetail: -1,
+    rows: []
+};
+
+// let loaded=[];
+
+var Paging = function (_React$Component) {
+    _inherits(Paging, _React$Component);
+
+    function Paging(props) {
+        _classCallCheck(this, Paging);
+
+        var _this = _possibleConstructorReturn(this, (Paging.__proto__ || Object.getPrototypeOf(Paging)).call(this, props));
+
+        _this.state = state = {
+            height: 0,
+            startPos: 0,
+            limit: 1,
+            items: [],
+            fetchItem: false,
+            lastDetail: -1,
+            rows: []
+        };
+        return _this;
+    }
+
+    _createClass(Paging, [{
+        key: "addMoreRow",
+        value: function addMoreRow(height) {
+
+            if (this.props.limit) {
+
+                return;
+            }
+            if (height > this.props.height) {
+                // console.log("last ",state.limit);
+                state = Object.assign({}, state, {
+                    fetchItem: false,
+                    limit: state.limit - 1,
+                    items: state.rows.slice(state.startPos, state.startPos + state.limit - 1)
+                });
+                this.setState(state);
+            } else {
+                // console.log("axddrow",state.limit,state.fetchItem);
+                if (state.fetchItem) {
+                    state.limit = state.limit + 1;
+                    var items = state.rows.slice(state.startPos, state.startPos + state.limit);
+                    var fetchItem = items.length > state.items.length;
+                    state.items = items;
+                    if (!fetchItem) {
+                        state.limit = state.limit - 1;
+                    }
+                    state = Object.assign({}, state, { fetchItem: fetchItem });
+                    this.setState(state);
+                }
+            }
+        }
+    }, {
+        key: "componentWillReceiveProps",
+        value: function componentWillReceiveProps(nextProps) {
+            state.rows = [].concat(nextProps.rows);
+            state.startPos = nextProps.startPos;
+
+            state.limit = nextProps.limit || 1;
+            // console.log(state.limit);
+            state.items = state.rows.slice(state.startPos, state.startPos + state.limit);
+            // if (state.startPos>0) {
+            //     debugger;
+            // }
+            // console.log("items",state.rows);
+            if (state.items.length == 0) {
+                state.fetchItem = false;
+            } else {
+                state.fetchItem = true;
+            }
+            this.setState(Object.assign({}, state));
+            console.log("props change ", this.state);
+        }
+    }, {
+        key: "componentDidMount",
+        value: function componentDidMount() {
+            // console.log("rows ",state.rows);
+
+
+        }
+    }, {
+        key: "render",
+        value: function render() {
+            var _this2 = this;
+
+            var rows = state.rows.slice(this.state.startPos, state.startPos + state.limit);
+            var items = rows.map(function (item, idx) {
+                return _this2.props.renderItem(item, idx, state.limit);
+            });
+            // console.log("items:",state.rows);
+            return _react2.default.createElement(
+                _reactHeight.ReactHeight,
+                { onHeightReady: function onHeightReady(height) {
+                        return _this2.addMoreRow(height);
+                    } },
+                state.items.map(function (item, idx) {
+                    return _this2.props.renderItem(item, idx, state.limit);
+                })
+            );
+        }
+    }]);
+
+    return Paging;
+}(_react2.default.Component);
+
+var mapStateToProps = function mapStateToProps(state, ownProps) {
+    return {};
+};
+
+var mapDispatchToProps = function mapDispatchToProps(dispatch) {
+    return {};
+};
+
+exports.default = (0, _reactRedux.connect)(mapStateToProps, mapDispatchToProps)(Paging);
+
+/***/ }),
+
 /***/ 1872:
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -642,7 +800,7 @@ var _react = __webpack_require__(0);
 
 var _react2 = _interopRequireDefault(_react);
 
-var _reactRouterDom = __webpack_require__(497);
+var _reactRouterDom = __webpack_require__(496);
 
 var _materialUi = __webpack_require__(70);
 
@@ -1104,7 +1262,7 @@ var _index = __webpack_require__(156);
 
 var _rxjs = __webpack_require__(283);
 
-var _paging = __webpack_require__(383);
+var _paging = __webpack_require__(1871);
 
 var _paging2 = _interopRequireDefault(_paging);
 
@@ -1319,164 +1477,6 @@ exports.default = (0, _reactRedux.connect)(mapStateToProps, mapDispatchToProps)(
 "use strict";
 
 
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-var _react = __webpack_require__(0);
-
-var _react2 = _interopRequireDefault(_react);
-
-var _reactRedux = __webpack_require__(41);
-
-var _reactHeight = __webpack_require__(381);
-
-var _actions = __webpack_require__(42);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-var state = {
-    height: 0,
-    startPos: 0,
-    limit: 1,
-    items: [],
-    fetchItem: false,
-    lastDetail: -1,
-    rows: []
-};
-
-// let loaded=[];
-
-var Paging = function (_React$Component) {
-    _inherits(Paging, _React$Component);
-
-    function Paging(props) {
-        _classCallCheck(this, Paging);
-
-        var _this = _possibleConstructorReturn(this, (Paging.__proto__ || Object.getPrototypeOf(Paging)).call(this, props));
-
-        _this.state = state = {
-            height: 0,
-            startPos: 0,
-            limit: 1,
-            items: [],
-            fetchItem: false,
-            lastDetail: -1,
-            rows: []
-        };
-        return _this;
-    }
-
-    _createClass(Paging, [{
-        key: "addMoreRow",
-        value: function addMoreRow(height) {
-
-            if (this.props.limit) {
-
-                return;
-            }
-            if (height > this.props.height) {
-                // console.log("last ",state.limit);
-                state = Object.assign({}, state, {
-                    fetchItem: false,
-                    limit: state.limit - 1,
-                    items: state.rows.slice(state.startPos, state.startPos + state.limit - 1)
-                });
-                this.setState(state);
-            } else {
-                // console.log("axddrow",state.limit,state.fetchItem);
-                if (state.fetchItem) {
-                    state.limit = state.limit + 1;
-                    var items = state.rows.slice(state.startPos, state.startPos + state.limit);
-                    var fetchItem = items.length > state.items.length;
-                    state.items = items;
-                    if (!fetchItem) {
-                        state.limit = state.limit - 1;
-                    }
-                    state = Object.assign({}, state, { fetchItem: fetchItem });
-                    this.setState(state);
-                }
-            }
-        }
-    }, {
-        key: "componentWillReceiveProps",
-        value: function componentWillReceiveProps(nextProps) {
-            state.rows = [].concat(nextProps.rows);
-            state.startPos = nextProps.startPos;
-
-            state.limit = nextProps.limit || 1;
-            // console.log(state.limit);
-            state.items = state.rows.slice(state.startPos, state.startPos + state.limit);
-            // if (state.startPos>0) {
-            //     debugger;
-            // }
-            // console.log("items",state.rows);
-            if (state.items.length == 0) {
-                state.fetchItem = false;
-            } else {
-                state.fetchItem = true;
-            }
-            this.setState(Object.assign({}, state));
-            console.log("props change ", this.state);
-        }
-    }, {
-        key: "componentDidMount",
-        value: function componentDidMount() {
-            // console.log("rows ",state.rows);
-
-
-        }
-    }, {
-        key: "render",
-        value: function render() {
-            var _this2 = this;
-
-            var rows = state.rows.slice(this.state.startPos, state.startPos + state.limit);
-            var items = rows.map(function (item, idx) {
-                return _this2.props.renderItem(item, idx, state.limit);
-            });
-            // console.log("items:",state.rows);
-            return _react2.default.createElement(
-                _reactHeight.ReactHeight,
-                { onHeightReady: function onHeightReady(height) {
-                        return _this2.addMoreRow(height);
-                    } },
-                state.items.map(function (item, idx) {
-                    return _this2.props.renderItem(item, idx, state.limit);
-                })
-            );
-        }
-    }]);
-
-    return Paging;
-}(_react2.default.Component);
-
-var mapStateToProps = function mapStateToProps(state, ownProps) {
-    return {};
-};
-
-var mapDispatchToProps = function mapDispatchToProps(dispatch) {
-    return {};
-};
-
-exports.default = (0, _reactRedux.connect)(mapStateToProps, mapDispatchToProps)(Paging);
-
-/***/ }),
-
-/***/ 384:
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
 var _react = __webpack_require__(0);
 
 var _react2 = _interopRequireDefault(_react);
@@ -1491,7 +1491,7 @@ var _MuiThemeProvider2 = _interopRequireDefault(_MuiThemeProvider);
 
 var _reactRedux = __webpack_require__(41);
 
-var _darkBaseTheme = __webpack_require__(493);
+var _darkBaseTheme = __webpack_require__(492);
 
 var _darkBaseTheme2 = _interopRequireDefault(_darkBaseTheme);
 
@@ -1501,11 +1501,11 @@ var _getMuiTheme2 = _interopRequireDefault(_getMuiTheme);
 
 var _redux = __webpack_require__(134);
 
-var _reducers = __webpack_require__(494);
+var _reducers = __webpack_require__(493);
 
 var _reducers2 = _interopRequireDefault(_reducers);
 
-var _app = __webpack_require__(496);
+var _app = __webpack_require__(495);
 
 var _app2 = _interopRequireDefault(_app);
 
@@ -1553,7 +1553,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _actions = __webpack_require__(495);
+var _actions = __webpack_require__(494);
 
 Object.keys(_actions).forEach(function (key) {
   if (key === "default" || key === "__esModule") return;
@@ -1567,7 +1567,7 @@ Object.keys(_actions).forEach(function (key) {
 
 /***/ }),
 
-/***/ 494:
+/***/ 493:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1695,7 +1695,7 @@ exports.default = appData;
 
 /***/ }),
 
-/***/ 495:
+/***/ 494:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1797,7 +1797,7 @@ function decodeHex(text) {
 
 /***/ }),
 
-/***/ 496:
+/***/ 495:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1950,4 +1950,4 @@ exports.default = (0, _reactRedux.connect)()(App);
 
 /***/ })
 
-},[384]);
+},[383]);
