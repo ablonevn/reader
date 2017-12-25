@@ -1,22 +1,21 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
-import { Provider} from 'react-redux';
-import darkBaseTheme from 'material-ui/styles/baseThemes/darkBaseTheme';
+import {Provider} from 'react-redux';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
 import {createStore} from 'redux';
 import appData from './reducers';
 import App from './app';
 
-import {indigo700,grey600,white} from 'material-ui/styles/colors';
+import {indigo500, white} from 'material-ui/styles/colors';
 
 
 import "./styles.scss";
 
 const muiTheme = {
     palette: {
-        primary1Color: indigo700,
-        primary2Color: indigo700,
+        primary1Color: indigo500,
+        primary2Color: indigo500,
         primary3Color: white,
         textColor: white,
         secondaryTextColor: white,

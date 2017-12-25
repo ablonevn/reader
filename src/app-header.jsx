@@ -1,22 +1,9 @@
-
-import Home from "./home";
 import React from "react";
-import {Route, Router} from 'react-router';
-import createBrowserHistory from 'history/createBrowserHistory';
-import {setSiteList} from './actions'
-import SiteDetail from './site-detail';
-import SiteCategory from './site-category';
-
-
 
 
 import {connect} from "react-redux";
 
-import {
-    AppBar, BottomNavigation, BottomNavigationItem, FontIcon, IconButton, Paper,
-    RaisedButton,FlatButton
-} from 'material-ui';
-import appState from "./app-data";
+import {AppBar, FontIcon, IconButton} from 'material-ui';
 
 
 const recentsIcon = <FontIcon className="material-icons">restore</FontIcon>;
@@ -45,7 +32,7 @@ class AppHeader extends React.Component {
         //     this.setState(me.state);
         // });
         // }
-        console.log("Event");
+        // console.log("Event");
         // this.props.getTitle();
 
     }
@@ -59,7 +46,9 @@ class AppHeader extends React.Component {
                 title={this.props.title}
                 iconElementLeft={<IconButton onClick={this.props.menuClick}><FontIcon className={'material-icons'}>{this.props.icon}</FontIcon></IconButton>}
                 iconElementRight={<IconButton ><FontIcon className={'material-icons'}>settings</FontIcon></IconButton>}
-            />
+            >
+
+            </AppBar>
 
 
         );

@@ -223,6 +223,10 @@ var _siteCategory = __webpack_require__(382);
 
 var _siteCategory2 = _interopRequireDefault(_siteCategory);
 
+var _LinearProgress = __webpack_require__(584);
+
+var _LinearProgress2 = _interopRequireDefault(_LinearProgress);
+
 var _reactRedux = __webpack_require__(41);
 
 var _materialUi = __webpack_require__(70);
@@ -230,6 +234,8 @@ var _materialUi = __webpack_require__(70);
 var _appData = __webpack_require__(157);
 
 var _appData2 = _interopRequireDefault(_appData);
+
+var _colors = __webpack_require__(58);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -280,8 +286,9 @@ var AppHeader = function (_React$Component) {
             //     this.setState(me.state);
             // });
             // }
-            console.log("Event");
+            // console.log("Event");
             // this.props.getTitle();
+
         }
     }, {
         key: "render",
@@ -1517,8 +1524,8 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 var muiTheme = {
     palette: {
-        primary1Color: _colors.indigo700,
-        primary2Color: _colors.indigo700,
+        primary1Color: _colors.indigo500,
+        primary2Color: _colors.indigo500,
         primary3Color: _colors.white,
         textColor: _colors.white,
         secondaryTextColor: _colors.white,

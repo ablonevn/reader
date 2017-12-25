@@ -10,6 +10,7 @@
   "scripts": {
     "dev": "SET NODE_ENV=dev&& webpack-dev-server --config webpack.config.js --progress --colors",
     "watch": "webpack --watch",
+    "build": "webpack",
     "start": "node server/index.js",
     "crawl": "node server/crawl.js"
   },
