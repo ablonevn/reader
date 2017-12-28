@@ -121,11 +121,12 @@ export class ContentDetail extends React.Component<any, any> {
     componentWillReceiveProps(newProps) {
         this.mprops = newProps;
         // var changed = false;
-        // debugger;
+
         if (newProps.location && (this.oldLocaltion != newProps.location.pathname)) {
 
             this.oldLocaltion = newProps.location.pathname;
             this.resetState();
+            // debugger;
             this.getContentList().then((lst)=>{
                 this.buildRow(lst);
                 if (this.isPrev) {
@@ -171,9 +172,9 @@ export class ContentDetail extends React.Component<any, any> {
         console.log("get content called");
         this.mprops = this.mprops || this.props;
         var url = '/doc-content/' + this.site.id + "/" + this.mprops.match.params.name + "/" + this.mprops.match.params.url;
-        var hd = [];
-        hd['Accept'] = 'application/json';
-        hd['Content-Type'] = 'application/json';
+        var hd = new Headers();
+        hd.set('Accept','application/json');
+        hd.set('Content-Type', 'application/json');
 
         fetch('/save', {
             method: 'post',

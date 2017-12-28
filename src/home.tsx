@@ -2,7 +2,7 @@ import * as React from 'react';
 import {Avatar, List, ListItem, Subheader} from "material-ui";
 import {ActionInfo, FileFolder} from "material-ui/svg-icons";
 import {connect} from "react-redux";
-import {cachedFetch, setAppIcon, setAppTitle, setSiteList} from "./actions";
+import {setAppIcon, setAppTitle, setSiteList} from "./actions";
 
 class Home extends React.Component<any,any> {
 
@@ -16,7 +16,7 @@ class Home extends React.Component<any,any> {
     componentDidMount() {
         this.props.setTitle();
         this.props.setAppIcon({icon:"home",click:()=>{}});
-        cachedFetch('/sites').then((res) => {
+        fetch('/sites').then(res=>res.json()).then((res) => {
             this.setState(Object.assign({},this.state,{list:res}));
         });
     }

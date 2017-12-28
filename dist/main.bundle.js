@@ -584,10 +584,10 @@ var ContentDetail = /** @class */ (function (_super) {
         var _this = this;
         this.mprops = newProps;
         // var changed = false;
-        // debugger;
         if (newProps.location && (this.oldLocaltion != newProps.location.pathname)) {
             this.oldLocaltion = newProps.location.pathname;
             this.resetState();
+            // debugger;
             this.getContentList().then(function (lst) {
                 _this.buildRow(lst);
                 if (_this.isPrev) {
@@ -631,9 +631,9 @@ var ContentDetail = /** @class */ (function (_super) {
         console.log("get content called");
         this.mprops = this.mprops || this.props;
         var url = '/doc-content/' + this.site.id + "/" + this.mprops.match.params.name + "/" + this.mprops.match.params.url;
-        var hd = [];
-        hd['Accept'] = 'application/json';
-        hd['Content-Type'] = 'application/json';
+        var hd = new Headers();
+        hd.set('Accept', 'application/json');
+        hd.set('Content-Type', 'application/json');
         fetch('/save', {
             method: 'post',
             headers: hd,
@@ -1230,7 +1230,7 @@ var Home = /** @class */ (function (_super) {
         var _this = this;
         this.props.setTitle();
         this.props.setAppIcon({ icon: "home", click: function () { } });
-        actions_1.cachedFetch('/sites').then(function (res) {
+        fetch('/sites').then(function (res) { return res.json(); }).then(function (res) {
             _this.setState(Object.assign({}, _this.state, { list: res }));
         });
     };

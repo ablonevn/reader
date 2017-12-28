@@ -102,7 +102,6 @@ class SiteDetail extends React.Component<any,any> {
             //this.props.setSiteDetailList(res.data)
             this.setState(Object.assign({},this.state,{
                 lstDetail:this.lstDetail,
-
             }))
         });
         var f2=cachedFetch('/sites').then((res) => {
