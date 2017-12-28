@@ -1,3 +1,5 @@
+import {Subject} from "rxjs/Subject";
+
 let counter = 0;
 
 function j() {
@@ -33,7 +35,7 @@ export const SET_CONTENT_LIST=j();
 
 let memFetch = {};
 
-export function cachedFetch(url, options) {
+export function cachedFetch(url, options?) {
     // Use the URL as the cache key to sessionStorage
     let cacheKey = url + JSON.stringify(options || "");
     if (memFetch[cacheKey]) {
@@ -49,6 +51,13 @@ export function cachedFetch(url, options) {
         return response
     });
     return memFetch[cacheKey];
+}
+let sourceData={};
+export function appSource(key) {
+    if (!sourceData[key]) {
+        sourceData[key]=new Subject();
+    }
+    return sourceData[key];
 }
 
 

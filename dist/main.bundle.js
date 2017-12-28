@@ -1,1021 +1,45 @@
 webpackJsonp([1],{
 
-/***/ 157:
+/***/ 1542:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-exports.setTitle = setTitle;
-exports.getSite = getSite;
-
-var _Subject = __webpack_require__(21);
-
-var appState = {
-    title: new _Subject.Subject(),
-    sites: new _Subject.Subject()
-};
-
-function setTitle(text) {
-    appState.title.next(text);
-}
-
-function getSite(id) {}
-
-exports.default = appState;
-
-/***/ }),
-
-/***/ 1871:
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-var _react = __webpack_require__(0);
-
-var _react2 = _interopRequireDefault(_react);
-
-var _reactRedux = __webpack_require__(41);
-
-var _reactHeight = __webpack_require__(381);
-
-var _actions = __webpack_require__(42);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-var state = {
-    height: 0,
-    startPos: 0,
-    limit: 1,
-    items: [],
-    fetchItem: false,
-    lastDetail: -1,
-    rows: []
-};
-
-// let loaded=[];
-
-var Paging = function (_React$Component) {
-    _inherits(Paging, _React$Component);
-
-    function Paging(props) {
-        _classCallCheck(this, Paging);
-
-        var _this = _possibleConstructorReturn(this, (Paging.__proto__ || Object.getPrototypeOf(Paging)).call(this, props));
-
-        _this.state = state = {
-            height: 0,
-            startPos: 0,
-            limit: 1,
-            items: [],
-            fetchItem: false,
-            lastDetail: -1,
-            rows: []
-        };
-        return _this;
-    }
-
-    _createClass(Paging, [{
-        key: "addMoreRow",
-        value: function addMoreRow(height) {
-
-            if (this.props.limit) {
-
-                return;
-            }
-            if (height > this.props.height) {
-                // console.log("last ",state.limit);
-                state = Object.assign({}, state, {
-                    fetchItem: false,
-                    limit: state.limit - 1,
-                    items: state.rows.slice(state.startPos, state.startPos + state.limit - 1)
-                });
-                this.setState(state);
-            } else {
-                // console.log("axddrow",state.limit,state.fetchItem);
-                if (state.fetchItem) {
-                    state.limit = state.limit + 1;
-                    var items = state.rows.slice(state.startPos, state.startPos + state.limit);
-                    var fetchItem = items.length > state.items.length;
-                    state.items = items;
-                    if (!fetchItem) {
-                        state.limit = state.limit - 1;
-                    }
-                    state = Object.assign({}, state, { fetchItem: fetchItem });
-                    this.setState(state);
-                }
-            }
-        }
-    }, {
-        key: "componentWillReceiveProps",
-        value: function componentWillReceiveProps(nextProps) {
-            state.rows = [].concat(nextProps.rows);
-            state.startPos = nextProps.startPos;
-
-            state.limit = nextProps.limit || 1;
-            // console.log(state.limit);
-            state.items = state.rows.slice(state.startPos, state.startPos + state.limit);
-            // if (state.startPos>0) {
-            //     debugger;
-            // }
-            // console.log("items",state.rows);
-            if (state.items.length == 0) {
-                state.fetchItem = false;
-            } else {
-                state.fetchItem = true;
-            }
-            this.setState(Object.assign({}, state));
-            console.log("props change ", this.state);
-        }
-    }, {
-        key: "componentDidMount",
-        value: function componentDidMount() {
-            // console.log("rows ",state.rows);
-
-
-        }
-    }, {
-        key: "render",
-        value: function render() {
-            var _this2 = this;
-
-            var rows = state.rows.slice(this.state.startPos, state.startPos + state.limit);
-            var items = rows.map(function (item, idx) {
-                return _this2.props.renderItem(item, idx, state.limit);
-            });
-            // console.log("items:",state.rows);
-            return _react2.default.createElement(
-                _reactHeight.ReactHeight,
-                { onHeightReady: function onHeightReady(height) {
-                        return _this2.addMoreRow(height);
-                    } },
-                state.items.map(function (item, idx) {
-                    return _this2.props.renderItem(item, idx, state.limit);
-                })
-            );
-        }
-    }]);
-
-    return Paging;
-}(_react2.default.Component);
-
-var mapStateToProps = function mapStateToProps(state, ownProps) {
-    return {};
-};
-
-var mapDispatchToProps = function mapDispatchToProps(dispatch) {
-    return {};
-};
-
-exports.default = (0, _reactRedux.connect)(mapStateToProps, mapDispatchToProps)(Paging);
-
-/***/ }),
-
-/***/ 1872:
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-var _home = __webpack_require__(211);
-
-var _home2 = _interopRequireDefault(_home);
-
-var _react = __webpack_require__(0);
-
-var _react2 = _interopRequireDefault(_react);
-
-var _reactRouter = __webpack_require__(281);
-
-var _createBrowserHistory = __webpack_require__(136);
-
-var _createBrowserHistory2 = _interopRequireDefault(_createBrowserHistory);
-
-var _actions = __webpack_require__(42);
-
-var _siteDetail = __webpack_require__(282);
-
-var _siteDetail2 = _interopRequireDefault(_siteDetail);
-
-var _siteCategory = __webpack_require__(382);
-
-var _siteCategory2 = _interopRequireDefault(_siteCategory);
-
-var _LinearProgress = __webpack_require__(584);
-
-var _LinearProgress2 = _interopRequireDefault(_LinearProgress);
-
-var _reactRedux = __webpack_require__(41);
-
-var _materialUi = __webpack_require__(70);
-
-var _appData = __webpack_require__(157);
-
-var _appData2 = _interopRequireDefault(_appData);
-
-var _colors = __webpack_require__(58);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-var recentsIcon = _react2.default.createElement(
-    _materialUi.FontIcon,
-    { className: "material-icons" },
-    "restore"
-);
-var favoritesIcon = _react2.default.createElement(
-    _materialUi.FontIcon,
-    { className: "material-icons" },
-    "favorite"
-);
-
-// @autoState()
-
-var AppHeader = function (_React$Component) {
-    _inherits(AppHeader, _React$Component);
-
-    function AppHeader() {
-        _classCallCheck(this, AppHeader);
-
-        return _possibleConstructorReturn(this, (AppHeader.__proto__ || Object.getPrototypeOf(AppHeader)).apply(this, arguments));
-    }
-
-    _createClass(AppHeader, [{
-        key: "componentDidMount",
-        value: function componentDidMount() {
-            // console.log("aare render")
-            // let me=this;
-            // if (!this.props.siteLoaded) {
-            //this.props.siteLoaded=true;
-
-            // debugger;
-            // let params=this.props;
-            // if (params) {
-            //     // debugger;
-            //     fetch('/site-detail/'+params.id).then((response)=>response.json()).then((res)=>this.props.setSiteDetailList(res));
-            // }
-            // appState.title.subscribe(v=>{
-            //     me.state.title=v;
-            //     this.setState(me.state);
-            // });
-            // }
-            // console.log("Event");
-            // this.props.getTitle();
-
-        }
-    }, {
-        key: "render",
-        value: function render() {
-            var me = this;
-            // console.log('app title:',me.props.list)
-            return _react2.default.createElement(_materialUi.AppBar, {
-                title: this.props.title,
-                iconElementLeft: _react2.default.createElement(
-                    _materialUi.IconButton,
-                    { onClick: this.props.menuClick },
-                    _react2.default.createElement(
-                        _materialUi.FontIcon,
-                        { className: 'material-icons' },
-                        this.props.icon
-                    )
-                ),
-                iconElementRight: _react2.default.createElement(
-                    _materialUi.IconButton,
-                    null,
-                    _react2.default.createElement(
-                        _materialUi.FontIcon,
-                        { className: 'material-icons' },
-                        "settings"
-                    )
-                )
-            });
-        }
-    }]);
-
-    return AppHeader;
-}(_react2.default.Component);
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+Object.defineProperty(exports, "__esModule", { value: true });
+var React = __webpack_require__(0);
+var react_redux_1 = __webpack_require__(58);
+var actions_1 = __webpack_require__(97);
+var material_ui_1 = __webpack_require__(113);
+var svg_icons_1 = __webpack_require__(294);
 //
-
-
-var mapStateToProps = function mapStateToProps(state, ownProps) {
-    return {
-        // siteLoaded:state.sites.loaded,
-        menuClick: state.app.click,
-        title: state.app.title,
-        icon: state.app.icon
-    };
-};
-
-var mapDispatchToProps = function mapDispatchToProps(dispatch) {
-    return {
-        // setSiteList:(lst)=>dispatch(setSiteList(lst)),
-    };
-};
-exports.default = (0, _reactRedux.connect)(mapStateToProps, mapDispatchToProps)(AppHeader);
-
-/***/ }),
-
-/***/ 1873:
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-exports.ContentDetail = undefined;
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-var _react = __webpack_require__(0);
-
-var _react2 = _interopRequireDefault(_react);
-
-var _reactRedux = __webpack_require__(41);
-
-var _actions = __webpack_require__(42);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-var state = {
-    height: 0,
-    startPos: 0,
-    limit: 1,
-    items: [],
-    fetchItem: false,
-    lastDetail: -1
-};
-var canvas = document.createElement("canvas");
-
-var ContentDetail = exports.ContentDetail = function (_React$Component) {
-    _inherits(ContentDetail, _React$Component);
-
-    function ContentDetail(props) {
-        _classCallCheck(this, ContentDetail);
-
-        var _this = _possibleConstructorReturn(this, (ContentDetail.__proto__ || Object.getPrototypeOf(ContentDetail)).call(this, props));
-
-        _this.resetState();
-        state.height = 0;
-        state.changed = false;
-        state.lastRows = "";
-        _this.isFirst = true;
-
-        return _this;
-    }
-
-    _createClass(ContentDetail, [{
-        key: 'resetState',
-        value: function resetState() {
-            state = Object.assign({}, state, {
-
-                startPos: 0,
-                // limit: 1,
-                items: [],
-                fetchItem: false,
-                mapItems: []
-
-            });
-        }
-    }, {
-        key: 'updateTitle',
-        value: function updateTitle(lst) {
-            var _this2 = this;
-
-            lst = lst || this.props.listSites;
-            var fo = lst.filter(function (site) {
-                return _this2.props.match.params.siteId == site.id;
-            })[0];
-            var n = this.props.match.params.name.split("-").map(function (o) {
-                return String.fromCharCode(parseInt(o, 16));
-            }).join("");
-            this.site = fo;
-            this.props.setTitle(this.title);
-        }
-    }, {
-        key: 'getTextWidth',
-        value: function getTextWidth(text, font) {
-            // re-use canvas object for better performance
-
-            var context = canvas.getContext("2d");
-            context.font = font || "normal 16px 'Segoe UI'";
-            var metrics = context.measureText(text);
-            return metrics.width;
-        }
-    }, {
-        key: 'getTextHeight',
-        value: function getTextHeight(text, font) {
-            // re-use canvas object for better performance
-
-            var context = canvas.getContext("2d");
-            context.font = font || "normal 16px 'Segoe UI'";
-            var metrics = context.measureText(text);
-            return 24;
-        }
-    }, {
-        key: 'getFitLine',
-        value: function getFitLine(arr) {
-            var _this3 = this;
-
-            var lst = [];
-            var lstr = [];
-            var w = $(window).width() - 20 - 10;
-            arr.filter(function (r) {
-                return (r || "") !== "";
-            }).map(function (r) {
-                lstr.push(r);
-                var text = lstr.join(" ");
-                if (_this3.getTextWidth(text) >= w) {
-                    // debugger;
-                    lstr.pop();
-                    // sample.text(lstr.join(" "));
-                    // debugger;
-                    lst.push(lstr.join(" "));
-                    lstr = [r];
-                }
-            });
-            if (lstr.length) {
-                lst.push(lstr.join(" "));
-            }
-            return lst;
-        }
-    }, {
-        key: 'buildRow',
-        value: function buildRow(list) {
-            var _this4 = this;
-
-            var newRows = list.map(function (row) {
-                var lst = [];
-                var strs = (row || "").replace(/[\r\n\t]/gi, "").split(' ');
-                if (strs.length) {
-                    // debugger;
-                    lst = _this4.getFitLine(strs);
-                }
-                return lst;
-            });
-            // debugger;
-            state.mapItems = [].concat.apply([], newRows);
-        }
-    }, {
-        key: 'componentWillReceiveProps',
-        value: function componentWillReceiveProps(newProps) {
-            this.mprops = newProps;
-            var changed = false;
-            // debugger;
-            if (newProps.location && this.oldLocaltion != newProps.location.pathname) {
-
-                this.oldLocaltion = newProps.location.pathname;
-                this.resetState();
-                this.getContentList();
-                changed = true;
-                this.setState(Object.assign({}, state));
-            }
-            var js = JSON.stringify(this.mprops.contentList);
-            if (this.mprops.contentList.length && js !== state.lastRows) {
-                // console.log("props changed");
-                state.lastRows = js;
-
-                //if (this.isFirst || changed) {
-                // console.log(this.isFirst,changed);
-
-                // this.isFirst = false;
-
-
-                this.buildRow(this.mprops.contentList);
-
-                if (this.isPrev) {
-                    this.isPrev = false;
-                    var pages = parseInt((state.mapItems.length + state.limit - 1) / state.limit);
-                    state.startPos = (pages - 1) * state.limit;
-                }
-                this.setState(Object.assign({}, state));
-                // console.log("update ",state.mapItems.length);
-
-
-                //}
-            }
-        }
-    }, {
-        key: 'getContent',
-        value: function getContent() {
-            var _this5 = this;
-
-            console.log("get content called");
-            this.mprops = this.mprops || this.props;
-            var url = '/doc-content/' + this.site.id + "/" + this.mprops.match.params.name + "/" + this.mprops.match.params.url;
-            fetch('/save', {
-                method: 'post',
-                headers: {
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    id: this.site.id,
-                    url: '/content-detail/' + this.site.id + "/" + this.mprops.match.params.name + "/" + this.mprops.match.params.url,
-                    name: (0, _actions.decodeHex)(this.mprops.match.params.name)
-                })
-            }).then(function (r) {
-                return r;
-            });
-
-            return (0, _actions.cachedFetch)(url).then(function (res) {
-                // debugger;
-
-                _this5.next = res.next;
-                _this5.prev = res.prev;
-                _this5.title = res.title;
-                if (res.next) (0, _actions.cachedFetch)('/doc-content/' + _this5.site.id + "/" + _this5.mprops.match.params.name + "/" + (0, _actions.encodeHex)(res.next)); // cache next page
-                if (res.prev) (0, _actions.cachedFetch)('/doc-content/' + _this5.site.id + "/" + _this5.mprops.match.params.name + "/" + (0, _actions.encodeHex)(res.prev)); // cache prev page
-                _this5.updateTitle();
-                // console.log(res.data);
-                return res;
-            });
-        }
-    }, {
-        key: 'getContentList',
-        value: function getContentList() {
-            var _this6 = this;
-
-            //if (this.isFirst) {
-            this.next = null;
-            this.prev = null;
-            this.getContent().then(function (res) {
-                return _this6.props.setContentList(res.data);
-            });
-            // this.isFirst = false;
-            //}
-
-
-            // this.mprops = this.mprops || this.props;
-            // var url = '/doc-content/' + this.site.id + "/" + this.mprops.match.params.name + "/" + this.mprops.match.params.url;
-            // fetch('/save', {
-            //     method: 'post',
-            //     headers: {
-            //         'Accept': 'application/json',
-            //         'Content-Type': 'application/json'
-            //     },
-            //     body: JSON.stringify({
-            //         id: this.site.id,
-            //         url: '/content-detail/' + this.site.id + "/" + this.mprops.match.params.name + "/" + this.mprops.match.params.url,
-            //         name: decodeHex(this.mprops.match.params.name)
-            //     })
-            // }).then(r => r);
-            //
-            // cachedFetch(url).then((res) => {
-            //     // debugger;
-            //     this.props.setContentList(res.data);
-            //     this.next = res.next;
-            //     this.prev = res.prev;
-            //     this.title = res.title;
-            //     this.updateTitle();
-            //     // console.log(res.data);
-            // });
-        }
-    }, {
-        key: 'doNext',
-        value: function doNext() {
-            // console.log("limit item", state.limit);
-            if (state.startPos + state.limit < state.mapItems.length) {
-                state.startPos = state.startPos + state.limit;
-                // console.log(state.startPos);
-                this.setState(Object.assign({}, state));
-            } else {
-                // debugger;
-                if (this.next) {
-                    // this.isPrev=false;
-                    this.props.history.replace('/content-detail/' + this.site.id + "/" + this.mprops.match.params.name + "/" + (0, _actions.encodeHex)(this.next));
-                    // this.resetState();
-                    // this.getContent().then(res=>{
-                    //     this.buildRow(res.data);
-                    //     // this.setState(Object.assign({}, state));
-                    // })
-                    // this.getContentList();
-                }
-            }
-        }
-    }, {
-        key: 'doPrev',
-        value: function doPrev() {
-            //console.log("limit item",state.limit);
-            if (state.startPos - state.limit >= 0) {
-                state.startPos = state.startPos - state.limit;
-                this.setState(Object.assign({}, state));
-            } else {
-                // debugger;
-                if (this.prev) {
-                    this.isPrev = true;
-                    this.props.history.replace('/content-detail/' + this.site.id + "/" + this.mprops.match.params.name + "/" + (0, _actions.encodeHex)(this.prev));
-                    // this.resetState();
-                    // this.lockUpdate=true;
-                    // this.getContent().then(res=>{
-                    //
-                    //     this.buildRow(res.data);
-                    //     var pages=parseInt((state.mapItems.length)/state.limit);
-                    //
-                    //
-                    //     state.startPos=(pages-1)*state.limit;
-                    //     console.log("prev set item",pages,state.mapItems.length,state.startPos);
-                    //     // this.lockUpdate=false;
-                    //     // this.setState(Object.assign({}, state));
-                    // });
-                    //calc last page
-                    // this.getContentList();
-                }
-            }
-        }
-    }, {
-        key: 'componentDidMount',
-        value: function componentDidMount() {
-            var _this7 = this;
-
-            this.props.setAppIcon({
-                icon: "keyboard_arrow_left",
-                click: this.props.history.goBack
-            });
-            this.oldLocaltion = this.props.history.location.pathname;
-            this.title = "";
-            if (this.props.listSites.length == 0) {
-                (0, _actions.cachedFetch)('/sites').then(function (res) {
-                    // debugger;
-                    _this7.props.setSiteList(res);
-                    _this7.updateTitle(res);
-                    _this7.getContentList();
-                });
-            } else {
-                // debugger;
-                this.updateTitle();
-                this.getContentList();
-            }
-            var padding = 20;
-            state.height = $(this.el).parent().height() - padding;
-            state.limit = parseInt(state.height / this.getTextHeight('hg'));
-            // console.log(state.height);
-            this.setState(Object.assign({}, state));
-        }
-    }, {
-        key: 'renderItem',
-        value: function renderItem(item, idx, limit) {
-
-            return _react2.default.createElement(
-                'div',
-                { key: state.startPos + idx },
-                item
-            );
-        }
-    }, {
-        key: 'onClick',
-        value: function onClick(event) {
-            event.persist();
-            // debugger;
-            if (event.clientX > $(window).width() / 2) {
-                this.doNext();
-            } else {
-                this.doPrev();
-            }
-            // console.log(event.clientX,event.clientY);
-        }
-    }, {
-        key: 'render',
-        value: function render() {
-            var _this8 = this;
-
-            var paging = _react2.default.createElement('div', null);
-            if (state.mapItems && state.mapItems.length) {
-                // console.log("render changed",state.mapItems,state.startPos , state.limit);
-                var items = state.mapItems.slice(state.startPos, state.startPos + state.limit);
-                paging = _react2.default.createElement(
-                    'div',
-                    { style: { padding: '10px 0px 10px 10px', height: state.height }, onClick: function onClick(evt) {
-                            return _this8.onClick(evt);
-                        } },
-                    items.map(function (item, idx) {
-                        return _react2.default.createElement(
-                            'div',
-                            { key: state.startPos + idx },
-                            item
-                        );
-                    })
-                );
-            } else {
-                // console.log("render blank");
-                // return (<div ref={el => this.el = el}></div>)
-                //<Paging startPos={state.startPos} height={state.height} rows={state.mapItems}
-                //renderItem={this.renderItem} limit={state.limit}/>
-            }
-            return _react2.default.createElement(
-                'div',
-                { ref: function ref(el) {
-                        return _this8.el = el;
-                    } },
-                paging
-            );
-        }
-    }]);
-
-    return ContentDetail;
-}(_react2.default.Component);
-
-var mapStateToProps = function mapStateToProps(state, ownProps) {
-    return {
-        listSites: state.sites.list,
-        contentList: state.content.list
-        //docList:state.doc.list
-        // lstDetail:state.app.siteDetail.list
-    };
-};
-
-var mapDispatchToProps = function mapDispatchToProps(dispatch) {
-    return {
-        setSiteList: function setSiteList(lst) {
-            return dispatch((0, _actions.setSiteList)(lst));
-        },
-        setDocList: function setDocList(lst) {
-            return dispatch((0, _actions.setDocumentList)(lst));
-        },
-        // setSiteDetailList:(list)=>dispatch(setSiteDetailList(list)),
-        setTitle: function setTitle(data) {
-            return dispatch((0, _actions.setAppTitle)("" + data || ""));
-        },
-        setAppIcon: function setAppIcon(icon) {
-            return dispatch((0, _actions.setAppIcon)(icon));
-        },
-        setContentList: function setContentList(lst) {
-            return dispatch((0, _actions.setContentList)(lst));
-        }
-
-    };
-};
-
-exports.default = (0, _reactRedux.connect)(mapStateToProps, mapDispatchToProps)(ContentDetail);
-
-/***/ }),
-
-/***/ 1874:
-/***/ (function(module, exports) {
-
-// removed by extract-text-webpack-plugin
-
-/***/ }),
-
-/***/ 211:
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-var _react = __webpack_require__(0);
-
-var _react2 = _interopRequireDefault(_react);
-
-var _reactRouterDom = __webpack_require__(496);
-
-var _materialUi = __webpack_require__(70);
-
-var _index = __webpack_require__(156);
-
-var _reactRedux = __webpack_require__(41);
-
-var _actions = __webpack_require__(42);
-
-var _appData = __webpack_require__(157);
-
-var _appData2 = _interopRequireDefault(_appData);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-// import {bindActionCreators} from "redux";
-
-// var first=true;
-
-var Home = function (_React$Component) {
-    _inherits(Home, _React$Component);
-
-    function Home() {
-        _classCallCheck(this, Home);
-
-        return _possibleConstructorReturn(this, (Home.__proto__ || Object.getPrototypeOf(Home)).apply(this, arguments));
-    }
-
-    _createClass(Home, [{
-        key: 'componentDidMount',
-
-
-        //  constructor(props,context) {
-        //      super(props,context);
-        //      // appState.title.next("Home")
-        //      // this.props.setTitle();
-        //      // this.props.setAppIcon({icon:"home"});
-        //      // cachedFetch('/sites').then((res) =>this.props.setSiteList(res));
-        //
-        // //     // this.state = {
-        // //     //     counter : 100
-        // //     // };
-        // //
-        // //     // const {counter }=props;
-        // //     //const {firstAction, secondAction} = props;
-        //  }
-        value: function componentDidMount() {
-            var _this2 = this;
-
-            this.props.setTitle();
-            var click = function click() {};
-            this.props.setAppIcon({ icon: "home", click: click });
-            console.log("render Home", JSON.stringify(this.props.list));
-            // if ((this.props.list.length == 0)) {
-            // this.props.setLoading(true);
-            fetch('/sites').then(function (res) {
-                return res.json();
-            }).then(function (res) {
-                return _this2.props.setSiteList(res);
-            });
-            // this.props.setLoading(false);
-
-            // }
-
-        }
-    }, {
-        key: 'render',
-        value: function render() {
-            var me = this;
-
-            return _react2.default.createElement(
-                'div',
-                null,
-                _react2.default.createElement(
-                    _materialUi.List,
-                    null,
-                    _react2.default.createElement(
-                        _materialUi.Subheader,
-                        { inset: true },
-                        'List sites'
-                    ),
-                    this.props.list.map(function (o) {
-                        {
-                            if (o.reading) {
-                                return _react2.default.createElement(_materialUi.ListItem, { key: o.id,
-                                    leftAvatar: _react2.default.createElement(_materialUi.Avatar, { icon: _react2.default.createElement(_index.FileFolder, null) }),
-                                    rightIcon: _react2.default.createElement(_index.ActionInfo, null),
-                                    primaryText: o.name,
-                                    onClick: function onClick() {
-                                        // context.history.push === history.push
-                                        me.props.history.push(o.url);
-                                    },
-                                    secondaryText: o.url });
-                            } else {
-                                return _react2.default.createElement(_materialUi.ListItem, { key: o.id,
-                                    leftAvatar: _react2.default.createElement(_materialUi.Avatar, { icon: _react2.default.createElement(_index.FileFolder, null) }),
-                                    rightIcon: _react2.default.createElement(_index.ActionInfo, null),
-                                    primaryText: o.name,
-                                    onClick: function onClick() {
-                                        // context.history.push === history.push
-                                        me.props.history.push('/site/' + o.id);
-                                    },
-                                    secondaryText: o.url
-                                });
-                            }
-                        };
-                    })
-                )
-            );
-        }
-    }]);
-
-    return Home;
-}(_react2.default.Component);
-
-var mapStateToProps = function mapStateToProps(state, ownProps) {
-    // debugger;
-    return {
-        loading: state.sites.loading,
-        list: state.sites.list
-    };
-};
-
-var mapDispatchToProps = function mapDispatchToProps(dispatch) {
-    return {
-        // same effect
-        setTitle: function setTitle() {
-            return dispatch((0, _actions.setAppTitle)("Home"));
-        },
-        setSiteList: function setSiteList(lst) {
-            return dispatch((0, _actions.setSiteList)(lst));
-        },
-        setAppIcon: function setAppIcon(icon) {
-            return dispatch((0, _actions.setAppIcon)(icon));
-        }
-
-        // secondAction : bindActionCreators(()=>{}, dispatch)
-    };
-};
-
-exports.default = (0, _reactRedux.connect)(mapStateToProps, mapDispatchToProps)(Home);
-
-/***/ }),
-
-/***/ 282:
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-var _react = __webpack_require__(0);
-
-var _react2 = _interopRequireDefault(_react);
-
-var _reactRedux = __webpack_require__(41);
-
-var _actions = __webpack_require__(42);
-
-var _materialUi = __webpack_require__(70);
-
-var _index = __webpack_require__(156);
-
-var _rxjs = __webpack_require__(283);
-
-var _reactHeight = __webpack_require__(381);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-var state = {
-    first: true,
-    lastDetail: -1,
-    inst: null
-};
-
+// let state = {
+//     first: true,
+//     lastDetail: -1,
+//     inst: null
+// };
 // let loaded=[];
-
-var SiteDetail = function (_React$Component) {
-    _inherits(SiteDetail, _React$Component);
-
+var SiteDetail = /** @class */ (function (_super) {
+    __extends(SiteDetail, _super);
     function SiteDetail(props) {
-        _classCallCheck(this, SiteDetail);
-
-        // this.isLast=false;
+        var _this = _super.call(this, props) || this;
+        // this.isFirst=true;
         // this.iconDone=false;
-        var _this = _possibleConstructorReturn(this, (SiteDetail.__proto__ || Object.getPrototypeOf(SiteDetail)).call(this, props));
-
         _this.state = {
             limit: 1,
-            height: 0
+            height: 0,
+            lstDetail: []
         };
+        return _this;
         // this.siteName=new Subject();
         // this.siteName.subscribe((text)=>{
         //     this.props.setTitle(text);
@@ -1026,281 +50,340 @@ var SiteDetail = function (_React$Component) {
         //     icon:"keyboard_arrow_left",
         //     click:this.goBack
         // });
-
-
-        return _this;
     }
-
-    _createClass(SiteDetail, [{
-        key: "componentWillMount",
-        value: function componentWillMount() {
-            // this.props.setTitle();
-            // let me = this;
-            // let params = me.props.match.params;
-            // if (this.props.listSites.length == 0) {
-            //
-            //     cachedFetch('/sites').then((res) =>{
-            //         var fo=res.filter((o)=>o.id==params.id)[0];
-            //         this.siteName.next(fo.name);
-            //         this.props.setSiteList(res)
-            //     });
-            //     // state.first = false;
-            //     // cachedFetch('/sites').then((res) => {
-            //     //     this.props.setSiteList(res);
-            //     //     var fo=res.filter((o)=>o.id==params.id)[0];
-            //     //     this.siteName.next(fo.name);
-            //     // });
-            // } else {
-            //     var fo=this.props.listSites.filter((o)=>o.id==params.id)[0];
-            //     this.siteName.next(fo.name);
-            // }
-            //
-            //
-            // // this.props.setSiteList();
-            //
-            // if (params.id != state.lastDetail) {
-            //     state.lastDetail = params.id;
-            //
-            //     cachedFetch('/site-detail/' + params.id).then((res) => this.props.setSiteDetailList(res.data));
-            // }
-            // console.log(this.props.listSites,'once');
-            // debugger;
-            //  console.log(this.props.listSites);
-            // var site=me.props.listSites[params.id];
-            // if (!loaded[params.id]) {
-            // loaded[params.id]=true;
-
-            // console.log("site found:",site);
-            // }
-        }
-    }, {
-        key: "incItems",
-        value: function incItems(height) {
-            var h = $(this.el).parent().height();
-            if (height == 0) return;
-            if (this.isLast) return;
-            if (height < h) {
-                // console.log("xxxxxx",height)
-                if (this.state.limit > 100) return;
-                this.setState(Object.assign({}, this.state, {
-                    limit: this.state.limit + 1
-                }));
-            } else {
-                // console.log("yyyy",this.state.limit);
-                this.isLast = true;
-                this.setState(Object.assign({}, this.state, {
-                    limit: this.state.limit - 1
-                }));
-            }
-        }
-    }, {
-        key: "componentDidMount",
-        value: function componentDidMount() {
-            var _this2 = this;
-
-            console.log("render site detail");
-            this.props.setAppIcon({
-                icon: "keyboard_arrow_left",
-                click: this.props.history.goBack
-            });
-
-            var params = this.props.match.params;
-            (0, _actions.cachedFetch)('/site-detail/' + params.id).then(function (res) {
-                return _this2.props.setSiteDetailList(res.data);
-            });
-            if (this.props.listSites.length == 0) {
-                // this.props.setLoading(true);
-                (0, _actions.cachedFetch)('/sites').then(function (res) {
-                    var fo = res.filter(function (o) {
-                        return o.id == params.id;
-                    })[0];
-                    // console.log('name',fo)
-                    _this2.props.setTitle(fo.name);
-
-                    _this2.props.setSiteList(res);
-                });
-                // this.props.setLoading(false);
-            } else {
-                var fo = this.props.listSites.filter(function (o) {
-                    return o.id == params.id;
-                })[0];
-                this.props.setTitle(fo.name);
-            }
-            // console.log(h);
-            // if (h>0) {
-            //     if (h!=this.state.height) {
-            //         this.setState(Object.assign({},this.state,{
-            //             height:h
-            //         }));
-            //     }
-            //
-            //     var h1=$(this.divElement).height();
-            //     if (h1<h) {
-            //         console.log(h1);
-            //         this.setState(Object.assign({},this.state,{
-            //             limit:this.state.limit+1
-            //         }));
-            //     }
-            // }
-
-            //console.log($(this.divElement).parent().height());
-
-            // loopFunction.next({
-            //     el:this.divElement,
-            //     c:this
-            //     }
-            // );
-            // if (!$(this.el).attr("done")) {
-            //     $(this.el).attr("done",1)
-            //     this.props.setAppIcon({icon:"keyboard_arrow_left",
-            //         // click:()=>{
-            //         //     console.log("click click");
-            //         //     this.props.history.goBack();
-            //         // }
-            //     });
-
-            // }
-
-        }
-    }, {
-        key: "goBack",
-        value: function goBack(props) {
-
-            // console.log("click click");
-            // state.inst.props.history.goBack();
-
-
-        }
-    }, {
-        key: "norm",
-        value: function norm(text) {
-            var arr = ((text || "") + "").split('').map(function (c) {
-                return c.charCodeAt(0).toString(16);
-            });
-            return arr.join("-");
-        }
-    }, {
-        key: "render",
-        value: function render() {
-            var _this3 = this;
-
-            // console.log(this.props.lstDetail);
-
-            return _react2.default.createElement(
-                "div",
-                { ref: function ref(el) {
-                        return _this3.el = el;
-                    } },
-                this.props.lstDetail.map(function (item, idx) {
-                    // if (idx + 1 > this.state.limit) return;
-                    return _react2.default.createElement(_materialUi.ListItem, {
-
-                        key: idx,
-                        leftAvatar: _react2.default.createElement(_materialUi.Avatar, { icon: _react2.default.createElement(_index.FileFolder, null) }),
-                        primaryText: item.text,
-                        onClick: function onClick() {
-                            // context.history.push === history.push
-                            _this3.props.history.push('/site-category/' + _this3.props.match.params.id + '/' + _this3.norm(item.text) + '/' + _this3.norm(item.link));
-                        },
-                        secondaryText: item.link
-                    });
-                })
-            );
-        }
-    }]);
-
+    SiteDetail.prototype.componentWillMount = function () {
+        // this.props.setTitle();
+        // let me = this;
+        // let params = me.props.match.params;
+        // if (this.props.listSites.length == 0) {
+        //
+        //     cachedFetch('/sites').then((res) =>{
+        //         var fo=res.filter((o)=>o.id==params.id)[0];
+        //         this.siteName.next(fo.name);
+        //         this.props.setSiteList(res)
+        //     });
+        //     // state.first = false;
+        //     // cachedFetch('/sites').then((res) => {
+        //     //     this.props.setSiteList(res);
+        //     //     var fo=res.filter((o)=>o.id==params.id)[0];
+        //     //     this.siteName.next(fo.name);
+        //     // });
+        // } else {
+        //     var fo=this.props.listSites.filter((o)=>o.id==params.id)[0];
+        //     this.siteName.next(fo.name);
+        // }
+        //
+        //
+        // // this.props.setSiteList();
+        //
+        // if (params.id != state.lastDetail) {
+        //     state.lastDetail = params.id;
+        //
+        //     cachedFetch('/site-detail/' + params.id).then((res) => this.props.setSiteDetailList(res.data));
+        // }
+        // console.log(this.props.listSites,'once');
+        // debugger;
+        //  console.log(this.props.listSites);
+        // var site=me.props.listSites[params.id];
+        // if (!loaded[params.id]) {
+        // loaded[params.id]=true;
+        // console.log("site found:",site);
+        // }
+    };
+    SiteDetail.prototype.componentDidMount = function () {
+        var _this = this;
+        // debugger;
+        //         console.log("render site detail");
+        this.props.setAppIcon({
+            icon: "keyboard_arrow_left",
+            click: this.props.history.goBack
+        });
+        var params = this.props.match.params;
+        var f1 = actions_1.cachedFetch('/site-detail/' + params.id).then(function (res) {
+            _this.lstDetail = res.data;
+            //this.props.setSiteDetailList(res.data)
+            _this.setState(Object.assign({}, _this.state, {
+                lstDetail: _this.lstDetail,
+            }));
+        });
+        var f2 = actions_1.cachedFetch('/sites').then(function (res) {
+            var fo = res.filter(function (o) { return o.id == params.id; })[0];
+            // console.log('name',fo)
+            _this.props.setTitle(fo.name);
+            _this.props.setSiteList(res);
+            _this.sites = res;
+        });
+        // Promise.all([f1,f2]).then(()=>{
+        //
+        // })
+        // if ((this.props.listSites.length == 0) ) {
+        // this.props.setLoading(true);
+        // this.props.setLoading(false);
+        // } else {
+        //     var fo = this.props.listSites.filter((o) => o.id == params.id)[0];
+        //     this.props.setTitle(fo.name);
+        // }
+        // console.log(h);
+        // if (h>0) {
+        //     if (h!=this.state.height) {
+        //         this.setState(Object.assign({},this.state,{
+        //             height:h
+        //         }));
+        //     }
+        //
+        //     var h1=$(this.divElement).height();
+        //     if (h1<h) {
+        //         console.log(h1);
+        //         this.setState(Object.assign({},this.state,{
+        //             limit:this.state.limit+1
+        //         }));
+        //     }
+        // }
+        //console.log($(this.divElement).parent().height());
+        // loopFunction.next({
+        //     el:this.divElement,
+        //     c:this
+        //     }
+        // );
+        // if (!$(this.el).attr("done")) {
+        //     $(this.el).attr("done",1)
+        //     this.props.setAppIcon({icon:"keyboard_arrow_left",
+        //         // click:()=>{
+        //         //     console.log("click click");
+        //         //     this.props.history.goBack();
+        //         // }
+        //     });
+        // }
+    };
+    SiteDetail.prototype.goBack = function (props) {
+        // console.log("click click");
+        // state.inst.props.history.goBack();
+    };
+    SiteDetail.prototype.norm = function (text) {
+        var arr = ((text || "") + "").split('').map(function (c) {
+            return c.charCodeAt(0).toString(16);
+        });
+        return arr.join("-");
+    };
+    SiteDetail.prototype.render = function () {
+        // console.log("render");
+        // console.log(this.props.lstDetail);
+        var _this = this;
+        return (React.createElement("div", { ref: function (el) { return _this.el = el; } }, this.state.lstDetail.map(function (item, idx) {
+            // if (idx + 1 > this.state.limit) return;
+            return (React.createElement(material_ui_1.ListItem, { key: idx, leftAvatar: React.createElement(material_ui_1.Avatar, { icon: React.createElement(svg_icons_1.FileFolder, null) }), primaryText: item.text, onClick: function () {
+                    // context.history.push === history.push
+                    _this.props.history.push('/site-category/' + _this.props.match.params.id + '/' + _this.norm(item.text) + '/' + _this.norm(item.link));
+                }, secondaryText: item.link }));
+        })));
+    };
     return SiteDetail;
-}(_react2.default.Component);
-
-var mapStateToProps = function mapStateToProps(state, ownProps) {
+}(React.Component));
+var mapStateToProps = function (state, ownProps) {
+    return {};
+};
+var mapDispatchToProps = function (dispatch) {
     return {
-        loading: state.sites.loading,
-        listSites: state.sites.list,
-        lstDetail: state.siteDetail.list
+        setSiteList: function (lst) { return dispatch(actions_1.setSiteList(lst)); },
+        setSiteDetailList: function (list) { return dispatch(actions_1.setSiteDetailList(list)); },
+        setTitle: function (data) { return dispatch(actions_1.setAppTitle(data || "")); },
+        setAppIcon: function (icon) { return dispatch(actions_1.setAppIcon(icon)); },
+        setLoading: function (state) { }
     };
 };
+exports.default = react_redux_1.connect(mapStateToProps, mapDispatchToProps)(SiteDetail);
 
-var mapDispatchToProps = function mapDispatchToProps(dispatch) {
-    return {
-        setSiteList: function setSiteList(lst) {
-            return dispatch((0, _actions.setSiteList)(lst));
-        },
-        setSiteDetailList: function setSiteDetailList(list) {
-            return dispatch((0, _actions.setSiteDetailList)(list));
-        },
-        setTitle: function setTitle(data) {
-            return dispatch((0, _actions.setAppTitle)(data || ""));
-        },
-        setAppIcon: function setAppIcon(icon) {
-            return dispatch((0, _actions.setAppIcon)(icon));
-        },
-        setLoading: function setLoading(state) {}
-
-    };
-};
-
-exports.default = (0, _reactRedux.connect)(mapStateToProps, mapDispatchToProps)(SiteDetail);
 
 /***/ }),
 
-/***/ 382:
+/***/ 1543:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-var _react = __webpack_require__(0);
-
-var _react2 = _interopRequireDefault(_react);
-
-var _reactRedux = __webpack_require__(41);
-
-var _actions = __webpack_require__(42);
-
-var _materialUi = __webpack_require__(70);
-
-var _index = __webpack_require__(156);
-
-var _rxjs = __webpack_require__(283);
-
-var _paging = __webpack_require__(1871);
-
-var _paging2 = _interopRequireDefault(_paging);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-var state = {
-    height: 0,
-    startPos: 0,
-    limit: 1,
-    items: [],
-    fetchItem: false,
-    lastDetail: -1
-};
-
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+Object.defineProperty(exports, "__esModule", { value: true });
+var React = __webpack_require__(0);
+var react_redux_1 = __webpack_require__(58);
+var actions_1 = __webpack_require__(97);
+var material_ui_1 = __webpack_require__(113);
+// import {Subject} from "rxjs";
+var paging_1 = __webpack_require__(1544);
 // let loaded=[];
-
-var SiteCategory = function (_React$Component) {
-    _inherits(SiteCategory, _React$Component);
-
+var SiteCategory = /** @class */ (function (_super) {
+    __extends(SiteCategory, _super);
     function SiteCategory(props) {
-        _classCallCheck(this, SiteCategory);
+        var _this = _super.call(this, props) || this;
+        _this.state = {
+            height: 0,
+            startPos: 0,
+            limit: 1,
+            items: [],
+            fetchItem: false,
+            lastDetail: -1,
+            rows: [],
+            docList: [],
+            postList: []
+        };
+        return _this;
+    }
+    SiteCategory.prototype.updateTitle = function (lst) {
+        var _this = this;
+        var fo = lst.filter(function (site) { return _this.props.match.params.siteId == site.id; })[0];
+        var n = this.props.match.params.name.split("-").map(function (o) { return String.fromCharCode(parseInt(o, 16)); }).join("");
+        this.site = fo;
+        this.props.setTitle(fo.name + " - " + n);
+    };
+    SiteCategory.prototype.getDocumentList = function () {
+        var _this = this;
+        return actions_1.cachedFetch('/doc-list/' + this.site.id + "/" + this.props.match.params.url).then(function (res) {
+            return _this.documentList = res.data;
+            // state.items = res.data.slice(state.startPos, 1);
+            // state=Object.assign({},state,{fetchItem:true,limit:1});
+            // this.setState(state);
+            //
+            // console.log('items:', state.items);
+        });
+    };
+    SiteCategory.prototype.componentDidMount = function () {
+        var _this = this;
+        this.props.setAppIcon({
+            icon: "keyboard_arrow_left",
+            click: this.props.history.goBack
+        });
+        this.height = $(this.el).parent().height() - 56;
+        // debugger;
+        // if (this.props.listSites.length == 0) {
+        actions_1.cachedFetch('/sites').then(function (res) {
+            // debugger;
+            //this.props.setSiteList(res);
+            _this.updateTitle(res);
+            _this.getDocumentList().then(function (res) {
+                _this.setState(Object.assign({}, _this.state, {
+                    height: _this.height,
+                    docList: res
+                }));
+            });
+        });
+        // } else {
+        //     // debugger;
+        //     this.updateTitle(this.props.listSites);
+        //     this.getDocumentList();
+        // }
+        // state.me=this;
+    };
+    SiteCategory.prototype.renderItem = function (item, idx) {
+        // this.limit=limit;
+        var _this = this;
+        return React.createElement(material_ui_1.ListItem, { key: idx, 
+            // leftAvatar={<Avatar icon={<FileFolder/>}/>}
+            // rightIcon={<ActionInfo/>}
+            primaryText: item.title, onClick: function () {
+                // context.history.push === history.push
+                _this.props.history.push('/content-detail/' + _this.props.match.params.siteId + '/' + _this.props.match.params.name + "/" + actions_1.encodeHex(item.link));
+            }, secondaryText: item.link || " " });
+    };
+    SiteCategory.prototype.setLimit = function (limit) {
+        this.limit = limit;
+        // console.log(this,limit);
+    };
+    SiteCategory.prototype.doNext = function () {
+        // console.log("limit item",state.limit);
+        if (this.state.startPos + this.limit < this.state.docList.length) {
+            var n = {
+                startPos: this.state.startPos,
+                postList: this.state.postList
+            };
+            n.postList.push(n.startPos);
+            n.startPos = n.startPos + this.limit;
+            this.setState(Object.assign({}, this.state, n));
+        }
+    };
+    SiteCategory.prototype.doPrev = function () {
+        if (this.state.startPos > 0) {
+            var p = this.state.postList.pop() || 0;
+            var n = {
+                startPos: p,
+                postList: this.state.postList
+            };
+            this.setState(Object.assign({}, this.state, n));
+        }
+    };
+    SiteCategory.prototype.render = function () {
+        var _this = this;
+        console.log("render");
+        var first = React.createElement("span", null);
+        var last = React.createElement("span", null);
+        if (this.state.startPos > 0) {
+            first = (React.createElement(material_ui_1.ToolbarGroup, { firstChild: true },
+                React.createElement(material_ui_1.RaisedButton, { label: "Prev", onClick: function () { return _this.doPrev(); }, primary: true })));
+        }
+        // if (this.state.startPos+this.state.limit>0) {
+        //
+        // }
+        return (React.createElement("div", { style: { 'display': 'flex', 'flexDirection': 'column' }, ref: function (el) { return _this.el = el; } },
+            React.createElement("div", { style: { height: this.state.height } },
+                React.createElement(paging_1.default, { startPos: this.state.startPos, height: this.state.height, rows: this.state.docList, renderItem: function (it, idx) { return _this.renderItem(it, idx); }, callback: function (limit) { return _this.setLimit(limit); } })),
+            React.createElement(material_ui_1.Toolbar, null,
+                first,
+                React.createElement(material_ui_1.ToolbarGroup, { lastChild: true },
+                    React.createElement(material_ui_1.RaisedButton, { label: "Next", onClick: function () { return _this.doNext(); }, primary: true })))));
+    };
+    return SiteCategory;
+}(React.Component));
+var mapStateToProps = function (state, ownProps) {
+    return {
+        listSites: state.sites.list,
+    };
+};
+var mapDispatchToProps = function (dispatch) {
+    return {
+        setSiteList: function (lst) { return dispatch(actions_1.setSiteList(lst)); },
+        setDocList: function (lst) { return dispatch(actions_1.setDocumentList(lst)); },
+        // setSiteDetailList:(list)=>dispatch(setSiteDetailList(list)),
+        setTitle: function (data) { return dispatch(actions_1.setAppTitle("" + data || "")); },
+        setAppIcon: function (icon) { return dispatch(actions_1.setAppIcon(icon)); },
+    };
+};
+exports.default = react_redux_1.connect(mapStateToProps, mapDispatchToProps)(SiteCategory);
 
-        var _this = _possibleConstructorReturn(this, (SiteCategory.__proto__ || Object.getPrototypeOf(SiteCategory)).call(this, props));
 
-        state = {
+/***/ }),
+
+/***/ 1544:
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+Object.defineProperty(exports, "__esModule", { value: true });
+var React = __webpack_require__(0);
+var react_redux_1 = __webpack_require__(58);
+var react_height_1 = __webpack_require__(1545);
+// let loaded=[];
+var Paging = /** @class */ (function (_super) {
+    __extends(Paging, _super);
+    function Paging(props) {
+        var _this = _super.call(this, props) || this;
+        _this.state = {
             height: 0,
             startPos: 0,
             limit: 1,
@@ -1308,365 +391,595 @@ var SiteCategory = function (_React$Component) {
             fetchItem: false,
             lastDetail: -1,
             rows: []
-
         };
-        _this.state = {
-            height: 0
-            //     // this.title=new Subject();
-            //     // this.title.subscribe((text)=>this.props.setTitle(text))
-            //
-        };return _this;
+        return _this;
     }
-
-    _createClass(SiteCategory, [{
-        key: "updateTitle",
-        value: function updateTitle(lst) {
-            var _this2 = this;
-
-            var fo = lst.filter(function (site) {
-                return _this2.props.match.params.siteId == site.id;
-            })[0];
-            var n = this.props.match.params.name.split("-").map(function (o) {
-                return String.fromCharCode(parseInt(o, 16));
-            }).join("");
-            this.site = fo;
-            this.props.setTitle(fo.name + " - " + n);
+    Paging.prototype.renderItem = function (lst) {
+        // var rows=this.rows.slice(this.startPos, this.startPos + this.limit);
+        var _this = this;
+        return lst.map(function (item, idx) { return _this.props.renderItem(item, idx); });
+    };
+    Paging.prototype.addMoreRow = function (height) {
+        // console.log("more",this.fetchItem);
+        if (this.props.limit) {
+            return;
         }
-    }, {
-        key: "getDocumentList",
-        value: function getDocumentList() {
-            var _this3 = this;
-
-            (0, _actions.cachedFetch)('/doc-list/' + this.site.id + "/" + this.props.match.params.url).then(function (res) {
-
-                _this3.props.setDocList(res.data);
-                // state.items = res.data.slice(state.startPos, 1);
-                // state=Object.assign({},state,{fetchItem:true,limit:1});
-                // this.setState(state);
-                //
-                // console.log('items:', state.items);
-            });
+        if (height > this.props.height) {
+            // console.log("last ",state.limit);
+            this.fetchItem = false;
+            this.limit = this.limit - 1;
+            var r = this.rows.slice(this.startPos, this.startPos + this.limit - 1);
+            this.setState(Object.assign({}, this.state, {
+                items: r
+            }));
         }
-    }, {
-        key: "componentDidMount",
-        value: function componentDidMount() {
-            var _this4 = this;
-
-            this.props.setAppIcon({
-                icon: "keyboard_arrow_left",
-                click: this.props.history.goBack
-            });
-            if (this.props.listSites.length == 0) {
-                (0, _actions.cachedFetch)('/sites').then(function (res) {
-                    // debugger;
-                    _this4.props.setSiteList(res);
-                    _this4.updateTitle(res);
-                    _this4.getDocumentList();
+        else {
+            // console.log("axddrow",state.limit,state.fetchItem);
+            if (this.fetchItem) {
+                this.limit = this.limit + 1;
+                var items = this.rows.slice(this.startPos, this.startPos + this.limit);
+                var fetchItem = items.length > this.items.length;
+                //this.items = items;
+                if (!fetchItem) {
+                    this.limit = this.limit - 1;
+                }
+                // var r=this.renderItem(items);
+                var st = Object.assign({}, this.state, {
+                    items: items
                 });
-            } else {
-                // debugger;
-                this.updateTitle(this.props.listSites);
-                this.getDocumentList();
-            }
-            state.me = this;
-            state.height = $(this.el).parent().height() - 56;
-        }
-    }, {
-        key: "renderItem",
-        value: function renderItem(item, idx, limit) {
-            state.limit = limit;
-
-            return _react2.default.createElement(_materialUi.ListItem, {
-
-                key: idx
-                // leftAvatar={<Avatar icon={<FileFolder/>}/>}
-                // rightIcon={<ActionInfo/>}
-                , primaryText: item.title,
-                onClick: function onClick() {
-                    // context.history.push === history.push
-                    state.me.props.history.push('/content-detail/' + state.me.props.match.params.siteId + '/' + state.me.props.match.params.name + "/" + (0, _actions.encodeHex)(item.link));
-                },
-                secondaryText: item.link || " "
-            });
-        }
-    }, {
-        key: "doNext",
-        value: function doNext() {
-            console.log("limit item", state.limit);
-            if (state.startPos + state.limit < this.props.docList.length) {
-                state.startPos = state.startPos + state.limit;
-                this.setState(Object.assign({}, state));
+                this.setState(Object.assign({}, this.state, st));
             }
         }
-    }, {
-        key: "doPrev",
-        value: function doPrev() {
-            //console.log("limit item",state.limit);
-            if (state.startPos - state.limit >= 0) {
-                state.startPos = state.startPos - state.limit;
-                this.setState(Object.assign({}, state));
-            }
-        }
-    }, {
-        key: "render",
-        value: function render() {
-            var _this5 = this;
-
-            return _react2.default.createElement(
-                "div",
-                { style: { 'display': 'flex', 'flexDirection': 'column' }, ref: function ref(el) {
-                        return _this5.el = el;
-                    } },
-                _react2.default.createElement(
-                    "div",
-                    { style: { height: state.height } },
-                    _react2.default.createElement(_paging2.default, { startPos: state.startPos, height: state.height, rows: this.props.docList, renderItem: this.renderItem })
-                ),
-                _react2.default.createElement(
-                    _materialUi.Toolbar,
-                    null,
-                    _react2.default.createElement(
-                        _materialUi.ToolbarGroup,
-                        { firstChild: true },
-                        _react2.default.createElement(_materialUi.RaisedButton, { label: "Prev", onClick: function onClick() {
-                                return _this5.doPrev();
-                            }, primary: true })
-                    ),
-                    _react2.default.createElement(
-                        _materialUi.ToolbarGroup,
-                        null,
-                        _react2.default.createElement(_materialUi.RaisedButton, { label: "Next", onClick: function onClick() {
-                                return _this5.doNext();
-                            }, primary: true })
-                    )
-                )
-            );
-        }
-    }]);
-
-    return SiteCategory;
-}(_react2.default.Component);
-
-var mapStateToProps = function mapStateToProps(state, ownProps) {
-    return {
-        listSites: state.sites.list,
-        docList: state.doc.list
-        // lstDetail:state.app.siteDetail.list
     };
-};
-
-var mapDispatchToProps = function mapDispatchToProps(dispatch) {
-    return {
-        setSiteList: function setSiteList(lst) {
-            return dispatch((0, _actions.setSiteList)(lst));
-        },
-        setDocList: function setDocList(lst) {
-            return dispatch((0, _actions.setDocumentList)(lst));
-        },
-        // setSiteDetailList:(list)=>dispatch(setSiteDetailList(list)),
-        setTitle: function setTitle(data) {
-            return dispatch((0, _actions.setAppTitle)("" + data || ""));
-        },
-        setAppIcon: function setAppIcon(icon) {
-            return dispatch((0, _actions.setAppIcon)(icon));
+    Paging.prototype.componentWillReceiveProps = function (nextProps) {
+        this.rows = [].concat(nextProps.rows);
+        this.startPos = nextProps.startPos;
+        this.limit = nextProps.limit || 1;
+        // console.log(state.limit);
+        this.items = this.rows.slice(this.startPos, this.startPos + this.limit);
+        // if (state.startPos>0) {
+        //     debugger;
+        // }
+        // console.log("items",state.rows);
+        // debugger;
+        if (this.items.length == 0) {
+            this.fetchItem = false;
         }
-
+        else {
+            this.fetchItem = true;
+        }
+        this.setState(Object.assign({}, this.state, { items: this.renderItem(this.items) }));
+        // console.log("props change ",this.state);
     };
+    Paging.prototype.componentDidMount = function () {
+        // console.log("rows ",state.rows);
+    };
+    Paging.prototype.render = function () {
+        var _this = this;
+        if (!this.fetchItem && this.limit) {
+            this.props.callback(this.limit - 1);
+        }
+        // let me=this;
+        // var rows=this.rows.slice(this.startPos, this.startPos + this.limit);
+        // var items=rows.map((item, idx) => this.props.renderItem(item, idx, this.limit));
+        // console.log("items:",this.state.items);
+        return (React.createElement(react_height_1.ReactHeight, { onHeightReady: function (height) { return _this.addMoreRow.call(_this, height); } }, this.state.items.map(function (item, idx) { return _this.props.renderItem(item, idx); })));
+    };
+    return Paging;
+}(React.Component));
+var mapStateToProps = function (state, ownProps) {
+    return {};
 };
+var mapDispatchToProps = function (dispatch) {
+    return {};
+};
+exports.default = react_redux_1.connect(mapStateToProps, mapDispatchToProps)(Paging);
 
-exports.default = (0, _reactRedux.connect)(mapStateToProps, mapDispatchToProps)(SiteCategory);
 
 /***/ }),
 
-/***/ 383:
+/***/ 1547:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+Object.defineProperty(exports, "__esModule", { value: true });
+var React = __webpack_require__(0);
+var react_redux_1 = __webpack_require__(58);
+var actions_1 = __webpack_require__(97);
+// let state = {
+//     height: 0,
+//     startPos: 0,
+//     limit: 1,
+//     items: [],
+//     fetchItem: false,
+//     lastDetail: -1
+// };
+var canvas = document.createElement("canvas");
+var ContentDetail = /** @class */ (function (_super) {
+    __extends(ContentDetail, _super);
+    function ContentDetail(props) {
+        var _this = _super.call(this, props) || this;
+        _this.resetState();
+        _this.height = 0;
+        _this.lastRows = "";
+        return _this;
+    }
+    ContentDetail.prototype.resetState = function () {
+        this.startPos = 0;
+        this.items = [];
+        this.fetchItem = false;
+        this.mapItems = [];
+    };
+    ContentDetail.prototype.updateTitle = function (lst) {
+        var _this = this;
+        lst = lst || this.lstSites;
+        var fo = lst.filter(function (site) { return _this.props.match.params.siteId == site.id; })[0];
+        var n = this.props.match.params.name.split("-").map(function (o) { return String.fromCharCode(parseInt(o, 16)); }).join("");
+        this.site = fo;
+        this.props.setTitle(this.title);
+    };
+    ContentDetail.prototype.getTextWidth = function (text, font) {
+        // re-use canvas object for better performance
+        var context = canvas.getContext("2d");
+        context.font = font || "normal 16px 'Segoe UI'";
+        var metrics = context.measureText(text);
+        return metrics.width;
+    };
+    ContentDetail.prototype.getTextHeight = function (text, font) {
+        // re-use canvas object for better performance
+        var context = canvas.getContext("2d");
+        context.font = font || "normal 16px 'Segoe UI'";
+        var metrics = context.measureText(text);
+        return 24;
+    };
+    ContentDetail.prototype.getFitLine = function (arr) {
+        var _this = this;
+        var lst = [];
+        var lstr = [];
+        var w = $(window).width() - 20 - 10;
+        arr.filter(function (r) { return (r || "") !== ""; })
+            .map(function (r) {
+            lstr.push(r);
+            var text = lstr.join(" ");
+            if (_this.getTextWidth(text, null) >= w) {
+                // debugger;
+                lstr.pop();
+                // sample.text(lstr.join(" "));
+                // debugger;
+                lst.push(lstr.join(" "));
+                lstr = [r];
+            }
+        });
+        if (lstr.length) {
+            lst.push(lstr.join(" "));
+        }
+        return lst;
+    };
+    ContentDetail.prototype.buildRow = function (list) {
+        var _this = this;
+        var newRows = list.map(function (row) {
+            var lst = [];
+            var strs = (row || "").replace(/[\r\n\t]/gi, "").split(' ');
+            if (strs.length) {
+                // debugger;
+                lst = _this.getFitLine(strs);
+            }
+            return lst;
+        });
+        // debugger;
+        this.mapItems = [].concat.apply([], newRows).filter(function (m) { return (m || "") !== ""; });
+    };
+    ContentDetail.prototype.componentWillReceiveProps = function (newProps) {
+        var _this = this;
+        this.mprops = newProps;
+        // var changed = false;
+        // debugger;
+        if (newProps.location && (this.oldLocaltion != newProps.location.pathname)) {
+            this.oldLocaltion = newProps.location.pathname;
+            this.resetState();
+            this.getContentList().then(function (lst) {
+                _this.buildRow(lst);
+                if (_this.isPrev) {
+                    _this.isPrev = false;
+                    var pages = parseInt(((_this.mapItems.length + _this.limit - 1) / _this.limit) + "");
+                    _this.startPos = (pages - 1) * _this.limit;
+                }
+                _this.doRender();
+            });
+            // changed = true;
+            // this.setState(Object.assign({}, state));
+        }
+        // var js = JSON.stringify(this.mprops.contentList);
+        // if (this.mprops.contentList.length && (js !== this.lastRows)) {
+        //     // console.log("props changed");
+        //     this.lastRows = js;
+        //
+        //     //if (this.isFirst || changed) {
+        //     // console.log(this.isFirst,changed);
+        //
+        //     // this.isFirst = false;
+        //
+        //
+        //     this.buildRow(this.mprops.contentList);
+        //
+        //     if (this.isPrev) {
+        //         this.isPrev = false;
+        //         var pages = parseInt((state.mapItems.length + state.limit - 1) / state.limit);
+        //         state.startPos = (pages - 1) * state.limit;
+        //     }
+        //     this.setState(Object.assign({}, state));
+        //     // console.log("update ",state.mapItems.length);
+        //
+        //
+        //     //}
+        //
+        // }
+    };
+    ContentDetail.prototype.getContent = function () {
+        var _this = this;
+        console.log("get content called");
+        this.mprops = this.mprops || this.props;
+        var url = '/doc-content/' + this.site.id + "/" + this.mprops.match.params.name + "/" + this.mprops.match.params.url;
+        var hd = [];
+        hd['Accept'] = 'application/json';
+        hd['Content-Type'] = 'application/json';
+        fetch('/save', {
+            method: 'post',
+            headers: hd,
+            body: JSON.stringify({
+                id: this.site.id,
+                url: '/content-detail/' + this.site.id + "/" + this.mprops.match.params.name + "/" + this.mprops.match.params.url,
+                name: actions_1.decodeHex(this.mprops.match.params.name)
+            })
+        }).then(function (r) { return r; });
+        return actions_1.cachedFetch(url).then(function (res) {
+            // debugger;
+            _this.next = res.next;
+            _this.prev = res.prev;
+            _this.title = res.title;
+            if (res.next)
+                actions_1.cachedFetch('/doc-content/' + _this.site.id + "/" + _this.mprops.match.params.name + "/" + actions_1.encodeHex(res.next)); // cache next page
+            if (res.prev)
+                actions_1.cachedFetch('/doc-content/' + _this.site.id + "/" + _this.mprops.match.params.name + "/" + actions_1.encodeHex(res.prev)); // cache prev page
+            _this.updateTitle();
+            // console.log(res.data);
+            return res;
+        });
+    };
+    ContentDetail.prototype.getContentList = function () {
+        var _this = this;
+        //if (this.isFirst) {
+        this.next = null;
+        this.prev = null;
+        return this.getContent().then(function (res) {
+            return _this.contentList = res.data;
+        });
+        // this.isFirst = false;
+        //}
+    };
+    ContentDetail.prototype.doNext = function () {
+        // console.log("limit item", state.limit);
+        if (this.startPos + this.limit < this.mapItems.length) {
+            this.startPos = this.startPos + this.limit;
+            // console.log(state.startPos);
+            this.setState(Object.assign({}, this.state));
+        }
+        else {
+            // debugger;
+            if (this.next) {
+                // this.isPrev=false;
+                this.props.history.replace('/content-detail/' + this.site.id + "/" + this.mprops.match.params.name + "/" + actions_1.encodeHex(this.next));
+                // this.resetState();
+                // this.getContent().then(res=>{
+                //     this.buildRow(res.data);
+                //     // this.setState(Object.assign({}, state));
+                // })
+                // this.getContentList();
+            }
+        }
+    };
+    ContentDetail.prototype.doPrev = function () {
+        //console.log("limit item",state.limit);
+        if (this.startPos - this.limit >= 0) {
+            this.startPos = this.startPos - this.limit;
+            this.setState(Object.assign({}, this.state));
+        }
+        else {
+            // debugger;
+            if (this.prev) {
+                this.isPrev = true;
+                this.props.history.replace('/content-detail/' + this.site.id + "/" + this.mprops.match.params.name + "/" + actions_1.encodeHex(this.prev));
+                // this.resetState();
+                // this.lockUpdate=true;
+                // this.getContent().then(res=>{
+                //
+                //     this.buildRow(res.data);
+                //     var pages=parseInt((state.mapItems.length)/state.limit);
+                //
+                //
+                //     state.startPos=(pages-1)*state.limit;
+                //     console.log("prev set item",pages,state.mapItems.length,state.startPos);
+                //     // this.lockUpdate=false;
+                //     // this.setState(Object.assign({}, state));
+                // });
+                //calc last page
+                // this.getContentList();
+            }
+        }
+    };
+    ContentDetail.prototype.doRender = function () {
+        if (!this.mapItems)
+            return;
+        if (this.mapItems.length == 0)
+            return;
+        var js = JSON.stringify(this.mapItems);
+        if (js !== this.lastRows) {
+            this.lastRows = js;
+            this.setState(Object.assign({}, this.state));
+        }
+    };
+    ContentDetail.prototype.componentDidMount = function () {
+        var _this = this;
+        this.props.setAppIcon({
+            icon: "keyboard_arrow_left",
+            click: this.props.history.goBack
+        });
+        this.oldLocaltion = this.props.history.location.pathname;
+        this.title = "";
+        var padding = 20;
+        this.height = $(this.el).parent().height() - padding;
+        this.limit = parseInt((this.height / this.getTextHeight('hg')) + "");
+        new Promise(function (resolve) {
+            actions_1.cachedFetch('/sites').then(function (res) {
+                // debugger;
+                _this.lstSites = res;
+                _this.updateTitle(res);
+                _this.getContentList()
+                    .then(function (lst) {
+                    _this.buildRow(lst);
+                    resolve();
+                });
+            });
+            // console.log(state.height);
+        }).then(function () { return _this.doRender(); });
+    };
+    ContentDetail.prototype.onClick = function (event) {
+        event.persist();
+        // debugger;
+        if (event.clientX > $(window).width() / 2) {
+            this.doNext();
+        }
+        else {
+            this.doPrev();
+        }
+        // console.log(event.clientX,event.clientY);
+    };
+    ContentDetail.prototype.render = function () {
+        var _this = this;
+        console.log("render called");
+        var paging = React.createElement("div", null);
+        if (this.mapItems && this.mapItems.length) {
+            // console.log("render changed",state.mapItems,state.startPos , state.limit);
+            var items = this.mapItems.slice(this.startPos, this.startPos + this.limit);
+            paging =
+                React.createElement("div", { style: { padding: '10px 0px 10px 10px', height: this.height }, onClick: function (evt) { return _this.onClick(evt); } }, items.map(function (item, idx) { return React.createElement("div", { key: _this.startPos + idx }, item); }));
+        }
+        else {
+            // console.log("render blank");
+            // return (<div ref={el => this.el = el}></div>)
+            //<Paging startPos={state.startPos} height={state.height} rows={state.mapItems}
+            //renderItem={this.renderItem} limit={state.limit}/>
+        }
+        return (React.createElement("div", { ref: function (el) { return _this.el = el; } }, paging));
+    };
+    return ContentDetail;
+}(React.Component));
+exports.ContentDetail = ContentDetail;
+var mapStateToProps = function (state, ownProps) {
+    return {};
+};
+var mapDispatchToProps = function (dispatch) {
+    return {
+        setSiteList: function (lst) { return dispatch(actions_1.setSiteList(lst)); },
+        setDocList: function (lst) { return dispatch(actions_1.setDocumentList(lst)); },
+        // setSiteDetailList:(list)=>dispatch(setSiteDetailList(list)),
+        setTitle: function (data) { return dispatch(actions_1.setAppTitle("" + data || "")); },
+        setAppIcon: function (icon) { return dispatch(actions_1.setAppIcon(icon)); },
+        setContentList: function (lst) { return dispatch(actions_1.setContentList(lst)); }
+    };
+};
+exports.default = react_redux_1.connect(mapStateToProps, mapDispatchToProps)(ContentDetail);
 
-var _react = __webpack_require__(0);
 
-var _react2 = _interopRequireDefault(_react);
+/***/ }),
 
-var _reactDom = __webpack_require__(20);
+/***/ 1548:
+/***/ (function(module, exports, __webpack_require__) {
 
-var _reactDom2 = _interopRequireDefault(_reactDom);
+"use strict";
 
-var _MuiThemeProvider = __webpack_require__(180);
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+Object.defineProperty(exports, "__esModule", { value: true });
+var React = __webpack_require__(0);
+var react_redux_1 = __webpack_require__(58);
+var material_ui_1 = __webpack_require__(113);
+// const recentsIcon = <FontIcon className="material-icons">restore</FontIcon>;
+// const favoritesIcon = <FontIcon className="material-icons">favorite</FontIcon>;
+// @autoState()
+var AppHeader = /** @class */ (function (_super) {
+    __extends(AppHeader, _super);
+    function AppHeader() {
+        return _super !== null && _super.apply(this, arguments) || this;
+    }
+    AppHeader.prototype.componentDidMount = function () {
+        // console.log("aare render")
+        // let me=this;
+        // if (!this.props.siteLoaded) {
+        //this.props.siteLoaded=true;
+        // debugger;
+        // let params=this.props;
+        // if (params) {
+        //     // debugger;
+        //     fetch('/site-detail/'+params.id).then((response)=>response.json()).then((res)=>this.props.setSiteDetailList(res));
+        // }
+        // appState.title.subscribe(v=>{
+        //     me.state.title=v;
+        //     this.setState(me.state);
+        // });
+        // }
+        // console.log("Event");
+        // this.props.getTitle();
+    };
+    AppHeader.prototype.render = function () {
+        // let me=this;
+        // console.log('app title:',me.props.list)
+        return (React.createElement(material_ui_1.AppBar, { title: this.props.title, iconElementLeft: React.createElement(material_ui_1.IconButton, { onClick: this.props.menuClick },
+                React.createElement(material_ui_1.FontIcon, { className: 'material-icons' }, this.props.icon)), iconElementRight: React.createElement(material_ui_1.IconButton, null,
+                React.createElement(material_ui_1.FontIcon, { className: 'material-icons' }, "settings")) }));
+    };
+    return AppHeader;
+}(React.Component));
+//
+var mapStateToProps = function (state, ownProps) {
+    return {
+        // siteLoaded:state.sites.loaded,
+        menuClick: state.app.click,
+        title: state.app.title,
+        icon: state.app.icon,
+    };
+};
+var mapDispatchToProps = function (dispatch) {
+    return {};
+};
+exports.default = react_redux_1.connect(mapStateToProps, mapDispatchToProps)(AppHeader);
 
-var _MuiThemeProvider2 = _interopRequireDefault(_MuiThemeProvider);
 
-var _reactRedux = __webpack_require__(41);
+/***/ }),
 
-var _darkBaseTheme = __webpack_require__(492);
+/***/ 337:
+/***/ (function(module, exports, __webpack_require__) {
 
-var _darkBaseTheme2 = _interopRequireDefault(_darkBaseTheme);
+"use strict";
 
-var _getMuiTheme = __webpack_require__(192);
-
-var _getMuiTheme2 = _interopRequireDefault(_getMuiTheme);
-
-var _redux = __webpack_require__(134);
-
-var _reducers = __webpack_require__(493);
-
-var _reducers2 = _interopRequireDefault(_reducers);
-
-var _app = __webpack_require__(495);
-
-var _app2 = _interopRequireDefault(_app);
-
-var _colors = __webpack_require__(58);
-
-__webpack_require__(1874);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
+Object.defineProperty(exports, "__esModule", { value: true });
+var React = __webpack_require__(0);
+var ReactDOM = __webpack_require__(21);
+var MuiThemeProvider_1 = __webpack_require__(207);
+var react_redux_1 = __webpack_require__(58);
+var getMuiTheme_1 = __webpack_require__(219);
+var redux_1 = __webpack_require__(155);
+var reducers_1 = __webpack_require__(447);
+var colors_1 = __webpack_require__(96);
+__webpack_require__(461);
+var app_1 = __webpack_require__(462);
 var muiTheme = {
     palette: {
-        primary1Color: _colors.indigo500,
-        primary2Color: _colors.indigo500,
-        primary3Color: _colors.white,
-        textColor: _colors.white,
-        secondaryTextColor: _colors.white,
-        alternateTextColor: _colors.white
+        primary1Color: colors_1.indigo500,
+        primary2Color: colors_1.indigo500,
+        primary3Color: colors_1.white,
+        textColor: colors_1.white,
+        secondaryTextColor: colors_1.white,
+        alternateTextColor: colors_1.white,
     },
-    appBar: {
-        //height: 50,
-    }
 };
+var store = redux_1.createStore(reducers_1.default);
+ReactDOM.render(React.createElement(MuiThemeProvider_1.default, { muiTheme: getMuiTheme_1.default(muiTheme) },
+    React.createElement(react_redux_1.Provider, { store: store },
+        React.createElement(app_1.default, null))), document.getElementById('app'));
 
-var store = (0, _redux.createStore)(_reducers2.default);
-
-_reactDom2.default.render(_react2.default.createElement(
-    _MuiThemeProvider2.default,
-    { muiTheme: (0, _getMuiTheme2.default)(muiTheme) },
-    _react2.default.createElement(
-        _reactRedux.Provider,
-        { store: store },
-        _react2.default.createElement(_app2.default, null)
-    )
-), document.getElementById('app'));
 
 /***/ }),
 
-/***/ 42:
+/***/ 447:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var _actions = __webpack_require__(494);
-
-Object.keys(_actions).forEach(function (key) {
-  if (key === "default" || key === "__esModule") return;
-  Object.defineProperty(exports, key, {
-    enumerable: true,
-    get: function get() {
-      return _actions[key];
-    }
-  });
-});
-
-/***/ }),
-
-/***/ 493:
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-
-var _redux = __webpack_require__(134);
-
-var _actions = __webpack_require__(42);
-
+Object.defineProperty(exports, "__esModule", { value: true });
+var redux_1 = __webpack_require__(155);
+var actions_1 = __webpack_require__(97);
 var initState = {
     title: "",
     icon: "home",
-    click: function click() {
+    click: function () {
         console.log("default on click");
-    }
-
+    },
 };
-
-function app() {
-    var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : initState;
-    var action = arguments[1];
-
+function app(state, action) {
+    if (state === void 0) { state = initState; }
     var res = action.type.split('|').map(function (type) {
         switch (type) {
-            case _actions.SET_APP_TITLE:
+            case actions_1.SET_APP_TITLE:
                 return Object.assign({}, state, {
                     title: action.text
                 });
-            case _actions.SET_APP_ICON:
+            case actions_1.SET_APP_ICON:
                 var r = action.info;
                 var p = {};
-                if (r.icon) p.icon = r.icon;
-                if (r.click) p.click = r.click;
-
+                if (r.icon)
+                    p.icon = r.icon;
+                if (r.click)
+                    p.click = r.click;
                 return Object.assign({}, state, p);
-
             default:
                 return state;
         }
     });
     return Object.assign.apply({}, res);
 }
-
-function sites() {
-    var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {
+function sites(state, action) {
+    if (state === void 0) { state = {
         loading: false,
         list: []
-    };
-    var action = arguments[1];
-
+    }; }
     switch (action.type) {
-
-        case _actions.SET_SITE_LIST:
+        case actions_1.SET_SITE_LIST:
             return Object.assign({}, state, {
-
                 list: action.list
             });
         default:
             return state;
     }
 }
-
-function siteDetail() {
-    var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {
+function siteDetail(state, action) {
+    if (state === void 0) { state = {
         list: []
-    };
-    var action = arguments[1];
-
+    }; }
     switch (action.type) {
-        case _actions.SET_DETAIL_LIST:
+        case actions_1.SET_DETAIL_LIST:
             return Object.assign({}, state, {
                 list: action.list
-
             });
-
         default:
             return state;
     }
 }
-
-function doc() {
-    var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {
+function doc(state, action) {
+    if (state === void 0) { state = {
         list: []
-    };
-    var action = arguments[1];
-
+    }; }
     switch (action.type) {
-        case _actions.SET_DOCUMENT_LIST:
+        case actions_1.SET_DOCUMENT_LIST:
             return Object.assign({}, state, {
                 list: action.list
             });
@@ -1674,15 +987,12 @@ function doc() {
             return state;
     }
 }
-
-function content() {
-    var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {
+function content(state, action) {
+    if (state === void 0) { state = {
         list: []
-    };
-    var action = arguments[1];
-
+    }; }
     switch (action.type) {
-        case _actions.SET_CONTENT_LIST:
+        case actions_1.SET_CONTENT_LIST:
             return Object.assign({}, state, {
                 list: action.list
             });
@@ -1690,38 +1000,26 @@ function content() {
             return state;
     }
 }
-var appData = (0, _redux.combineReducers)({
+var appData = redux_1.combineReducers({
     app: app,
     sites: sites,
     siteDetail: siteDetail,
     doc: doc,
     content: content
 });
-
 exports.default = appData;
+
 
 /***/ }),
 
-/***/ 494:
+/***/ 448:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-exports.cachedFetch = cachedFetch;
-exports.setSiteList = setSiteList;
-exports.setAppTitle = setAppTitle;
-exports.setSiteDetailList = setSiteDetailList;
-exports.setAppIcon = setAppIcon;
-exports.setDocumentList = setDocumentList;
-exports.setContentList = setContentList;
-exports.encodeHex = encodeHex;
-exports.decodeHex = decodeHex;
+Object.defineProperty(exports, "__esModule", { value: true });
+var Subject_1 = __webpack_require__(449);
 var counter = 0;
-
 function j() {
     counter++;
     return counter + "";
@@ -1734,24 +1032,18 @@ function j() {
 //         cb();
 //     }
 // }
-
 // App
 // export const GET_TITLE = j();
-var SET_APP_TITLE = exports.SET_APP_TITLE = j();
-var SET_SITE_LIST = exports.SET_SITE_LIST = j();
-var SET_APP_ICON = exports.SET_APP_ICON = j();
-
+exports.SET_APP_TITLE = j();
+exports.SET_SITE_LIST = j();
+exports.SET_APP_ICON = j();
 //sites
-
 //site detail
-var SET_DETAIL_LIST = exports.SET_DETAIL_LIST = j();
-
+exports.SET_DETAIL_LIST = j();
 // document
-var SET_DOCUMENT_LIST = exports.SET_DOCUMENT_LIST = j();
-var SET_CONTENT_LIST = exports.SET_CONTENT_LIST = j();
-
+exports.SET_DOCUMENT_LIST = j();
+exports.SET_CONTENT_LIST = j();
 var memFetch = {};
-
 function cachedFetch(url, options) {
     // Use the URL as the cache key to sessionStorage
     var cacheKey = url + JSON.stringify(options || "");
@@ -1762,180 +1054,128 @@ function cachedFetch(url, options) {
         // let's only store in cache if the content-type is
         // JSON or something non-binary
         var ct = response.headers.get('Content-Type');
-        if (ct && ct.match(/application\/json/i)) {
+        if (ct && (ct.match(/application\/json/i))) {
             return response.json();
         }
         return response;
     });
     return memFetch[cacheKey];
 }
-
+exports.cachedFetch = cachedFetch;
+var sourceData = {};
+function appSource(key) {
+    if (!sourceData[key]) {
+        sourceData[key] = new Subject_1.Subject();
+    }
+    return sourceData[key];
+}
+exports.appSource = appSource;
 function setSiteList(list) {
-    return { type: SET_SITE_LIST, list: list };
+    return { type: exports.SET_SITE_LIST, list: list };
 }
-
+exports.setSiteList = setSiteList;
 function setAppTitle(text) {
-    return { type: SET_APP_TITLE, text: text };
+    return { type: exports.SET_APP_TITLE, text: text };
 }
-
+exports.setAppTitle = setAppTitle;
 function setSiteDetailList(list) {
-    return { type: SET_DETAIL_LIST, list: list };
+    return { type: exports.SET_DETAIL_LIST, list: list };
 }
+exports.setSiteDetailList = setSiteDetailList;
 function setAppIcon(info) {
-    return { type: SET_APP_ICON, info: info };
+    return { type: exports.SET_APP_ICON, info: info };
 }
+exports.setAppIcon = setAppIcon;
 function setDocumentList(list) {
-    return { type: SET_DOCUMENT_LIST, list: list };
+    return { type: exports.SET_DOCUMENT_LIST, list: list };
 }
+exports.setDocumentList = setDocumentList;
 function setContentList(list) {
-    return { type: SET_CONTENT_LIST, list: list };
+    return { type: exports.SET_CONTENT_LIST, list: list };
 }
+exports.setContentList = setContentList;
 function encodeHex(text) {
     var arr = text.split('').map(function (c) {
         return c.charCodeAt(0).toString(16);
     });
     return arr.join("-");
 }
+exports.encodeHex = encodeHex;
 function decodeHex(text) {
-    return text.split("-").map(function (o) {
-        return String.fromCharCode(parseInt(o, 16));
-    }).join("");
+    return text.split("-").map(function (o) { return String.fromCharCode(parseInt(o, 16)); }).join("");
 }
+exports.decodeHex = decodeHex;
+
 
 /***/ }),
 
-/***/ 495:
+/***/ 461:
+/***/ (function(module, exports) {
+
+// removed by extract-text-webpack-plugin
+
+/***/ }),
+
+/***/ 462:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-var _home = __webpack_require__(211);
-
-var _home2 = _interopRequireDefault(_home);
-
-var _react = __webpack_require__(0);
-
-var _react2 = _interopRequireDefault(_react);
-
-var _reactRouter = __webpack_require__(281);
-
-var _createBrowserHistory = __webpack_require__(136);
-
-var _createBrowserHistory2 = _interopRequireDefault(_createBrowserHistory);
-
-var _actions = __webpack_require__(42);
-
-var _siteDetail = __webpack_require__(282);
-
-var _siteDetail2 = _interopRequireDefault(_siteDetail);
-
-var _siteCategory = __webpack_require__(382);
-
-var _siteCategory2 = _interopRequireDefault(_siteCategory);
-
-var _appHeader = __webpack_require__(1872);
-
-var _appHeader2 = _interopRequireDefault(_appHeader);
-
-var _contentDetail = __webpack_require__(1873);
-
-var _contentDetail2 = _interopRequireDefault(_contentDetail);
-
-var _reactRedux = __webpack_require__(41);
-
-var _materialUi = __webpack_require__(70);
-
-var _appData = __webpack_require__(157);
-
-var _appData2 = _interopRequireDefault(_appData);
-
-var _colors = __webpack_require__(58);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-var recentsIcon = _react2.default.createElement(
-    _materialUi.FontIcon,
-    { className: "material-icons" },
-    "restore"
-);
-var favoritesIcon = _react2.default.createElement(
-    _materialUi.FontIcon,
-    { className: "material-icons" },
-    "favorite"
-);
-
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+Object.defineProperty(exports, "__esModule", { value: true });
+var home_1 = __webpack_require__(463);
+var React = __webpack_require__(0);
+var react_router_1 = __webpack_require__(1527);
+var createBrowserHistory_1 = __webpack_require__(1540);
+// import {setSiteList} from './actions'
+var site_detail_1 = __webpack_require__(1542);
+var site_category_1 = __webpack_require__(1543);
+var content_detail_1 = __webpack_require__(1547);
+var app_header_1 = __webpack_require__(1548);
+var colors_1 = __webpack_require__(96);
+var react_redux_1 = __webpack_require__(58);
+// import {FontIcon} from "material-ui";
+// import {connect} from "react-redux";
+// const recentsIcon = <FontIcon className="material-icons">restore</FontIcon>;
+// const favoritesIcon = <FontIcon className="material-icons">favorite</FontIcon>;
 // @autoState()
-var App = function (_React$Component) {
-    _inherits(App, _React$Component);
-
+var mapStateToProps = function (state, ownProps) {
+    return {};
+};
+var mapDispatchToProps = function (dispatch) {
+    return {};
+};
+// @connect(mapStateToProps,mapDispatchToProps)
+var App = /** @class */ (function (_super) {
+    __extends(App, _super);
     function App() {
-        _classCallCheck(this, App);
-
-        return _possibleConstructorReturn(this, (App.__proto__ || Object.getPrototypeOf(App)).apply(this, arguments));
+        return _super !== null && _super.apply(this, arguments) || this;
     }
-
-    _createClass(App, [{
-        key: "componentDidMount",
-        value: function componentDidMount() {
-            // console.log("aare render")
-            // let me=this;
-            // if (!this.props.siteLoaded) {
-            //this.props.siteLoaded=true;
-
-            // debugger;
-            // let params=this.props;
-            // if (params) {
-            //     // debugger;
-            //     fetch('/site-detail/'+params.id).then((response)=>response.json()).then((res)=>this.props.setSiteDetailList(res));
-            // }
-            // appState.title.subscribe(v=>{
-            //     me.state.title=v;
-            //     this.setState(me.state);
-            // });
-            // }
-            console.log("Event");
-            // this.props.getTitle();
-        }
-    }, {
-        key: "render",
-        value: function render() {
-            var me = this;
-            // console.log('app title:',me.props.list)
-            return _react2.default.createElement(
-                _reactRouter.Router,
-                { key: Math.random(), history: (0, _createBrowserHistory2.default)() },
-                _react2.default.createElement(
-                    "div",
-                    { style: { display: 'flex', lineHeight: '150%', flexDirection: 'column', height: '100vh' } },
-                    _react2.default.createElement(_appHeader2.default, null),
-                    _react2.default.createElement(
-                        "div",
-                        { style: { flex: 1, overflowY: 'scroll', backgroundColor: _colors.darkBlack, color: _colors.white } },
-                        _react2.default.createElement(_reactRouter.Route, { exact: true, path: "/", component: _home2.default }),
-                        _react2.default.createElement(_reactRouter.Route, { path: "/site/:id", component: _siteDetail2.default }),
-                        _react2.default.createElement(_reactRouter.Route, { path: "/site-category/:siteId/:name/:url", component: _siteCategory2.default }),
-                        _react2.default.createElement(_reactRouter.Route, { path: "/content-detail/:siteId/:name/:url", component: _contentDetail2.default })
-                    )
-                )
-            );
-        }
-    }]);
-
+    App.prototype.componentDidMount = function () {
+    };
+    App.prototype.render = function () {
+        var me = this;
+        // console.log('app title:',me.props.list)
+        return (React.createElement(react_router_1.Router, { key: Math.random(), history: createBrowserHistory_1.default() },
+            React.createElement("div", { style: { display: 'flex', lineHeight: '150%', flexDirection: 'column', height: '100vh' } },
+                React.createElement(app_header_1.default, null),
+                React.createElement("div", { style: { flex: 1, overflowY: 'scroll', backgroundColor: colors_1.darkBlack, color: colors_1.white } },
+                    React.createElement(react_router_1.Route, { exact: true, path: "/", component: home_1.default }),
+                    React.createElement(react_router_1.Route, { path: "/site/:id", component: site_detail_1.default }),
+                    React.createElement(react_router_1.Route, { path: "/site-category/:siteId/:name/:url", component: site_category_1.default }),
+                    React.createElement(react_router_1.Route, { path: "/content-detail/:siteId/:name/:url", component: content_detail_1.default })))));
+    };
     return App;
-}(_react2.default.Component);
+}(React.Component));
 //
 // const mapStateToProps = (state, ownProps) => {
 //     return {
@@ -1951,10 +1191,103 @@ var App = function (_React$Component) {
 //         // setSiteList:(lst)=>dispatch(setSiteList(lst)),
 //     }
 // };
+exports.default = react_redux_1.connect(mapStateToProps, mapDispatchToProps)(App);
 
 
-exports.default = (0, _reactRedux.connect)()(App);
+/***/ }),
+
+/***/ 463:
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+Object.defineProperty(exports, "__esModule", { value: true });
+var React = __webpack_require__(0);
+var material_ui_1 = __webpack_require__(113);
+var svg_icons_1 = __webpack_require__(294);
+var react_redux_1 = __webpack_require__(58);
+var actions_1 = __webpack_require__(97);
+var Home = /** @class */ (function (_super) {
+    __extends(Home, _super);
+    function Home(props, context) {
+        var _this = _super.call(this, props, context) || this;
+        _this.state = {
+            list: []
+        };
+        return _this;
+    }
+    Home.prototype.componentDidMount = function () {
+        var _this = this;
+        this.props.setTitle();
+        this.props.setAppIcon({ icon: "home", click: function () { } });
+        actions_1.cachedFetch('/sites').then(function (res) {
+            _this.setState(Object.assign({}, _this.state, { list: res }));
+        });
+    };
+    Home.prototype.render = function () {
+        // let me = this;
+        var _this = this;
+        return (React.createElement("div", null,
+            React.createElement(material_ui_1.List, null,
+                React.createElement(material_ui_1.Subheader, { inset: true }, "List sites"),
+                this.state.list.map(function (o) {
+                    {
+                        if (o.reading) {
+                            return React.createElement(material_ui_1.ListItem, { key: o.id, leftAvatar: React.createElement(material_ui_1.Avatar, { icon: React.createElement(svg_icons_1.FileFolder, null) }), rightIcon: React.createElement(svg_icons_1.ActionInfo, null), primaryText: o.name, onClick: function () {
+                                    // context.history.push === history.push
+                                    _this.props.history.push(o.url);
+                                }, secondaryText: o.url });
+                        }
+                        else {
+                            return React.createElement(material_ui_1.ListItem, { key: o.id, leftAvatar: React.createElement(material_ui_1.Avatar, { icon: React.createElement(svg_icons_1.FileFolder, null) }), rightIcon: React.createElement(svg_icons_1.ActionInfo, null), primaryText: o.name, onClick: function () {
+                                    // context.history.push === history.push
+                                    _this.props.history.push('/site/' + o.id);
+                                }, secondaryText: o.url });
+                        }
+                    }
+                }))));
+    };
+    return Home;
+}(React.Component));
+var mapStateToProps = function (state, ownProps) {
+    // debugger;
+    return {};
+};
+var mapDispatchToProps = function (dispatch) {
+    return {
+        // same effect
+        setTitle: function () { return dispatch(actions_1.setAppTitle("Home")); },
+        setSiteList: function (lst) { return dispatch(actions_1.setSiteList(lst)); },
+        setAppIcon: function (icon) { return dispatch(actions_1.setAppIcon(icon)); },
+    };
+};
+exports.default = react_redux_1.connect(mapStateToProps, mapDispatchToProps)(Home);
+
+
+/***/ }),
+
+/***/ 97:
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+function __export(m) {
+    for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
+}
+Object.defineProperty(exports, "__esModule", { value: true });
+__export(__webpack_require__(448));
+
 
 /***/ })
 
-},[383]);
+},[337]);

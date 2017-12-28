@@ -1,29 +1,35 @@
-import React from 'react';
+import * as React from 'react';
 import {connect} from "react-redux";
 
-import {cachedFetch, setAppTitle, setSiteDetailList, setSiteList, setAppIcon, SET_SITE_LOADING} from "./actions";
+import {cachedFetch, setAppIcon, setAppTitle, setSiteDetailList, setSiteList} from "./actions";
 import {Avatar, ListItem} from "material-ui";
-import {ActionInfo, FileFolder} from "material-ui/svg-icons/index";
-import {Subject} from "rxjs";
+import {FileFolder} from "material-ui/svg-icons";
+// import {Subject} from "rxjs";
 import {ReactHeight} from "react-height";
 
-let state = {
-    first: true,
-    lastDetail: -1,
-    inst: null
-};
+//
+// let state = {
+//     first: true,
+//     lastDetail: -1,
+//     inst: null
+// };
 
 // let loaded=[];
-class SiteDetail extends React.Component {
+class SiteDetail extends React.Component<any,any> {
+    private el: any;
+    private isLast: any;
+    private lstDetail: any;
+    private sites: any;
 
 
     constructor(props) {
         super(props);
-        // this.isLast=false;
+        // this.isFirst=true;
         // this.iconDone=false;
         this.state = {
             limit: 1,
             height: 0,
+            lstDetail:[]
         };
         // this.siteName=new Subject();
         // this.siteName.subscribe((text)=>{
@@ -80,51 +86,46 @@ class SiteDetail extends React.Component {
         // }
     }
 
-    incItems(height) {
-        let h = $(this.el).parent().height();
-        if (height == 0) return;
-        if (this.isLast) return;
-        if ((height < h)) {
-            // console.log("xxxxxx",height)
-            if (this.state.limit > 100) return;
-            this.setState(Object.assign({}, this.state, {
-                limit: this.state.limit + 1
-            }));
-        } else {
-            // console.log("yyyy",this.state.limit);
-            this.isLast = true;
-            this.setState(Object.assign({}, this.state, {
-                limit: this.state.limit - 1
-            }));
-        }
 
-    }
 
     componentDidMount() {
-
-        console.log("render site detail");
+// debugger;
+//         console.log("render site detail");
         this.props.setAppIcon({
             icon:"keyboard_arrow_left",
             click:this.props.history.goBack
         });
 
         let params = this.props.match.params;
-        cachedFetch('/site-detail/' + params.id).then((res) => this.props.setSiteDetailList(res.data));
-        if ((this.props.listSites.length == 0) ) {
-            // this.props.setLoading(true);
-            cachedFetch('/sites').then((res) => {
-                var fo = res.filter((o) => o.id == params.id)[0];
-                // console.log('name',fo)
-                this.props.setTitle(fo.name);
+        var f1=cachedFetch('/site-detail/' + params.id).then((res) => {
+            this.lstDetail=res.data;
+            //this.props.setSiteDetailList(res.data)
+            this.setState(Object.assign({},this.state,{
+                lstDetail:this.lstDetail,
 
-                this.props.setSiteList(res)
-            });
+            }))
+        });
+        var f2=cachedFetch('/sites').then((res) => {
+            var fo = res.filter((o) => o.id == params.id)[0];
+            // console.log('name',fo)
+            this.props.setTitle(fo.name);
+
+            this.props.setSiteList(res);
+            this.sites=res;
+        });
+
+        // Promise.all([f1,f2]).then(()=>{
+        //
+        // })
+        // if ((this.props.listSites.length == 0) ) {
+            // this.props.setLoading(true);
+
             // this.props.setLoading(false);
 
-        } else {
-            var fo = this.props.listSites.filter((o) => o.id == params.id)[0];
-            this.props.setTitle(fo.name);
-        }
+        // } else {
+        //     var fo = this.props.listSites.filter((o) => o.id == params.id)[0];
+        //     this.props.setTitle(fo.name);
+        // }
         // console.log(h);
         // if (h>0) {
         //     if (h!=this.state.height) {
@@ -179,14 +180,14 @@ class SiteDetail extends React.Component {
     }
 
     render() {
-
+// console.log("render");
 // console.log(this.props.lstDetail);
 
         return (
             <div ref={(el) => this.el = el}>
                 {/*<ReactHeight onHeightReady={height => this.incItems(height)}>*/}
 
-                    {this.props.lstDetail.map((item, idx) => {
+                    {this.state.lstDetail.map((item, idx) => {
                         // if (idx + 1 > this.state.limit) return;
                         return (
                             <ListItem
@@ -214,9 +215,9 @@ class SiteDetail extends React.Component {
 
 const mapStateToProps = (state, ownProps) => {
     return {
-        loading: state.sites.loading,
-        listSites: state.sites.list,
-        lstDetail: state.siteDetail.list
+        // loading: state.sites.loading,
+        // listSites: state.sites.list,
+        // lstDetail: state.siteDetail.list
     };
 };
 

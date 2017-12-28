@@ -1,4 +1,4 @@
-import React from "react";
+import * as React from "react";
 
 
 import {connect} from "react-redux";
@@ -6,12 +6,12 @@ import {connect} from "react-redux";
 import {AppBar, FontIcon, IconButton} from 'material-ui';
 
 
-const recentsIcon = <FontIcon className="material-icons">restore</FontIcon>;
-const favoritesIcon = <FontIcon className="material-icons">favorite</FontIcon>;
+// const recentsIcon = <FontIcon className="material-icons">restore</FontIcon>;
+// const favoritesIcon = <FontIcon className="material-icons">favorite</FontIcon>;
 
 
 // @autoState()
-class AppHeader extends React.Component {
+class AppHeader extends React.Component<any,any> {
 
 
 
@@ -39,7 +39,7 @@ class AppHeader extends React.Component {
 
 
     render() {
-        let me=this;
+        // let me=this;
         // console.log('app title:',me.props.list)
         return (
             <AppBar

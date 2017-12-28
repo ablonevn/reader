@@ -1,54 +1,34 @@
-import React from 'react';
-import {Link} from 'react-router-dom';
+import * as React from 'react';
 import {Avatar, List, ListItem, Subheader} from "material-ui";
-import {ActionInfo, FileFolder} from "material-ui/svg-icons/index";
+import {ActionInfo, FileFolder} from "material-ui/svg-icons";
 import {connect} from "react-redux";
-import {setAppTitle, setSiteList, cachedFetch, gInit, setAppIcon, SET_SITE_LOADING} from "./actions";
-import appState from "./app-data";
-// import {bindActionCreators} from "redux";
+import {cachedFetch, setAppIcon, setAppTitle, setSiteList} from "./actions";
 
-// var first=true;
+class Home extends React.Component<any,any> {
 
-class Home extends React.Component {
+      constructor(props,context?) {
+          super(props,context);
+          this.state={
+              list:[]
+          }
 
-    //  constructor(props,context) {
-    //      super(props,context);
-    //      // appState.title.next("Home")
-    //      // this.props.setTitle();
-    //      // this.props.setAppIcon({icon:"home"});
-    //      // cachedFetch('/sites').then((res) =>this.props.setSiteList(res));
-    //
-    // //     // this.state = {
-    // //     //     counter : 100
-    // //     // };
-    // //
-    // //     // const {counter }=props;
-    // //     //const {firstAction, secondAction} = props;
-    //  }
+      }
     componentDidMount() {
         this.props.setTitle();
-        const click=()=>{};
-        this.props.setAppIcon({icon:"home",click:click});
-        console.log("render Home", JSON.stringify(this.props.list));
-        // if ((this.props.list.length == 0)) {
-            // this.props.setLoading(true);
-            fetch('/sites').then(res=>res.json()).then((res) => this.props.setSiteList(res));
-            // this.props.setLoading(false);
-
-        // }
-
-
-
+        this.props.setAppIcon({icon:"home",click:()=>{}});
+        cachedFetch('/sites').then((res) => {
+            this.setState(Object.assign({},this.state,{list:res}));
+        });
     }
 
     render() {
-        let me = this;
+        // let me = this;
 
         return (
             <div>
                 <List>
                     <Subheader inset={true}>List sites</Subheader>
-                    {this.props.list.map((o) => {
+                    {this.state.list.map((o) => {
                         {if (o.reading){
                             return <ListItem key={o.id}
                                       leftAvatar={<Avatar icon={<FileFolder/>}/>}
@@ -56,7 +36,7 @@ class Home extends React.Component {
                                       primaryText={o.name}
                                       onClick={() => {
                                           // context.history.push === history.push
-                                          me.props.history.push(o.url)
+                                          this.props.history.push(o.url)
                                       }}
                                       secondaryText={o.url}/>
                         } else {
@@ -66,10 +46,10 @@ class Home extends React.Component {
                                          primaryText={o.name}
                                          onClick={() => {
                                              // context.history.push === history.push
-                                             me.props.history.push('/site/' + o.id)
+                                             this.props.history.push('/site/' + o.id)
                                          }}
                                          secondaryText={o.url}
-                        />}};
+                        />}}
                     })}
 
                 </List>
@@ -83,8 +63,8 @@ class Home extends React.Component {
 const mapStateToProps = (state, ownProps) => {
 // debugger;
     return {
-        loading: state.sites.loading,
-        list: state.sites.list
+        // loading: state.sites.loading,
+        // list: state.sites.list
     };
 };
 

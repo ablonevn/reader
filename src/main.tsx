@@ -1,16 +1,13 @@
-import React from "react";
-import ReactDOM from "react-dom";
+import * as React from "react";
+import * as ReactDOM from "react-dom";
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import {Provider} from 'react-redux';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
 import {createStore} from 'redux';
 import appData from './reducers';
-import App from './app';
-
 import {indigo500, white} from 'material-ui/styles/colors';
-
-
 import "./styles.scss";
+import App from "./app";
 
 const muiTheme = {
     palette: {
@@ -21,9 +18,7 @@ const muiTheme = {
         secondaryTextColor: white,
         alternateTextColor: white,
     },
-    appBar: {
-        //height: 50,
-    },
+
 };
 
 let store = createStore(appData);
