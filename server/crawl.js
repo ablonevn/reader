@@ -11,7 +11,7 @@ var outDir=root+"/"+distDir;
 comm.mkdirp(outDir);
 var tr=require('./'+config.driver);
 var list=[];
-comm.usingTor();
+//comm.usingTor();
 
 if (!fs.existsSync(outDir + '/config.json')) {
     fs.writeFileSync(outDir + '/config.json',JSON.stringify(config))

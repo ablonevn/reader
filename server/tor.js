@@ -11,7 +11,7 @@ var outDir=root+"/"+distDir;
 comm.mkdirp(outDir);
 var tr=require('./'+config.driver);
 var list=[];
-comm.usingTor();
+// comm.usingTor();
 // process.on('unhandledRejection', error => {
 //     // Won't execute
 //     console.log('unhandledRejection', error.test);

@@ -14,7 +14,7 @@ function documentList(html) {
             })
 
         });
-        var foNext = $('.next a:first');
+        var foNext = $('.next a');
 
         var next = "";
         if (foNext.length) {
