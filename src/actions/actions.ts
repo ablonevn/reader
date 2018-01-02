@@ -1,4 +1,5 @@
 import {Subject} from "rxjs/Subject";
+import {connect} from "react-redux";
 
 let counter = 0;
 
@@ -89,4 +90,11 @@ export function encodeHex(text) {
 }
 export function decodeHex(text) {
     return text.split("-").map(o => String.fromCharCode(parseInt(o, 16))).join("");
+}
+export function autoState(f1:any,f2:any){
+    return (target)=> {
+        console.log("g(): called",target);
+        var f=connect((state,ownProps)=>f1(state,ownProps),(dispatch)=>f2(dispatch))(target) as any;
+        return f;
+    }
 }

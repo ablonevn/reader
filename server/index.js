@@ -2,7 +2,7 @@
 let express = require("express");
 let request = require('request');
 let cheerio = require('cheerio');
-let zlib = require('zlib');
+// let zlib = require('zlib');
 let fs = require("fs");
 let app = require('express')();
 let http = require('http').Server(app);

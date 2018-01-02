@@ -16,13 +16,13 @@ import {
 var canvas = document.createElement("canvas");
 
 
-export class ContentDetail extends React.Component<any, any> {
+class ContentDetail extends React.Component<any, any> {
     private el: any;
     private site: any;
     private height: number;
     private lastRows: string;
     private startPos: number;
-    private items: any[];
+    // private items: any[];
     private fetchItem: boolean;
     private mapItems: any[];
     private title: any;
@@ -32,8 +32,9 @@ export class ContentDetail extends React.Component<any, any> {
     private mprops: Readonly<any>;
     private limit: number;
     private lstSites: any[];
-    private contentList: any[];
+    //private contentList: any[];
     private isPrev: any;
+    private canUpdate: boolean;
 
 
     constructor(props) {
@@ -41,11 +42,15 @@ export class ContentDetail extends React.Component<any, any> {
         this.resetState();
         this.height = 0;
         this.lastRows = "";
+        this.canUpdate=false;
+        this.state={
+            mapItems:[]
+        }
     }
 
     resetState() {
         this.startPos = 0;
-        this.items = [];
+        // this.items = [];
         this.fetchItem = false;
         this.mapItems = [];
 
@@ -73,20 +78,20 @@ export class ContentDetail extends React.Component<any, any> {
     getTextHeight(text, font?) {
         // re-use canvas object for better performance
 
-        var context = canvas.getContext("2d");
+        let context = canvas.getContext("2d");
         context.font = font || "normal 16px 'Segoe UI'";
-        var metrics = context.measureText(text);
+        let metrics = context.measureText(text);
         return 24;
     }
 
     getFitLine(arr) {
-        var lst = [];
-        var lstr = [];
-        var w = $(window).width() - 20 - 10;
+        let lst = [];
+        let lstr = [];
+        let w = $(window).width() - 20 - 10;
         arr.filter(r => (r || "") !== "")
             .map(r => {
                 lstr.push(r);
-                var text = lstr.join(" ");
+                let text = lstr.join(" ");
                 if (this.getTextWidth(text, null) >= w) {
                     // debugger;
                     lstr.pop();
@@ -105,9 +110,9 @@ export class ContentDetail extends React.Component<any, any> {
     }
 
     buildRow(list) {
-        var newRows = list.map(row => {
-            var lst = [];
-            var strs = (row || "").replace(/[\r\n\t]/gi, "").split(' ');
+        let newRows = list.map(row => {
+            let lst = [];
+            let strs = (row || "").replace(/[\r\n\t]/gi, "").split(' ');
             if (strs.length) {
                 // debugger;
                 lst = this.getFitLine(strs);
@@ -120,18 +125,19 @@ export class ContentDetail extends React.Component<any, any> {
 
     componentWillReceiveProps(newProps) {
         this.mprops = newProps;
-        // var changed = false;
+        this.canUpdate=false;
 
         if (newProps.location && (this.oldLocaltion != newProps.location.pathname)) {
 
             this.oldLocaltion = newProps.location.pathname;
             this.resetState();
-            // debugger;
+            debugger;
             this.getContentList().then((lst)=>{
+                // console.log("get content in rec props");
                 this.buildRow(lst);
                 if (this.isPrev) {
                     this.isPrev = false;
-                    var pages = parseInt(((this.mapItems.length + this.limit - 1) / this.limit)+"");
+                    let pages = parseInt(((this.mapItems.length + this.limit - 1) / this.limit)+"");
                     this.startPos = (pages - 1) * this.limit;
                 }
                 this.doRender();
@@ -139,42 +145,20 @@ export class ContentDetail extends React.Component<any, any> {
             // changed = true;
             // this.setState(Object.assign({}, state));
         }
-        // var js = JSON.stringify(this.mprops.contentList);
-        // if (this.mprops.contentList.length && (js !== this.lastRows)) {
-        //     // console.log("props changed");
-        //     this.lastRows = js;
-        //
-        //     //if (this.isFirst || changed) {
-        //     // console.log(this.isFirst,changed);
-        //
-        //     // this.isFirst = false;
-        //
-        //
-        //     this.buildRow(this.mprops.contentList);
-        //
-        //     if (this.isPrev) {
-        //         this.isPrev = false;
-        //         var pages = parseInt((state.mapItems.length + state.limit - 1) / state.limit);
-        //         state.startPos = (pages - 1) * state.limit;
-        //     }
-        //     this.setState(Object.assign({}, state));
-        //     // console.log("update ",state.mapItems.length);
-        //
-        //
-        //     //}
-        //
-        // }
+
 
 
     }
 
-    getContent() {
+     getContent() {
         console.log("get content called");
+
         this.mprops = this.mprops || this.props;
-        var url = '/doc-content/' + this.site.id + "/" + this.mprops.match.params.name + "/" + this.mprops.match.params.url;
-        var hd = new Headers();
+        let url = '/doc-content/' + this.site.id + "/" + this.mprops.match.params.name + "/" + this.mprops.match.params.url;
+        let hd = new Headers();
         hd.set('Accept','application/json');
         hd.set('Content-Type', 'application/json');
+
 
         fetch('/save', {
             method: 'post',
@@ -184,7 +168,7 @@ export class ContentDetail extends React.Component<any, any> {
                 url: '/content-detail/' + this.site.id + "/" + this.mprops.match.params.name + "/" + this.mprops.match.params.url,
                 name: decodeHex(this.mprops.match.params.name)
             })
-        }).then(r => r);
+        });
 
         return cachedFetch(url).then((res) => {
             // debugger;
@@ -195,18 +179,20 @@ export class ContentDetail extends React.Component<any, any> {
             if (res.next) cachedFetch('/doc-content/' + this.site.id + "/" + this.mprops.match.params.name + "/" + encodeHex(res.next)); // cache next page
             if (res.prev) cachedFetch('/doc-content/' + this.site.id + "/" + this.mprops.match.params.name + "/" + encodeHex(res.prev)); // cache prev page
             this.updateTitle();
-            // console.log(res.data);
+            console.log(res.data);
             return res;
         });
     }
 
 
     getContentList() {
+        this.canUpdate=false;
         //if (this.isFirst) {
         this.next = null;
         this.prev = null;
         return this.getContent().then((res) => {
-            return this.contentList = res.data;
+
+            return res.data;
         });
         // this.isFirst = false;
         //}
@@ -215,79 +201,63 @@ export class ContentDetail extends React.Component<any, any> {
     }
 
     doNext() {
-        // console.log("limit item", state.limit);
+        this.canUpdate=true;
         if (this.startPos + this.limit < this.mapItems.length) {
             this.startPos = this.startPos + this.limit;
-            // console.log(state.startPos);
             this.setState(Object.assign({}, this.state));
         } else {
-            // debugger;
             if (this.next) {
-                // this.isPrev=false;
                 this.props.history.replace('/content-detail/' + this.site.id + "/" + this.mprops.match.params.name + "/" + encodeHex(this.next));
-                // this.resetState();
-                // this.getContent().then(res=>{
-                //     this.buildRow(res.data);
-                //     // this.setState(Object.assign({}, state));
-                // })
-                // this.getContentList();
+
             }
         }
 
     }
 
     doPrev() {
-        //console.log("limit item",state.limit);
+        this.canUpdate=true;
         if (this.startPos - this.limit >= 0) {
             this.startPos = this.startPos - this.limit;
             this.setState(Object.assign({}, this.state));
         } else {
-            // debugger;
             if (this.prev) {
                 this.isPrev = true;
                 this.props.history.replace('/content-detail/' + this.site.id + "/" + this.mprops.match.params.name + "/" + encodeHex(this.prev));
-                // this.resetState();
-                // this.lockUpdate=true;
-                // this.getContent().then(res=>{
-                //
-                //     this.buildRow(res.data);
-                //     var pages=parseInt((state.mapItems.length)/state.limit);
-                //
-                //
-                //     state.startPos=(pages-1)*state.limit;
-                //     console.log("prev set item",pages,state.mapItems.length,state.startPos);
-                //     // this.lockUpdate=false;
-                //     // this.setState(Object.assign({}, state));
-                // });
-                //calc last page
-                // this.getContentList();
             }
         }
 
     }
+
     doRender(){
+
         if (!this.mapItems) return;
         if (this.mapItems.length==0) return;
         let js = JSON.stringify(this.mapItems);
         if (js !== this.lastRows) {
             this.lastRows=js;
-            this.setState(Object.assign({}, this.state));
+            console.log(this.lastRows==js,"rrrrrrrr");
+            this.setState(Object.assign({}, this.state,{
+                mapItems:this.mapItems
+            }));
         }
 
     }
 
+
     componentDidMount() {
+
         this.props.setAppIcon({
             icon: "keyboard_arrow_left",
             click: this.props.history.goBack
         });
+        // debugger;
         this.oldLocaltion = this.props.history.location.pathname;
         this.title = "";
         let padding = 20;
         this.height = $(this.el).parent().height() - padding;
         this.limit = parseInt((this.height / this.getTextHeight('hg')) + "");
-
-        new Promise(resolve=>{
+// return;
+        // new Promise(resolve=>{
 
             cachedFetch('/sites').then((res) => {
                 // debugger;
@@ -295,17 +265,21 @@ export class ContentDetail extends React.Component<any, any> {
                 this.updateTitle(res);
                 this.getContentList()
                     .then((lst)=>{
+            //             // console.log("get content in did mount");
                         this.buildRow(lst);
-                        resolve()
+                        this.doRender()
                     });
             });
-
+// console.log("xxxxxxxxxxxxx");
 
             // console.log(state.height);
 
 
-        }).then(()=>this.doRender())
+        // }).then(()=>{
+        //     this.doRender()
+        // });
 
+        // return 0;
 
 
     }
@@ -313,21 +287,21 @@ export class ContentDetail extends React.Component<any, any> {
 
     onClick(event) {
         event.persist();
-        // debugger;
         if (event.clientX > $(window).width() / 2) {
             this.doNext();
         } else {
             this.doPrev();
         }
-        // console.log(event.clientX,event.clientY);
+
     }
 
     render() {
-        console.log("render called")
-        var paging = <div/>;
-        if (this.mapItems && this.mapItems.length) {
+        console.log("render called");
+        let paging = <div/>;
+
+        if (this.state.mapItems && this.state.mapItems.length) {
             // console.log("render changed",state.mapItems,state.startPos , state.limit);
-            var items = this.mapItems.slice(this.startPos, this.startPos + this.limit);
+            let items = this.state.mapItems.slice(this.startPos, this.startPos + this.limit);
             paging =
                 <div style={{padding: '10px 0px 10px 10px', height: this.height}} onClick={evt => this.onClick(evt)}>
                     {items.map((item, idx) => <div key={this.startPos + idx}>{item}</div>)}

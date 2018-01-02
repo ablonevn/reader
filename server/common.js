@@ -3,9 +3,10 @@ const socksPort= '9050';
 const sites = [
     {id: 0, name: 'local', url: ''},
     {id: 1, name: 'adayroi', url: 'http://adayroi.com'},
-    {id: 2, name: 'test', url: ''},
+
     // {id:1,name:'tgdd',url:'http://thegioididong.com'}
 ];
+const forceTor=false;
 
 const rootData=require("path").resolve( __dirname+'/../data');
 var fs=require("fs");
@@ -21,7 +22,7 @@ const entities = new Entities();
 const decode = entities.decode;
 
 function ops(options,usingTor) {
-    usingTor=false;
+    usingTor=forceTor||false;
     if (usingTor) {
         options = Object.assign({}, options, {
             agentClass: Agent,
@@ -158,10 +159,7 @@ function error(err){
 
 module.exports = {
     getHtml: getHtml,
-    usingTor: function () {
-        usingTor = true;
-
-    },
+    usingTor: false,
     sites: sites,
     decode: decode,
     error: error,

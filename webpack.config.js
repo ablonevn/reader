@@ -66,6 +66,7 @@ module.exports = {
     entry: {
         main: "./src/main.tsx",
         polyfills: "./src/polyfills.js",
+
     },
     output: {
         path: path.join(__dirname, 'dist'),
@@ -103,22 +104,26 @@ module.exports = {
         new CommonsChunkPlugin({
             name: ['polyfills', 'vendor'].reverse()
         }),
+
+
         new ExtractTextPlugin('styles.css'),
         new CheckerPlugin()
     ]),
     module: {
         loaders: [
             {
-                test: /\.(ts|jsx|tsx)$/,
+                test: /\.(ts|jsx|tsx)$/i,
                 loader: 'awesome-typescript-loader'
             }, {
                 test: /\.(scss|css)$/i,
-                loader: ExtractTextPlugin.extract(['css-loader', 'sass-loader'])
+                use:ExtractTextPlugin.extract(['css-loader', 'sass-loader'])
+
+
             }, {
-                test: /\.html$/,
+                test: /\.html$/i,
                 loader: 'raw-loader'
             }, {
-                test: /\.(png|jpe?g|gif|svg|woff|woff2|ttf|eot|ico)/,
+                test: /\.(png|jpe?g|gif|svg|woff|woff2|ttf|eot|ico)/i,
                 loader: 'file-loader',
                 options: {
                     name: '[name].[hash].[ext]',
