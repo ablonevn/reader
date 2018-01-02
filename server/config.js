@@ -1,5 +1,5 @@
 module.exports={
-    driver:'truyenfull',
-    target:'gia-thien',
-    url:'http://truyenfull.vn/gia-thien/'
+    driver:'hixx',
+    target:'Van-Co-Chi-Ton',
+    url:'http://truyen.hixx.info/truyen/truyen-kiem-hiep/454061/Van-Co-Chi-Ton.html'
 }

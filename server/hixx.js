@@ -7,7 +7,7 @@ function documentList(html) {
     return new Promise((resolve, reject) => {
         var $ = cheerio.load(html);
         var list = [];
-        $('.list_news_dot a').map(function (i, o) {
+        $('.bt_pagination').first().nextAll('.danh_sach').find('a').map(function (i, o) {
             list.push({
                 title: $(o).text(),
                 link: $(o).attr("href")
