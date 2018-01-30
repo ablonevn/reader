@@ -48,30 +48,28 @@ app.post('/save', function(req, res) {
 
 });
 function writeHtml(res,html){
-var 
-s=fs.readFileSync(root+'/../src/tpl.html')+"";
-s=s.replace("xxxxx",html);
-res.send(s);
+  var s=fs.readFileSync(root+'/../src/tpl.html')+"";
+  s=s.replace("xxxxx",html);
+  res.send(s);
 }
 app.get('/s/:id',(req,res)=>{
   var cfg=JSON.parse(fs.readFileSync(root+'/../server/story.json'));
   var chapters=JSON.parse(fs.readFileSync(root+'/'+cfg.dir+"/chapters.json")+"");
 
   if (req.params.id=="0"){
-  var lst=chapters;
-  
-var i=0;
-writeHtml(res,lst.map(o=>"<p><a href='/s/"+(++i)+"'>"+o.title+"</a></p>").join(""));
+    var lst=chapters;
+    var i=0;
+    writeHtml(res,lst.map(o=>"<p><a href='/s/"+(++i)+"'>"+o.title+"</a></p>").join(""));
 } else {
-var id=parseInt(req.params.id)-1;
-var j=id+2;
-if (j>chapters.length) j=chapters.length;
-var site=require('./local');
-var url=chapters[id].link;
-site.documentContent(cfg.dir,url).then((rs) => {
+    var id=parseInt(req.params.id)-1;
+    var j=id+2;
+    if (j>chapters.length) j=chapters.length;
+    var site=require('./local');
+    var url=chapters[id].link;
+    site.documentContent(cfg.dir,url).then((rs) => {
 
-writeHtml(res,"<h4><a href='/s/"+(j)+"'>"+rs.title+"</a></h4><p>"+rs.data.join("</p><p>")+"</p>");
-}).catch(comm.error);
+      writeHtml(res,"<h4><a href='/s/"+(j)+"'>"+rs.title+"</a></h4><p>"+rs.data.join("</p><p>")+"</p>");
+    }).catch(comm.error);
 
 //writeHtml(res,id);
 }
