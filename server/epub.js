@@ -1,15 +1,24 @@
 var dir="read-some";
 var path=require("path");
 var dataDir=path.resolve(__dirname+"/../data/"+dir);
+var outExports=path.resolve(__dirname+"/../exports/"+dir);
+var mkdirp=require('mkdirp');
 var chapters=require(dataDir+"/chapters.json");
 let request = require('request');
 var Epub = require("epub-gen");
+var fs=require('fs');
 console.log("process "+dataDir);
+mkdirp(outExports);
 function to16(s){
     return s.split('').map(s=>s.charCodeAt(0).toString(16)).join("-");
 }
 var dir16=to16(dir);
 var content=[];
+function pad(num, size) {
+    var s = num+"";
+    while (s.length < size) s = "0" + s;
+    return s;
+}
 function getChap(i) {
     if (i<chapters.length) {
         var c=chapters[i];
@@ -21,11 +30,15 @@ function getChap(i) {
                 return console.error('Request failed:', error);
             }
             var obj=JSON.parse(body);
+            var expHtmlObj={
+                title:obj.title,
+                data:"<p>"+obj.data.join("</p><p>")+"</p>"
+            };
+            var str="<h1>"+expHtmlObj.title+"</h1>"+expHtmlObj.data;
+            var fileName=pad(i,5)+".html";
+            fs.writeFileSync(outExports+"/"+fileName,str);
             //console.log('Response :', obj.title);
-            content.push({
-               title:obj.title,
-               data:"<p>"+obj.data.join("</p><p>")+"</p>"
-            });
+            content.push(expHtmlObj);
             setTimeout(()=>getChap(i+1),0)
         })
     } else {
@@ -36,7 +49,7 @@ function getChap(i) {
             //cover: "http://demo.com/url-to-cover-image.jpg", // Url or File path, both ok.
             content: content
         };
-        new Epub(option, dir+".epub");
+        //new Epub(option, dir+".epub");
     }
 
 
