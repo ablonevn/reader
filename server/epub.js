@@ -29,13 +29,17 @@ function getChap(i) {
             if (error) {
                 return console.error('Request failed:', error);
             }
+            var fileName=pad(i,5)+".html";
+            var next=pad(i+1,5)+".html";
             var obj=JSON.parse(body);
             var expHtmlObj={
                 title:obj.title,
                 data:"<p>"+obj.data.join("</p><p>")+"</p>"
             };
-            var str="<h1>"+expHtmlObj.title+"</h1>"+expHtmlObj.data;
-            var fileName=pad(i,5)+".html";
+            var str="<html><body><h1>"+expHtmlObj.title+"</h1>"+expHtmlObj.data;
+            str=str+"<script src='/jquery.js'>$(function(){$('body').append($('<div><a href=\"/"+next+"\">Tiếp</a></div>'))})</script>";
+            str=str+"</body></html>";
+
             fs.writeFileSync(outExports+"/"+fileName,str);
             //console.log('Response :', obj.title);
             content.push(expHtmlObj);
