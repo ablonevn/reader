@@ -108,6 +108,7 @@ var documentContent = comm.buildContent((fo, html, resolve) => {
         .replace(/&nbsp;\<\/p\>/gi,"")
         .split(/\<p\>/)
         .map(function(o) {return $("<div>"+o+"</div>").text()});
+console.log(lst);
     // lst = ($('.chapter-c').html() || "")
     //     .split("<br>")
     //     .filter(r => (r || "").trim() !== "");
