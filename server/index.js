@@ -44,6 +44,27 @@ app.post('/save', function(req, res) {
     res.json({status:0})
 
 });
+// app.get('/doc-epub/:name/:url',(req,res)=>{
+//     var siteId=0;
+//     // res.writeHead(200, {'Content-Type': 'application/json'});
+//     let fo=sites.filter(o=>o.id==siteId);
+//     if (fo.length) {
+//         let site = require("./" + fo[0].name);
+//
+//
+//         let url=req.params.url.split("-").map(o => String.fromCharCode(parseInt(o, 16))).join("");
+//         let name=req.params.name.split("-").map(o => String.fromCharCode(parseInt(o, 16))).join("");
+//         if (siteId==0) {
+//
+//             site.documentContent(name,url).then((rs) => res.json(rs)).catch(comm.error);
+//             return;
+//         }
+//
+//         getHtml(url).then((data) => {
+//             site.documentContent(data).then((rs) => res.json(rs)).catch(comm.error);
+//         }).catch(comm.error)
+//     }
+// });
 app.get('/doc-content/:siteid/:name/:url',(req,res)=>{
     // res.writeHead(200, {'Content-Type': 'application/json'});
     let fo=sites.filter(o=>o.id==req.params.siteid);
@@ -61,18 +82,6 @@ app.get('/doc-content/:siteid/:name/:url',(req,res)=>{
 
         getHtml(url).then((data) => {
             site.documentContent(data).then((rs) => res.json(rs)).catch(comm.error);
-
-            // let $=cheerio.load(data);
-            // let list=[];
-            // $('.menu__cat-item a').map(function(i,o){
-            //     list[i] = {
-            //         text:$(o).text(),
-            //         link:$(o).attr("href")
-            //     };
-            //     //return $(o).text();
-            // });
-            // console.log(list);
-            // res.json(list);
         }).catch(comm.error)
     }
 });
