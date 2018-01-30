@@ -1,4 +1,4 @@
-var dir="read-some";
+
 var path=require("path");
 var dataDir=path.resolve(__dirname+"/../data/"+dir);
 var outExports=path.resolve(__dirname+"/../exports/"+dir);
@@ -7,6 +7,7 @@ var chapters=require(dataDir+"/chapters.json");
 let request = require('request');
 var Epub = require("epub-gen");
 var fs=require('fs');
+var dir=fs.readFileSync("./story");
 console.log("process "+dataDir);
 mkdirp(outExports);
 function to16(s){
@@ -37,7 +38,8 @@ function getChap(i) {
                 data:"<p>"+obj.data.join("</p><p>")+"</p>"
             };
             var str="<html><body><h1>"+expHtmlObj.title+"</h1>"+expHtmlObj.data;
-            str=str+"<script src='/jquery.js'>$(function(){$('body').append($('<div><a href=\"/"+next+"\">Tiếp</a></div>'))})</script>";
+            str=str+"<script src='/jquery.js'></script>";
+            str=str+"<script>$(function(){$('body').append($('<div><a href=\\\"/\"+next+\"\\\">Tiếp</a></div>'))})</script>";
             str=str+"</body></html>";
 
             fs.writeFileSync(outExports+"/"+fileName,str);
