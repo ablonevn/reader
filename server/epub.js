@@ -1,5 +1,5 @@
 var fs=require('fs');
-var dir=fs.readFileSync("./story");
+var dir=require("./story.json").dir;
 var path=require("path");
 var dataDir=path.resolve(__dirname+"/../data/"+dir);
 var outExports=path.resolve(__dirname+"/../exports/"+dir);
@@ -38,9 +38,9 @@ function getChap(i) {
                 title:obj.title,
                 data:"<p>"+obj.data.join("</p><p>")+"</p>"
             };
-            var str="<html><body><h1>"+expHtmlObj.title+"</h1>"+expHtmlObj.data;
-            str=str+"<script src='/jquery.js'></script>";
-            str=str+"<script>$(function(){$('body').append($('<div><a href=\\\"/\"+next+\"\\\">Tiếp</a></div>'))})</script>";
+            var str="<html><body><h1><a href=\"/"+next+"\">"+expHtmlObj.title+"</a></h1>"+expHtmlObj.data;
+            // str=str+"<script src='/jquery.js'></script>";
+            // str=str+"<script>$(function(){$('body').append($('<div><a href=\\\"/\"+next+\"\\\">Tiếp</a></div>'))})</script>";
             str=str+"</body></html>";
 
             fs.writeFileSync(outExports+"/"+fileName,str);
