@@ -1,3 +1,4 @@
+var fs=require('fs');
 var dir=fs.readFileSync("./story");
 var path=require("path");
 var dataDir=path.resolve(__dirname+"/../data/"+dir);
@@ -6,7 +7,7 @@ var mkdirp=require('mkdirp');
 var chapters=require(dataDir+"/chapters.json");
 let request = require('request');
 var Epub = require("epub-gen");
-var fs=require('fs');
+
 
 console.log("process "+dataDir);
 mkdirp(outExports);
