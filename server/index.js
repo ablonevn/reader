@@ -53,9 +53,9 @@ function writeHtml(res, html) {
     res.send(s);
 }
 
-app.get('/s/:id', (req, res) => {
-    var cfg = JSON.parse(fs.readFileSync(root + '/../server/story.json'));
-    var chapters = JSON.parse(fs.readFileSync(root + '/' + cfg.dir + "/chapters.json") + "");
+app.get('/:name/:id', (req, res) => {
+    var cfgdir = req.params.name;
+    var chapters = JSON.parse(fs.readFileSync(root + '/' + cfgdir + "/chapters.json") + "");
 
     if (req.params.id == "0") {
         var lst = chapters;
@@ -67,7 +67,7 @@ app.get('/s/:id', (req, res) => {
         if (j > chapters.length) j = chapters.length;
         var site = require('./local');
         var url = chapters[id].link;
-        site.documentContent(cfg.dir, url).then((rs) => {
+        site.documentContent(cfgdir, url).then((rs) => {
             writeHtml(res, "<h4><a href='/s/" + (j) + "'>" + rs.title + "</a></h4><p>" + rs.data.join("</p><p>") + "</p>");
         }).catch(comm.error);
 
