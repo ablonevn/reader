@@ -68,7 +68,7 @@ app.get('/:name/:id', (req, res) => {
         var site = require('./local');
         var url = chapters[id].link;
         site.documentContent(cfgdir, url).then((rs) => {
-            writeHtml(res, "<h4><a href='/s/" + (j) + "'>" + rs.title + "</a></h4><p>" + rs.data.join("</p><p>") + "</p>");
+            writeHtml(res, "<h4><a href='/"+cfgdir+"/" + (j) + "'>" + rs.title + "</a></h4><p>" + rs.data.join("</p><p>") + "</p>");
         }).catch(comm.error);
 
 //writeHtml(res,id);
