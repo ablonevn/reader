@@ -53,27 +53,6 @@ function writeHtml(res, html) {
     res.send(s);
 }
 
-app.get('/:name/:id', (req, res) => {
-    var cfgdir = req.params.name;
-    var chapters = JSON.parse(fs.readFileSync(root + '/' + cfgdir + "/chapters.json") + "");
-
-    if (req.params.id == "0") {
-        var lst = chapters;
-        var i = 0;
-        writeHtml(res, lst.map(o => "<p><a href='/s/" + (++i) + "'>" + o.title + "</a></p>").join(""));
-    } else {
-        var id = parseInt(req.params.id) - 1;
-        var j = id + 2;
-        if (j > chapters.length) j = chapters.length;
-        var site = require('./local');
-        var url = chapters[id].link;
-        site.documentContent(cfgdir, url).then((rs) => {
-            writeHtml(res, "<h4><a href='/"+cfgdir+"/" + (j) + "'>" + rs.title + "</a></h4><p>" + rs.data.join("</p><p>") + "</p>");
-        }).catch(comm.error);
-
-//writeHtml(res,id);
-    }
-});
 // app.get('/doc-epub/:name/:url',(req,res)=>{
 //     var siteId=0;
 //     // res.writeHead(200, {'Content-Type': 'application/json'});
@@ -150,7 +129,7 @@ app.get('/doc-list/:siteid/:url', (req, res) => {
 
 app.get('/site-detail/:id', (req, res) => {
 
-
+console.log("aaaaaaaaaaaaaaaa")
     // res.writeHead(200, {'Content-Type': 'application/json'});
     let fo = sites.filter(o => o.id == req.params.id);
     if (fo.length) {
@@ -192,6 +171,28 @@ app.get('/sites', (req, res) => {
 app.get('/api/get/:url', function (req, res) {
     res.send('<h1>Hello</h1>');
 });
+
+app.get('/:name/:id', (req, res) => {
+    var cfgdir = req.params.name;
+    var chapters = JSON.parse(fs.readFileSync(root + '/' + cfgdir + "/chapters.json") + "");
+
+    if (req.params.id == "0") {
+        var lst = chapters;
+        var i = 0;
+        writeHtml(res, lst.map(o => "<p><a href='/s/" + (++i) + "'>" + o.title + "</a></p>").join(""));
+    } else {
+        var id = parseInt(req.params.id) - 1;
+        var j = id + 2;
+        if (j > chapters.length) j = chapters.length;
+        var site = require('./local');
+        var url = chapters[id].link;
+        site.documentContent(cfgdir, url).then((rs) => {
+            writeHtml(res, "<h4><a href='/"+cfgdir+"/" + (j) + "'>" + rs.title + "</a></h4><p>" + rs.data.join("</p><p>") + "</p>");
+        }).catch(comm.error);
+
+//writeHtml(res,id);
+    }
+});
 app.get('*', function (req, res) {
     let data = fs.readFileSync(__dirname + '/../src/index.html');
     res.send(data + "");
@@ -222,5 +223,5 @@ app.get('*', function (req, res) {
 // });
 
 http.listen(8010, function () {
-    console.log('listening on *:8010');
+    console.log('server listening on *:8010');
 });

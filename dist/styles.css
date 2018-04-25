@@ -16,7 +16,7 @@
   url(/SegoeUI.8c7638f9b2d07d4c9931a6d7ac897890.woff2) format('woff2'),
   url(/SegoeUI.a29ccf288688825eab53a9f4fa277331.woff) format('woff'),
   url(/SegoeUI.889b410ecd782c7b4a3983b4fdb6ea62.ttf) format('truetype'),
-  url(/SegoeUI.f249ff588dfd97a33025c48c10c6c47a.svg#SegoeUI) format('svg');
+  url(/SegoeUI.d0384b7a1d5be756c0427474deafe621.svg#SegoeUI) format('svg');
   font-weight: normal;
   font-style: normal;
 }
@@ -27,7 +27,7 @@
   url(/Roboto-Regular.b804c7b5895579f00b939568e17adc6c.woff2) format('woff2'),
   url(/Roboto-Regular.829c06072c396e292f04995406e4304c.woff) format('woff'),
   url(/Roboto-Regular.8e84c83a38638805d77780205a08a9af.ttf) format('truetype'),
-  url(/Roboto-Regular.127dd3b84dac3b2ffcf5951eb8cebee0.svg#Roboto-Regular) format('svg');
+  url(/Roboto-Regular.d9fb38659c125dd1dd7994046172ef1f.svg#Roboto-Regular) format('svg');
   font-weight: normal;
   font-style: normal;
 }
@@ -64,7 +64,7 @@
          url(/MyriadPro.82ec38b89196fe5e93808664108dd61a.woff2) format('woff2'),
          url(/MyriadPro.8f389a8b0cc240409026270463977c2e.woff) format('woff'),
          url(/MyriadPro.1262ee80027f9b19a214afd68ce6518a.ttf) format('truetype'),
-         url(/MyriadPro.1f56926f5e046e7c486994313b8b20fe.svg#MyriadPro) format('svg');
+         url(/MyriadPro.142eea664507f7b9b9b3d8cd269bbe83.svg#MyriadPro) format('svg');
 }
 /* this file will be extracted to main dist folder and is imported in index.html */
 /* This file is for setting global styles  */
